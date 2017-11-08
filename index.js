@@ -34,10 +34,13 @@ router.use(function(req, res, next) {
 router.route('/talk/:command')
 
   .post(function(req, res){
+		//This is just to try and manually add a module...
 		Asher.addResponder(/^Hi|hello|hey/i, function(){
 		  Asher.respond('Hello')
 		})
+		// Here we are grabbing the command from the URL.
     var command = req.params.command
+		// This is where i try to process the command with the function down below..
     Asher.process(command)
   })
 
@@ -48,6 +51,8 @@ app.use('/api', router);
 var Configstore = require('configstore');
 var AsherResponder = require('./core/AsherResponder');
 
+// This is the function that should control all of the commands... but it doesnt
+// seem to be working at all. I can't seem to get access to the sub-functions.
 function Asher(){
   var self = this
 
