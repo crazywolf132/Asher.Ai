@@ -2,13 +2,13 @@
 // =============================================================================
 console.log(process.env.PORT || 80);
 // call the packages we need
-var express    = require('express');
-var bodyParser = require('body-parser');
+var express    = require(`express`);
+var bodyParser = require(`body-parser`);
 var app        = express();
-var morgan     = require('morgan');
+var morgan     = require(`morgan`);
 
 // configure app
-app.use(morgan('dev')); // log requests to the console
+app.use(morgan(`dev`)); // log requests to the console
 
 // configure body parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,11 +26,11 @@ var router = express.Router();
 // middleware to use for all requests
 router.use(function(req, res, next) {
 	// do logging
-	console.log('Something is happening.');
+	console.log(`Something is happening.`);
 	next();
 });
 
-router.route('/talk/:command')
+router.route(`/talk/:command`)
 
   .post(function(req, res){
 		// Here we are grabbing the command from the URL.
@@ -42,13 +42,13 @@ router.route('/talk/:command')
 
 
 // REGISTER OUR ROUTES -------------------------------
-app.use('/api', router);
+app.use(`/api`, router);
 
-var Configstore = require('configstore');
-var AsherResponder = require('./core/AsherResponder');
+var Configstore = require(`configstore`);
+var AsherResponder = require(`./core/AsherResponder`);
 
 // This is the function that should control all of the commands... but it doesnt
-// seem to be working at all. I can't seem to get access to the sub-functions.
+// seem to be working at all. I can`t seem to get access to the sub-functions.
 
 
 // below is the edit
@@ -63,13 +63,13 @@ Asher=(function(){
 
   self.listening = false
 
-  self.last_response = ''
+  self.last_response = ``
 
   self.waiting_for_response = false
 
-  self.request = require('request')
+  self.request = require(`request`)
 
-  self.db = new Configstore('Asher')
+  self.db = new Configstore(`Asher`)
 
   self.process = function(msg){
     var input = msg
@@ -120,7 +120,7 @@ Asher=(function(){
 
   self.respond = function(message, callback){
     self.last_response = message
-    console.log("sending back: " + message)
+    console.log(`sending back: ` + message)
     /**
     * This is where we need to return the response...
     * so then whoever is requesting the api can recieve
@@ -139,10 +139,10 @@ Asher=(function(){
   }
 	return self;
 })();
-require("./mods/core.js")(Asher);
-require("./mods/internet.js")(Asher);
+require(`./mods/core.js`)(Asher);
+require(`./mods/internet.js`)(Asher);
 
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log(`Magic happens on port ` + port);
