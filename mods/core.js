@@ -1,5 +1,5 @@
-//var Asher = require('../core/asher.js')
-
+module.exports=(function(Asher){
+  
 Asher.addResponder(/^Hi|hello|hey/i, function(){
   Asher.respond('Hello')
 })
@@ -36,3 +36,5 @@ Asher.addResponder(/how are you/i, function(){
 function storeName(name){
   Asher.db.set('users_name', name);
 }
+
+});
