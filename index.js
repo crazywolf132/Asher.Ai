@@ -14,6 +14,12 @@ var app=express();
 var morgan=require(`morgan`);
 var bodyParser=require(`body-parser`);
 
+var mongoose = require('mongoose');
+var passport = require('passport');
+var config = require('./config/database');
+
+mongoose.connect(config.database);
+
 app.use(morgan(`dev`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
