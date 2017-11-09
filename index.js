@@ -33,15 +33,11 @@ router.use(function(req, res, next) {
 router.route('/talk/:command')
 
   .post(function(req, res){
-		//This is just to try and manually add a module...
-		Asher.addResponder(/^Hi|hello|hey/i, function(){
-		  Asher.respond('Hello')
-		})
 		// Here we are grabbing the command from the URL.
     var command = req.params.command
 		// This is where i try to process the command with the function down below..
     var returned = Asher.process(command)
-		res.json({ message: returned });  
+		res.json({ message: returned });
   })
 
 
@@ -53,9 +49,6 @@ var AsherResponder = require('./core/AsherResponder');
 
 // This is the function that should control all of the commands... but it doesnt
 // seem to be working at all. I can't seem to get access to the sub-functions.
-
-
-// below is the edit
 
 Asher=(function(){
 
@@ -70,8 +63,6 @@ Asher=(function(){
   self.last_response = ''
 
   self.waiting_for_response = false
-
-  //self.request = require('request')
 
   self.db = new Configstore('Asher')
 
@@ -110,8 +101,7 @@ Asher=(function(){
 
     // if a responder was found then call its response function
     if ( response != undefined ){
-      var data = response.response()
-			return data
+      return response.response()
     }
   }
 
@@ -125,7 +115,7 @@ Asher=(function(){
 
   self.respond = function(message, callback){
     self.last_response = message
-    console.log(message)
+    console.log("sending back: " + message)
     /**
     * This is where we need to return the response...
     * so then whoever is requesting the api can recieve
