@@ -2,7 +2,7 @@ Asher=(function(){
     var internals={};
     var externals={};
     internals.commands={};
-    externals.addCommand=(function(command,fun,choices,){
+    externals.addCommand=(function(command,fun,choices){
         internals.commands[command]={
             call:fun
         };
