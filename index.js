@@ -2,8 +2,9 @@ var Asher=require(`./core/asher.js`)();
 require(`./core/asherCommands.js`)(Asher);
 
 // mods
-require("./mods/math.js")(Asher);
-require("./mods/natural-language.js")(Asher);
+require(`./mods/math.js`)(Asher);
+require(`./mods/internet_query.js`)(Asher);
+require(`./mods/natural-language.js`)(Asher);
 
 var express=require(`express`);
 var app=express();
