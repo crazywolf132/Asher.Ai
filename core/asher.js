@@ -62,7 +62,7 @@ function Asher(){
   }
 
   this.addChoice = function(regex, response){
-    this.choices.push(new AsherResponder(regex, responser))
+    this.choices.push(new AsherResponder(regex, response))
   }
 
   this.respond = function(message, callback){

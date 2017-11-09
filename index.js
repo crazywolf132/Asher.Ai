@@ -50,6 +50,9 @@ var AsherResponder = require('./core/AsherResponder');
 // This is the function that should control all of the commands... but it doesnt
 // seem to be working at all. I can't seem to get access to the sub-functions.
 
+
+// below is the edit
+
 Asher=(function(){
 
 	var self={};
@@ -63,6 +66,8 @@ Asher=(function(){
   self.last_response = ''
 
   self.waiting_for_response = false
+
+  self.request = require('request')
 
   self.db = new Configstore('Asher')
 
@@ -110,7 +115,7 @@ Asher=(function(){
   }
 
   self.addChoice = function(regex, response){
-    self.choices.push(new AsherResponder(regex, responser))
+    self.choices.push(new AsherResponder(regex, response))
   }
 
   self.respond = function(message, callback){

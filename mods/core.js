@@ -1,5 +1,5 @@
 module.exports=(function(Asher){
-  
+
   Asher.addResponder(/^Hi|hello|hey/i, function(){
     Asher.respond('Hello')
   })
@@ -12,6 +12,18 @@ module.exports=(function(Asher){
     var name = RegExp.$1;
     storeName(name);
     Asher.respond("Hello "+name+", It's nice to meet you.")
+  })
+
+  Asher.addResponder(/give me options/i, function(){
+    Asher.addChoice(/one|1/i, function(){
+      Asher.respond('You selected option one')
+    })
+
+    Asher.addChoice(/two|2/i, function(){
+      Asher.respond('You selected option two')
+    })
+
+    Asher.choice('Do you want option one or option two?')
   })
 
   Asher.addResponder(/Call me (\w+)/i, function(){
