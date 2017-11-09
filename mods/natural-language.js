@@ -56,9 +56,11 @@ module.exports=(function(Asher){
         }
         var output="I have nothing to say. :(";
         for(var i=0;i<queries.length;i++){
-            var out=queries[i][1](queries[i][0].exec(query));
-            if(out.status!==undefined){
-                return out;
+            if(queries[i][0].test(query)){
+                var out=queries[i][1](queries[i][0].exec(query));
+                if(out.status!==undefined){
+                    return out;
+                }
             }
         }
         return {
