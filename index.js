@@ -40,7 +40,8 @@ router.route('/talk/:command')
 		// Here we are grabbing the command from the URL.
     var command = req.params.command
 		// This is where i try to process the command with the function down below..
-    Asher.process(command)
+    var returned = Asher.process(command)
+		res.json( response: returned )
   })
 
 
@@ -109,7 +110,8 @@ Asher=(function(){
 
     // if a responder was found then call its response function
     if ( response != undefined ){
-      response.response()
+      var data = response.response()
+			return data
     }
   }
 
@@ -129,7 +131,7 @@ Asher=(function(){
     * so then whoever is requesting the api can recieve
     * the response... so then they can do what they want with it
     **/
-		res.json({ response: message });   
+		return message
   }
 
   self.choice = function(message){
