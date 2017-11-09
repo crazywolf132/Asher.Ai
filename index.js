@@ -1,148 +1,41 @@
-// BASE SETUP
-// =============================================================================
-console.log(process.env.PORT || 80);
-// call the packages we need
-var express    = require(`express`);
-var bodyParser = require(`body-parser`);
-var app        = express();
-var morgan     = require(`morgan`);
+var Asher=require(`./core/asher.js`)();
+require(`./core/asherCommands.js`)(Asher);
 
-// configure app
-app.use(morgan(`dev`)); // log requests to the console
+// mods
+require("./mods/math.js")(Asher);
 
-// configure body parser
-app.use(bodyParser.urlencoded({ extended: true }));
+var express=require(`express`);
+var app=express();
+
+var morgan=require(`morgan`);
+var bodyParser=require(`body-parser`);
+
+app.use(morgan(`dev`));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
-var port     = process.env.PORT || 80; // set our port
+var port=process.env.PORT||80;
 
+var api_router=express.Router();
 
-// ROUTES FOR OUR API
-// =============================================================================
-
-// create our router
-var router = express.Router();
-
-// middleware to use for all requests
-router.use(function(req, res, next) {
-	// do logging
+api_router.use(function(req, res, next) {
 	console.log(`Something is happening.`);
 	next();
 });
 
-router.route(`/talk/:command`)
-
-  .post(function(req, res){
-		// Here we are grabbing the command from the URL.
-    var command = req.params.command
-		// This is where i try to process the command with the function down below..
-    var returned = Asher.process(command)
-		res.json({ message: returned });
-  })
-
-
-// REGISTER OUR ROUTES -------------------------------
-app.use(`/api`, router);
-
-var Configstore = require(`configstore`);
-var AsherResponder = require(`./core/AsherResponder`);
-
-// This is the function that should control all of the commands... but it doesnt
-// seem to be working at all. I can`t seem to get access to the sub-functions.
-
-
-// below is the edit
-
-Asher=(function(){
-
-	var self={};
-
-  self.choices = []
-
-  self.responders = []
-
-  self.listening = false
-
-  self.last_response = ``
-
-  self.waiting_for_response = false
-
-  self.request = require(`request`)
-
-  self.db = new Configstore(`Asher`)
-
-  self.process = function(msg){
-    var input = msg
-    var response
-
-    // if waiting for a response
-    if ( self.waiting_for_response ){
-
-      // iterate through the given choices
-      Array.prototype.forEach.call(self.choices, function(responder, i){
-        if ( responder.regex.test(input) ){
-          response = responder
+api_router.route(`/talk/:command`)
+    .post(function(req,res){
+        var command=req.params.command;
+        var args=[];
+        for(var i=0;i<10;i++){
+            if(req.body[`arg`+i]!==undefined){
+                args.push(req.body[`arg`+i]);
+            }
         }
-      });
+        res.json(Asher.processCommand(command,args));
+    });
 
-      // if they chose an invalid choice then ask again
-      if ( response == undefined ){
-        self.choice(self.last_response)
-        return
-      } else {
-        // otherwise reset the choices array and set waiting for response to false
-        self.choices = []
-        self.waiting_for_response = false
-      }
+app.use(`/api`,api_router);
 
-    } else {
-      // iterate through the possible responses
-      Array.prototype.forEach.call(self.responders, function(responder, i){
-        if ( responder.regex.test(input) ){
-          response = responder
-        }
-      });
-    }
-
-    // if a responder was found then call its response function
-    if ( response != undefined ){
-      return response.response()
-    }
-  }
-
-  self.addResponder = function(regex, response){
-    self.responders.push(new AsherResponder(regex, response))
-  }
-
-  self.addChoice = function(regex, response){
-    self.choices.push(new AsherResponder(regex, response))
-  }
-
-  self.respond = function(message, callback){
-    self.last_response = message
-    console.log(`sending back: ` + message)
-    /**
-    * This is where we need to return the response...
-    * so then whoever is requesting the api can recieve
-    * the response... so then they can do what they want with it
-    **/
-		return message
-  }
-
-  self.choice = function(message){
-    self.waiting_for_response = true
-    self.respond(message, function(){
-      /**
-      * This is where we need to wait for the next input...
-      **/
-    })
-  }
-	return self;
-})();
-require(`./mods/core.js`)(Asher);
-require(`./mods/internet.js`)(Asher);
-
-// START THE SERVER
-// =============================================================================
 app.listen(port);
-console.log(`Magic happens on port ` + port);
+console.log(`Magic happens on port ${port}`);
