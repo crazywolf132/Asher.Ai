@@ -30,16 +30,6 @@ module.exports=(function(Asher){
     Asher.choice('Do you want option one or option two?')
   })
 
-  Asher.addResponder(/What's the weather like in (.*)/i, function(){
-    Asher.request('http://165.227.116.53:80/api/talk/'+RegExp.$1, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        Asher.respond(JSON.parse(body).weather[0].description)
-      }else{
-        Asher.respond("hia")
-      }
-    })
-  })
-
   Asher.addResponder(/Call me (\w+)/i, function(){
     var name = RegExp.$1;
     storeName(name);
