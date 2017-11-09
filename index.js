@@ -59,6 +59,8 @@ var AsherResponder = require('./core/AsherResponder');
 
 Asher=(function(){
 
+	var self={};
+
   this.choices = []
 
   this.responders = []
