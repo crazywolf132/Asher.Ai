@@ -4,6 +4,10 @@ module.exports=(function(Asher){
     Asher.respond('Hello')
   })
 
+  Asher.addResponder(/Testing123/i, function(){
+    Asher.respond('I can hear you loud and clear')
+  })
+
   Asher.addResponder(/^Thanks?\s?(you)?/i, function(){
     Asher.respond('You are welcome')
   })
@@ -24,6 +28,16 @@ module.exports=(function(Asher){
     })
 
     Asher.choice('Do you want option one or option two?')
+  })
+
+  Asher.addResponder(/What's the weather like in (.*)/i, function(){
+    Asher.request('http://165.227.116.53:80/api/talk/'+RegExp.$1, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        Asher.respond(JSON.parse(body).weather[0].description)
+      }else{
+        Asher.respond("hia")
+      }
+    })
   })
 
   Asher.addResponder(/Call me (\w+)/i, function(){
