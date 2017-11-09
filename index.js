@@ -33,7 +33,7 @@ app.use(passport.initialize());
 var port=process.env.PORT||80;
 
 var api_router=express.Router();
-var User = require("../models/user");
+var User = require("./models/user");
 var jwt = require('jsonwebtoken');
 require('./config/passport')(passport);
 
