@@ -10,9 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "configstore": "^3.1.1",
     "express": "^4.16.2",
-    "morgan": "^1.9.0",
-    "request": "^2.83.0"
+    "morgan": "^1.9.0"
   }
 }
