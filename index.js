@@ -41,7 +41,7 @@ router.route('/talk/:command')
     var command = req.params.command
 		// This is where i try to process the command with the function down below..
     var returned = Asher.process(command)
-		res.json( message: returned )
+		res.json({ message: returned });  
   })
 
 
