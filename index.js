@@ -33,11 +33,77 @@ app.use(passport.initialize());
 var port=process.env.PORT||80;
 
 var api_router=express.Router();
+var User = require("../models/user");
+var jwt = require('jsonwebtoken');
+require('./config/passport')(passport);
 
 api_router.use(function(req, res, next) {
 	console.log(`Something is happening.`);
 	next();
 });
+
+api_router.route(`/login`)
+		.post(function(req, res){
+			User.findOne({
+				username: req.body.username
+			}, function(err, user) {
+				if (err) throw err;
+
+				if (!user) {
+					res.status(401).send({
+						success: false,
+						msg: 'Authentication failed.'
+					});
+				} else {
+					// check if the password matches
+					user.comparePassword(req.body.password, function(err, isMatch) {
+						if (isMatch && !err) {
+							// if user is found and password is right, create a token
+							var token = jwt.sign(user, config.secret);
+							// return the information including token as JSON
+							res.json({
+								success: true,
+								token: 'JWT ' + token
+							});
+						} else {
+							res.status(401).send({
+								success: false,
+								msg: 'Authentication failed.'
+							});
+						}
+					});
+				}
+			});
+		});
+
+api_router.route(`/signup`)
+		.post(function(req, res){
+			if (!req.body.username || !req.body.password) {
+				res.json({
+					success: false,
+					msg: 'Please supply a username and password'
+				})
+			} else {
+				var newUser = new User({
+					username: req.body.username,
+					password: req.body.password
+				});
+				// save the username
+				newUser.save(function(err) {
+					if (err) {
+						return res.json({
+							success: false,
+							msg: 'Username already exists.'
+						})
+					}
+					res.json({
+						success: true,
+						msg: 'Successfully created new user.'
+					})
+				})
+			}
+		})
+
 
 api_router.route(`/talk/:command`)
     .post(function(req,res){
