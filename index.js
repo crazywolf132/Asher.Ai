@@ -6,7 +6,7 @@ var express    = require('express');
 var bodyParser = require('body-parser');
 var app        = express();
 var morgan     = require('morgan');
-//var Asher      = require('./core/asher');
+require("./mods/core.js")(Asher);
 
 // configure app
 app.use(morgan('dev')); // log requests to the console
@@ -140,6 +140,8 @@ Asher=(function(){
       **/
     })
   }
+	return self;
+
 })();
 
 // START THE SERVER
