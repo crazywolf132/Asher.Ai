@@ -1,6 +1,6 @@
 // BASE SETUP
 // =============================================================================
-
+console.log(process.env.PORT || 8080);
 // call the packages we need
 var express    = require('express');
 var bodyParser = require('body-parser');
@@ -58,7 +58,6 @@ var AsherResponder = require('./core/AsherResponder');
 // below is the edit
 
 Asher=(function(){
-  var self = this
 
   this.choices = []
 
@@ -79,10 +78,10 @@ Asher=(function(){
     var response
 
     // if waiting for a response
-    if ( self.waiting_for_response ){
+    if ( this.waiting_for_response ){
 
       // iterate through the given choices
-      Array.prototype.forEach.call(self.choices, function(responder, i){
+      Array.prototype.forEach.call(this.choices, function(responder, i){
         if ( responder.regex.test(input) ){
           response = responder
         }
@@ -90,17 +89,17 @@ Asher=(function(){
 
       // if they chose an invalid choice then ask again
       if ( response == undefined ){
-        self.choice(self.last_response)
+        this.choice(this.last_response)
         return
       } else {
         // otherwise reset the choices array and set waiting for response to false
-        self.choices = []
-        self.waiting_for_response = false
+        this.choices = []
+        this.waiting_for_response = false
       }
 
     } else {
       // iterate through the possible responses
-      Array.prototype.forEach.call(self.responders, function(responder, i){
+      Array.prototype.forEach.call(this.responders, function(responder, i){
         if ( responder.regex.test(input) ){
           response = responder
         }
@@ -122,7 +121,7 @@ Asher=(function(){
   }
 
   this.respond = function(message, callback){
-    self.last_response = message
+    this.last_response = message
     console.log(message)
     /**
     * This is where we need to return the response...
@@ -132,14 +131,14 @@ Asher=(function(){
   }
 
   this.choice = function(message){
-    self.waiting_for_response = true
-    self.respond(message, function(){
+    this.waiting_for_response = true
+    this.respond(message, function(){
       /**
       * This is where we need to wait for the next input...
       **/
     })
   }
-})();
+});
 
 // START THE SERVER
 // =============================================================================
