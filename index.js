@@ -6,6 +6,8 @@ require(`./mods/math.js`)(Asher);
 require(`./mods/internet_query.js`)(Asher);
 require(`./mods/natural-language.js`)(Asher);
 
+require(`./mods/hello-test.js`)(Asher);
+
 var express=require(`express`);
 var app=express();
 
