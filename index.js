@@ -2,8 +2,8 @@ var Asher=require(`./core/asher.js`)();
 require(`./core/asherCommands.js`)(Asher);
 
 // mods
-require(`./mods/maths.js`)(Asher);
-require(`./mods/internet.js`)(Asher);
+require("./mods/math.js")(Asher);
+require("./mods/natural-language.js")(Asher);
 
 var express=require(`express`);
 var app=express();
@@ -27,6 +27,7 @@ api_router.use(function(req, res, next) {
 api_router.route(`/talk/:command`)
     .post(function(req,res){
         var command=req.params.command;
+        console.log("receiving "+command);
         var args=[];
         for(var i=0;i<10;i++){
             if(req.body[`arg`+i]!==undefined){
