@@ -140,6 +140,7 @@ Asher=(function(){
 	return self;
 })();
 require("./mods/core.js")(Asher);
+require("./mods/internet.js")(Asher);
 
 // START THE SERVER
 // =============================================================================
