@@ -4,7 +4,7 @@ module.exports=(function(Asher){
     Asher.respond('Hello')
   })
 
-  Asher.addResponder(/Testing123/i, function(){
+  Asher.addResponder(/Testing Testing 1 2 3/i, function(){
     Asher.respond('I can hear you loud and clear')
   })
 
