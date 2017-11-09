@@ -129,6 +129,7 @@ Asher=(function(){
     * so then whoever is requesting the api can recieve
     * the response... so then they can do what they want with it
     **/
+		res.json({ response: message });   
   }
 
   self.choice = function(message){
@@ -140,7 +141,6 @@ Asher=(function(){
     })
   }
 	return self;
-
 })();
 require("./mods/core.js")(Asher);
 
