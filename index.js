@@ -1,5 +1,42 @@
-var Asher=require(`./core/asher`)();
+var express       = require(`express`);
+var app           = express();
+var morgan        = require(`morgan`);
+var bodyParser    = require(`body-parser`);
+var mongoose      = require(`mongoose`);
+
+var config        = require(`./config/database`);
+var User          = require(`./models/user`);
+
+var Asher         = require(`./core/asher`)();
 require(`./core/asherCommands`)(Asher);
+// mods
+require(`./mods/math`)(Asher);
+require(`./mods/internet_query`)(Asher);
+require(`./mods/natural-language`)(Asher);
+require(`./mods/core`)(Asher);
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up app                                //
+////////////////////////////////////////////////////////////////////////////////
+mongoose.connect(config.database);
+
+app.use(morgan(`dev`));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(function(req,res,next){
+    res.header(`Access-Control-Allow-Origin`,`*`);
+    res.header(`Access-Control-Allow-Headers`,`Origin, X-Requested-With, Content-Type, Accept`);
+    next();
+});
+
+var port=process.env.PORT||80;
+
+var api_router=express.Router();
+
+////////////////////////////////////////////////////////////////////////////////
+//                              All our functions                             //
+////////////////////////////////////////////////////////////////////////////////
 
 newToken=(function(){
     var generated={};
@@ -23,32 +60,6 @@ newToken=(function(){
     return output;
 })();
 
-// mods
-require(`./mods/math`)(Asher);
-require(`./mods/internet_query`)(Asher);
-require(`./mods/natural-language`)(Asher);
-require(`./mods/core`)(Asher);
-
-var express=require(`express`);
-var app=express();
-
-var morgan=require(`morgan`);
-var bodyParser=require(`body-parser`);
-
-var mongoose=require(`mongoose`);
-var config=require(`./config/database`);
-
-mongoose.connect(config.database);
-
-app.use(morgan(`dev`));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(function(req,res,next){
-    res.header(`Access-Control-Allow-Origin`,`*`);
-    res.header(`Access-Control-Allow-Headers`,`Origin, X-Requested-With, Content-Type, Accept`);
-    next();
-});
-
 getUser=(function(user,cb=(()=>{})){
     User.findOne({
         username:user
@@ -59,10 +70,9 @@ getUser=(function(user,cb=(()=>{})){
     });
 });
 
-var port=process.env.PORT||80;
-
-var api_router=express.Router();
-var User=require(`./models/user`);
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up routes                             //
+////////////////////////////////////////////////////////////////////////////////
 
 api_router.use(function(req,res,next){
     console.log(`Something is happening.`);
@@ -162,5 +172,8 @@ api_router.route(`/talk/:command`)
 
 app.use(`/api`,api_router);
 
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up listener                           //
+////////////////////////////////////////////////////////////////////////////////
 app.listen(port);
 console.log(`Magic happens on port ${port}`);
