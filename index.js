@@ -53,8 +53,8 @@ getUser=(function(user,cb=(()=>{})){
     User.findOne({
         username:user
     },function(err,user){
-        if(err){cb(false,null);}
-        cb(true,user);
+        if(err){return cb(false,null);}
+        return cb(true,user);
     });
 });
 
