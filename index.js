@@ -114,7 +114,7 @@ api_router.route(`/signup`)
         });
     }else{
         var newUser=new User({
-            username:req.body.user,
+            username:req.body.username,
             password:req.body.password
         });
         newUser.save(function(err){
