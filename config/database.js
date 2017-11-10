@@ -1,4 +1,4 @@
-module.exports = {
-  'secret':'ILoveBigFlufflyPandas',
-  'database': 'mongodb://localhost/AsherApi'
+module.exports={
+    'secret':'ILoveBigFlufflyPandas',
+    'database':'mongodb://localhost/AsherApi'
 };
