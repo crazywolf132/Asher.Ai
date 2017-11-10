@@ -1,6 +1,28 @@
 var Asher=require(`./core/asher`)();
 require(`./core/asherCommands`)(Asher);
 
+newToken=(function(){
+    var generated={};
+    var generate=(function(){
+        var octets=[];
+        for(var i=0;i<32;i++){
+            var octet=Math.round(Math.random()*255).toString(16)+"";
+            if(octet.length==1){octet="0"+octet;}
+            octets.push(octet);
+        }
+        return octets.join("-").toUpperCase();
+    });
+    var output=(function(){
+        var new_token=generate();
+        while(generated[new_token]!==undefined){
+            new_token=generate();
+        }
+        generated[new_token]=true;
+        return new_token;
+    });
+    return output;
+})();
+
 // mods
 require(`./mods/math`)(Asher);
 require(`./mods/internet_query`)(Asher);
@@ -14,7 +36,6 @@ var morgan=require(`morgan`);
 var bodyParser=require(`body-parser`);
 
 var mongoose=require(`mongoose`);
-var passport=require(`passport`);
 var config=require(`./config/database`);
 
 mongoose.connect(config.database);
@@ -27,89 +48,84 @@ app.use(function(req,res,next){
     res.header(`Access-Control-Allow-Headers`,`Origin, X-Requested-With, Content-Type, Accept`);
     next();
 });
-app.use(passport.initialize());
+
+getUser=(function(user,cb=(()=>{})){
+    User.findOne({
+        username:user
+    },function(err,user){
+        if(err){cb(false,null);}
+        cb(true,user);
+    });
+});
 
 var port=process.env.PORT||80;
 
 var api_router=express.Router();
 var User=require(`./models/user`);
-var jwt=require(`jsonwebtoken`);
-require(`./config/passport`)(passport);
 
 api_router.use(function(req,res,next){
     console.log(`Something is happening.`);
     next();
 });
 
-getToken=(function(headers){
-    if(headers&&headers.authorization){
-        var parted=headers.authorization.split(' ');
-        if(parted.length===2){
-            return parted[1];
-        }else{
-            return null;
-        }
-    }else{
-        return null;
-    }
-});
-
 api_router.route(`/login`)
 .post(function(req,res){
-    User.findOne({
-        username:req.body.username
-    },function(err,user){
-        if(err){throw err;}
-        if(!user){
+    var user=req.body.user||false;
+    if(user===false){
+        return res.status(401).send({
+            status:`fail`,
+            error:`No user provided!`
+        });
+    }
+    getUser(user,function(exist,user){
+        if(!exist){
             res.status(401).send({
-                success:false,
-                msg:`Authentication failed.`
-            });
-        }else{
-            // check if the password matches
-            user.comparePassword(req.body.password,function(err,isMatch){
-                if(isMatch&&!err){
-                    // if user is found and password is right, create a token
-                    const token=jwt.sign(user.toJSON(),config.secret);
-                    // return the information including token as JSON
-                    res.json({
-                        success:true,
-                        token:`JWT ${token}`
-                    });
-                }else{
-                    res.status(401).send({
-                        success:false,
-                        msg:`Authentication failed.`
-                    });
-                }
+                status:`fail`,
+                error:`User doesn't exist!`
             });
         }
+        var password=req.body.password||false;
+        if(password===false){
+            return res.status(401).send({
+                status:`fail`,
+                error:`No password supplied!`
+            });
+        }
+        user.comparePassword(password,function(err,isMatch){
+            if(isMatch&&!err){
+                var token=newToken();
+                return res.json({
+                    status:`success`,
+                    message:`Login success!`,
+                    token:token
+                });
+            }
+        });
     });
 });
 
 api_router.route(`/signup`)
 .post(function(req,res){
     if(!req.body.username||!req.body.password){
-        res+.json({
-            success:false,
-            msg:`Please supply a username and password`
+        res.json({
+            status:`fail`,
+            error:`Please supply username and/or password!`
         });
     }else{
         var newUser=new User({
             username:req.body.username,
             password:req.body.password
         });
-        // save the username
-        newUser.save(function(err) {
+        newUser.save(function(err){
             if(err){
                 return res.json({
-                    success:false,
-                    msg:`Username already exists.`
+                    status:`fail`,
+                    error:`Username already exists.`
                 });
             }
             res.json({
-                success:true,
-                msg:`Successfully created new user.`
+                status:`success`,
+                message:`Successfully created new user.`
             });
         });
     }
@@ -117,10 +133,16 @@ api_router.route(`/signup`)
 
 
 api_router.route(`/talk/:command`)
-.post(passport.authenticate(`jwt`,{session:false}),function(req,res){
-    var token=getToken(req.headers);
-    if(token){
-      v+ar command=req.params.command;
+.post(function(req,res){
+    var token=req.body.token||null;
+    if(token!==null){
+      var command=req.params.command||null;
+      if(command===null){
+          return res.json({
+              status:`fail`,
+              error:`No command provided!`
+          });
+      }
       console.log(`receiving ${command}`);
       var args=[];
       for(var i=0;i<10;i++){
@@ -131,8 +153,8 @@ api_router.route(`/talk/:command`)
       res.json(Asher.processCommand(command,args));
     }else{
       res.json({
-        success:false,
-        msg:'Please provide token'
+        status:`fail`,
+        error:`No token provided!`
       });
     }
 });
