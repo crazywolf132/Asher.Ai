@@ -118,16 +118,24 @@ api_router.route(`/signup`)
 
 
 api_router.route(`/talk/:command`)
-    .post(function(req,res){
-        var command=req.params.command;
-        console.log("receiving "+command);
-        var args=[];
-        for(var i=0;i<10;i++){
-            if(req.body[`arg`+i]!==undefined){
-                args.push(req.body[`arg`+i]);
-            }
+    .post(passport.authenticate('jwt', { session: false }), function(req,res){
+        var token = getToken(req.headers);
+        if (token) {
+          var command=req.params.command;
+          console.log("receiving "+command);
+          var args=[];
+          for(var i=0;i<10;i++){
+              if(req.body[`arg`+i]!==undefined){
+                  args.push(req.body[`arg`+i]);
+              }
+          }
+          res.json(Asher.processCommand(command,args));
+        } else {
+          res.json({
+            success: false,
+            msg: 'Please provide token'
+          })
         }
-        res.json(Asher.processCommand(command,args));
     });
 
 app.use(`/api`,api_router);
