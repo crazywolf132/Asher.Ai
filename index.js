@@ -65,24 +65,23 @@ api_router.route(`/login`)
 				if (!user) {
 					res.status(401).send({
 						success: false,
-						msg: 'Authentication failed.'
+						msg: `Authentication failed.`
 					});
 				} else {
 					// check if the password matches
 					user.comparePassword(req.body.password, function(err, isMatch) {
 						if (isMatch && !err) {
 							// if user is found and password is right, create a token
-							//var token = jwt.sign(user, config.secret);
 							const token = jwt.sign(user.toJSON(), config.secret);
 							// return the information including token as JSON
 							res.json({
 								success: true,
-								token: 'JWT ' + token
+								token: `JWT ` + token
 							});
 						} else {
 							res.status(401).send({
 								success: false,
-								msg: 'Authentication failed.'
+								msg: `Authentication failed.`
 							});
 						}
 					});
@@ -95,7 +94,7 @@ api_router.route(`/signup`)
 			if (!req.body.username || !req.body.password) {
 				res.json({
 					success: false,
-					msg: 'Please supply a username and password'
+					msg: `Please supply a username and password`
 				})
 			} else {
 				var newUser = new User({
@@ -107,12 +106,12 @@ api_router.route(`/signup`)
 					if (err) {
 						return res.json({
 							success: false,
-							msg: 'Username already exists.'
+							msg: `Username already exists.`
 						})
 					}
 					res.json({
 						success: true,
-						msg: 'Successfully created new user.'
+						msg: `Successfully created new user.`
 					})
 				})
 			}
