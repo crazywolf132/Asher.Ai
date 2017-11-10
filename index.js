@@ -54,6 +54,7 @@ getUser=(function(user,cb=(()=>{})){
         username:user
     },function(err,user){
         if(err){return cb(false,null);}
+        if(!user){return cb(false,null);}
         return cb(true,user);
     });
 });
