@@ -79,7 +79,7 @@ api_router.route(`/login`)
     }
     getUser(user,function(exist,user){
         if(!exist){
-            res.status(401).send({
+            return res.status(401).send({
                 status:`fail`,
                 error:`User doesn't exist!`
             });
