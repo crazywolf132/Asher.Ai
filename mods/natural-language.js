@@ -42,8 +42,8 @@ module.exports=(function(Asher){
             answer:Asher.processCommand("math",[type,num1,num2]).answer
         };
     }]);
-    Asher.addNatural=(function(rr,fun){
-        queries.push([rr,fun]);
+    Asher.addNatural=(function(regex_to_test,fun){
+       queries.push([regex_to_test,fun]);
     });
     Asher.addCommand("natural",function(args){
         try{
