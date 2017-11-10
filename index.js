@@ -71,7 +71,7 @@ api_router.use(function(req,res,next){
 
 api_router.route(`/login`)
 .post(function(req,res){
-    var user=req.body.user||false;
+    var user=req.body.username||false;
     if(user===false){
         return res.status(401).send({
             status:`fail`,
