@@ -1,12 +1,11 @@
-var Asher=require(`./core/asher.js`)();
-require(`./core/asherCommands.js`)(Asher);
+var Asher=require(`./core/asher`)();
+require(`./core/asherCommands`)(Asher);
 
 // mods
-require(`./mods/math.js`)(Asher);
-require(`./mods/internet_query.js`)(Asher);
-require(`./mods/natural-language.js`)(Asher);
-
-require(`./mods/core.js`)(Asher);
+require(`./mods/math`)(Asher);
+require(`./mods/internet_query`)(Asher);
+require(`./mods/natural-language`)(Asher);
+require(`./mods/core`)(Asher);
 
 var express=require(`express`);
 var app=express();
@@ -14,9 +13,9 @@ var app=express();
 var morgan=require(`morgan`);
 var bodyParser=require(`body-parser`);
 
-var mongoose = require('mongoose');
-var passport = require('passport');
-var config = require('./config/database');
+var mongoose = require(`mongoose`);
+var passport = require(`passport`);
+var config = require(`./config/database`);
 
 mongoose.connect(config.database);
 
@@ -33,9 +32,9 @@ app.use(passport.initialize());
 var port=process.env.PORT||80;
 
 var api_router=express.Router();
-var User = require("./models/user");
-var jwt = require('jsonwebtoken');
-require('./config/passport')(passport);
+var User = require(`./models/user`);
+var jwt = require(`jsonwebtoken`);
+require(`./config/passport`)(passport);
 
 api_router.use(function(req, res, next) {
 	console.log(`Something is happening.`);
