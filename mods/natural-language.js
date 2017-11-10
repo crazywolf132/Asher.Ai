@@ -55,9 +55,13 @@ module.exports=(function(Asher){
             };
         }
         var output="I have nothing to say. :(";
+        // cycle all queries/regex
         for(var i=0;i<queries.length;i++){
+            // test if it matches
             if(queries[i][0].test(query)){
+                // execute regex on the input, and send it to the function
                 var out=queries[i][1](queries[i][0].exec(query));
+                // if out.status exists then this is the output, return it
                 if(out.status!==undefined){
                     return out;
                 }
