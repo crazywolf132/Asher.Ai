@@ -2,9 +2,10 @@ Core = ( function() {
 
   var fs = require('fs');
   var builtinPhrases = require('../builtins');
+  var Brain = require('./brain')
 
   var Asher = {
-    Brain = new Brain()
+    Brain: new Brain()
   }
 
   AsherTrain = ( function(){
