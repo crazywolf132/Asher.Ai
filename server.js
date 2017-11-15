@@ -1,27 +1,44 @@
-var express = require(`express`);
-var app = express();
-var morgan = require(`morgan`);
-var bodyParser = require(`body-parser`);
-var mongoose = require(`mongoose`);
+var express       = require(`express`);
+var app           = express();
+var morgan        = require(`morgan`);
+var bodyParser    = require(`body-parser`);
+var mongoose      = require(`mongoose`);
 
-var config = require(`./config/database`);
-var User = require(`./models/user`)
-var Core = require(`./core/core`)();
+var config        = require(`./config/database`);
+var User          = require(`./models/user`);
+var fs = require('fs');
 
+var Asher         = require(`./core/asher`)();
+require(`./core/asherCommands`)(Asher);
+// mods
+require(`./mods/math`)(Asher);
+require(`./mods/internet_query`)(Asher);
+require(`./mods/natural-language`)(Asher);
+require(`./mods/core`)(Asher);
 
+var speak = require('speakeasy-nlp')
+var swears = []
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up app                                //
+////////////////////////////////////////////////////////////////////////////////
 mongoose.connect(config.database);
 
 app.use(morgan(`dev`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(function(req, res, next){
-  res.header(`Access-Control-Allow-Origin`, `*`);
-  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
-  next();
+app.use(function(req,res,next){
+    res.header(`Access-Control-Allow-Origin`,`*`);
+    res.header(`Access-Control-Allow-Headers`,`Origin, X-Requested-With, Content-Type, Accept`);
+    next();
 });
 
-var port = process.env.PORT || 80;
-var api_router = express.Router();
+var port=process.env.PORT||80;
+
+var api_router=express.Router();
+
+////////////////////////////////////////////////////////////////////////////////
+//                              All our functions                             //
+////////////////////////////////////////////////////////////////////////////////
 
 newToken=(function(){
     var generated={};
@@ -55,7 +72,33 @@ getUser=(function(user,cb=(()=>{})){
     });
 });
 
-Core.AsherTrain();
+let test1 = "what is the time";
+let test2 = "what is the date";
+let test3 = "what time is it";
+
+workItOut = function(msg){
+
+  console.log(speak.closest(msg, [test1, test2, test3]));
+}
+
+makeSame = function(list1, list2){
+  console.log('running')
+  list1 = list2
+}
+
+fileToArray = function(file, list){
+  var fs = require('fs');
+  var array = fs.readFileSync(file).toString().split("\n");
+  for(i in array) {
+      list.push(array[i]);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up routes                             //
+////////////////////////////////////////////////////////////////////////////////
+fileToArray('swears.txt', swears)
+console.log(swears)
 
 api_router.use(function(req,res,next){
     console.log(`Something is happening.`);
@@ -125,28 +168,28 @@ api_router.route(`/signup`)
     }
 });
 
+
 api_router.route(`/talk/:command`)
 .post(function(req,res){
-    var token = req.body.token || null;
-    if ( token !== null ) {
-      var command = req.params.command || null;
-      if ( command === null ) {
-        return res.json({
-          status: `fail`,
-          error: `No command found!`
-        });
+      var command=req.params.command||null;
+      if(command===null){
+          return res.json({
+              status:`fail`,
+              error:`No command provided!`
+          });
       }
       console.log(`receiving ${command}`);
-
-    } else {
-      res.json({
-        status : `fail`,
-        error : `No token provided!`
-      });
-    }
+      workItOut(command);
+      let sub = speak.classify(command)
+      let feeling = speak.sentiment.analyze(command);
+      console.log(`# ${sub.subject}`);
+      console.log(feeling)
 });
 
-app.use(`/api`, api_router);
+app.use(`/api`,api_router);
 
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up listener                           //
+////////////////////////////////////////////////////////////////////////////////
 app.listen(port);
-console.log(`Its running on port ${port}`)
+console.log(`Magic happens on port ${port}`);
