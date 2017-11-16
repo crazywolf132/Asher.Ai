@@ -96,10 +96,10 @@ workItOut = function(msg) {
                 }
             })
         })
-        if (s_words && neg_score <= -2) {
+        if (s_words && neg_score >= 2) {
             // We now need to reply with "Now now, there is no need for that talk..."
             return ("Now now, there is no need for that talk...");
-        } else if (!s_words && neg_score <= -1) {
+        } else if (!s_words && neg_score == 1) {
             // We now need to reply with "Your not being very nice."
             return ("Your not being very nice.");
         } else {
