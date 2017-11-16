@@ -109,6 +109,8 @@ workItOut = function(msg) {
         } else if (!s_words && neg_score >= -1) {
             // We now need to reply with "Your not being very nice."
             return ("Your not being very nice.");
+        } else {
+            return ("Sorry, I dont know how to help...");
         }
     } else {
         // We need to work out what module it is...
