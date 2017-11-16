@@ -117,7 +117,8 @@ workItOut = function(msg) {
         let toLoad = holdGuess.guess;
         // We will also parse `sub` to the module incase it gives hints such as
         // `current time`...
-        let sub = speak.classify(msg).subject;
+        let wubbalubbadubdub = speak.classify(msg);
+        let sub = wubbalubbadubdub.subject;
         var mod = allMods[toLoad];
         return (mod(sub));
         // We now just need to execute the module that is associated with the name
@@ -320,9 +321,9 @@ api_router.route(`/talk`)
                 error: `No command provided!`
             });
         }
-        console.log(`receiving ${command}`);
+        console.log(`receiving '${command}'`);
         let response = workItOut(command);
-        console.log(`responded with $ {response}`);
+        console.log(`responded with '${response}'`);
         res.json({
             status: "success",
             reply: response
