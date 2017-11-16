@@ -87,6 +87,7 @@ getUser = (function(user, cb = (() => {})) {
 
 workItOut = function(msg) {
     let holdGuess = interpret(msg);
+    console.log(holdGuess);
     if (holdGuess.guess == null) {
         //We are now going to check how high the negativity of the message is..
         //if the negativity is -2 or below... we will make a comment of.
@@ -117,6 +118,7 @@ workItOut = function(msg) {
         let toLoad = holdGuess.guess;
         // We will also parse `sub` to the module incase it gives hints such as
         // `current time`...
+
         console.log(holdGuess);
         let wubbalubbadubdub = speak.classify(msg);
         let sub = wubbalubbadubdub.subject;
