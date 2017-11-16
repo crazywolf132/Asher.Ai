@@ -77,34 +77,46 @@ getUser=(function(user,cb=(()=>{})){
 });
 
 workItOut = function(msg){
-  // This is just here for testing purposes...
-  //console.log(speak.closest(msg, [test1, test2, test3]));
-  let correct = speak.closest(msg, commands);
-  let res = speak.classify(correct).subject;
-
-  let guess = speak.classify(msg).subject;
-  if (res == guess){
-    console.log('We are definetly talking about: ' + res)
+  let holdGuess = interpret(msg);
+  if (holdGuess.guess == null){
+    //We are now going to check how high the negativity of the message is..
+    //if the negativity is -2 or below... we will make a comment of.
+    // "Now now, there is no need for that talk..." [ ONLY RUN THIS IF WE FIND
+    // SWEARS IN THE MESSAGE].
+    let neg = speak.sentiment.negativity(msg)
+    let neg_score = neg.score;
+    let neg_words = neg.words;
+    let s_words = false;
+    neg_words.forEach(function(n_word){
+      swears.forEach(function(s_word){
+        if (n_word === s_word){
+          s_words = true;
+        }
+      })
+    })
+    if (s_words && neg_score >= -2){
+      // We now need to reply with "Now now, there is no need for that talk..."
+    }else if (!s_words && neg_score >= -1){
+      // We now need to reply with "Your not being very nice."
+    }
+  } else {
+    // We need to work out what module it is...
+    let toLoad = holdGuess.guess;
+    // We will also parse `sub` to the module incase it gives hints such as
+    // `current time`...
+    let sub = speak.classify(command).subject;
+    allMods[toLoad]
+    // We now just need to
   }
-  //console.log("We are talking about: " + res.subject)
-}
-
-eachThing = function(list, called){
-  Object.keys(list).forEach(function(key) {
-    teach(key, called)
-  })
-}
-eachKey = function(object, place_to_send) {
-  Object.keys(object).forEach(function(key) {
-    teach(key, object[key]);
-  });
 }
 
 let minConfidence = 0.7
 var classifier = new NLP.LogisticRegressionClassifier();
+
 function toMaxValue(x, y) {
   return x && x.value > y.value ? x : y;
 }
+
 teach = function(theFile, label) {
   var fs = require('fs');
   var array = fs.readFileSync(theFile).toString().split("\n");
@@ -113,26 +125,20 @@ teach = function(theFile, label) {
     classifier.addDocument(array[i], label);
   }
 }
+
 think = function() {
   classifier.train();
-
   // save the classifier for later use
   var aPath = './core/classifier.json';
   classifier.save(aPath, function(err, classifier) {
-    if (err){
-      console.log("WE HIT AN ERROR: " + err)
-    }
     // the classifier is saved to the classifier.json file!
     console.log('Writing: Creating a Classifier file in SRC.');
   });
 };
+
 interpret = function(phrase) {
   var guesses = classifier.getClassifications(phrase);
-
   var guess = guesses.reduce(toMaxValue);
-  console.log("###")
-  console.log(guess.value)
-  console.log("###")
   return {
     probabilities: guesses,
     guess: guess.value > minConfidence ? guess.label : null
@@ -171,26 +177,46 @@ findFilesAndFolders = function(_path, _list, returnNamesOnly, checkForDir, check
   })
 }
 
+trainAllMods = function(){
+  let mods = []
+  findFilesAndFolders('./mods/', mods, true, true, false)
+  mods.forEach(function(item){
+    let holder = [];
+    findFilesAndFolders('./mods/' + item + '/', holder, false, false, true)
+    holder.forEach(function(file){
+      if (file == './mods/' + item + '/words.txt'){
+        teach('./mods/' + item + '/words.txt', item)
+      }
+    })
+  })
+  console.log("Only found " + mods.length + " mods")
+}
+
+loadAllMods = function(_dict){
+  let mods = []
+  findFilesAndFolders('./mods/', mods, true, true, false)
+  mods.forEach(function(mod){
+    let holder = []
+    findFilesAndFolders('./mods/' + mod + '/', holder, false, false, true)
+    holder.forEach(function(file){
+      if (file == './mods/' + mod + '/mod.js'){
+        _dict[mod] = './mods/' + mod + '/mod.js'
+      }
+    })
+  })
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up mods                               //
 ////////////////////////////////////////////////////////////////////////////////
 fileToArray('swears.txt', swears)
 let jokes = []
 let commands = []
-let mods = []
-
-findFilesAndFolders('./mods/', mods, true, true, false)
-mods.forEach(function(item){
-  let holder = [];
-  findFilesAndFolders('./mods/' + item + '/', holder, false, false, true)
-  holder.forEach(function(file){
-    if (file == './mods/' + item + '/words.txt'){
-      teach('./mods/' + item + '/words.txt', item)
-    }
-  })
-})
-console.log("Only found " + mods.length + " mods")
+let allMods = {}
+trainAllMods();
 think();
+loadAllMods(allMods);
+console.log(allMods)
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up routes                             //
