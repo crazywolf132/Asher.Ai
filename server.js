@@ -117,6 +117,7 @@ workItOut = function(msg) {
         let toLoad = holdGuess.guess;
         // We will also parse `sub` to the module incase it gives hints such as
         // `current time`...
+        console.log(holdGuess);
         let wubbalubbadubdub = speak.classify(msg);
         let sub = wubbalubbadubdub.subject;
         var mod = allMods[toLoad];
