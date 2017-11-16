@@ -147,40 +147,54 @@ fileToArray = function(file, list){
   }
 }
 
-findFilesAndFolders = function(_path, _list, checkForDir, checkForFile){
+findFilesAndFolders = function(_path, _list, returnNamesOnly, checkForDir, checkForFile){
   fs.readdirSync(_path).forEach(file => {
     if (checkForDir && !checkForFile){
       if (fs.statSync(_path + file).isDirectory()) {
-        _list.push(_path + file)
+        if (returnNamesOnly){
+          _list.push(file)
+        }else{
+          _list.push(_path + file)
+        }
       }
     }else if (!checkForDir && checkForFile) {
       if (fs.statSync(_path + file).isFile()) {
         _list.push(_path + file)
       }
     }else{
-      _list.push(_path + file);
+      if (returnNamesOnly){
+        _list.push(file)
+      }else{
+        _list.push(_path + file)
+      }
     }
   })
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              Setting up routes                             //
+//                              Setting up mods                               //
 ////////////////////////////////////////////////////////////////////////////////
 fileToArray('swears.txt', swears)
 let jokes = []
 let commands = []
-//fileToArray('./mods/jokes/jokes.txt', commands)
-//let _time = []
-//fileToArray('/mods/time/time.txt', commands)
-//eachThing(jokes, 'jokes')
-//eachKey(builtinPhrases, teach());
-teach('./mods/time/time.txt', 'time')
-teach('./mods/jokes/jokes.txt', 'jokes');
-think();
 let mods = []
-findFilesAndFolders('./mods/', mods, true, false)
-console.log("Only found " + mods.length + " mods")
 
+findFilesAndFolders('./mods/', mods, true, true, false)
+mods.forEach(function(item){
+  let holder = [];
+  findFilesAndFolders('./mods/' + item + '/', holder, false, false, true)
+  holder.forEach(function(file){
+    if (file == './mods/' + item + '/words.txt'){
+      teach('./mods/' + item + '/words.txt', item)
+    }
+  })
+})
+console.log("Only found " + mods.length + " mods")
+think();
+
+////////////////////////////////////////////////////////////////////////////////
+//                              Setting up routes                             //
+////////////////////////////////////////////////////////////////////////////////
 
 api_router.use(function(req,res,next){
     console.log(`Something is happening.`);
