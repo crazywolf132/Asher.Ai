@@ -9,14 +9,6 @@ var config = require(`./config/database`);
 var User = require(`./models/user`);
 var fs = require(`fs`);
 
-var Asher = require(`./core/asher`)();
-require(`./core/asherCommands`)(Asher);
-// mods
-require(`./mods/math`)(Asher);
-require(`./mods/internet_query`)(Asher);
-require(`./mods/natural-language`)(Asher);
-require(`./mods/core`)(Asher);
-
 var speak = require(`speakeasy-nlp`)
 var NLP = require(`natural`);
 var fs = require(`fs`);
