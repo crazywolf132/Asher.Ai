@@ -76,12 +76,6 @@ getUser=(function(user,cb=(()=>{})){
     });
 });
 
-let test1 = "what is the time";
-let test2 = "what is the date";
-let test3 = "what time is it";
-let test4 = "what is the tempreature";
-let test5 = "what is the weather";
-
 workItOut = function(msg){
   // This is just here for testing purposes...
   //console.log(speak.closest(msg, [test1, test2, test3]));
@@ -153,23 +147,39 @@ fileToArray = function(file, list){
   }
 }
 
+findFilesAndFolders = function(_path, _list, checkForDir, checkForFile){
+  fs.readdirSync(_path).forEach(file => {
+    if (checkForDir && !checkForFile){
+      if (fs.statSync(_path + file).isDirectory()) {
+        _list.push(_path + file)
+      }
+    }else if (!checkForDir && checkForFile) {
+      if (fs.statSync(_path + file).isFile()) {
+        _list.push(_path + file)
+      }
+    }else{
+      _list.push(_path + file);
+    }
+  })
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up routes                             //
 ////////////////////////////////////////////////////////////////////////////////
 fileToArray('swears.txt', swears)
 let jokes = []
 let commands = []
-fileToArray('jokes.txt', commands)
-let _time = []
-fileToArray('time.txt', commands)
+//fileToArray('./mods/jokes/jokes.txt', commands)
+//let _time = []
+//fileToArray('/mods/time/time.txt', commands)
 //eachThing(jokes, 'jokes')
 //eachKey(builtinPhrases, teach());
-teach('time.txt', 'time')
-teach('jokes.txt', 'jokes');
+teach('./mods/time/time.txt', 'time')
+teach('./mods/jokes/jokes.txt', 'jokes');
 think();
-let result = '';
-console.log(interpret("can you tell me a joke"))
-
+let mods = []
+findFilesAndFolders('./mods/', mods, true, false)
+console.log("Only found " + mods.length + " mods")
 
 
 api_router.use(function(req,res,next){
