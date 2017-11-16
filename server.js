@@ -122,6 +122,9 @@ workItOut = function(msg) {
         console.log(holdGuess);
         let wubbalubbadubdub = speak.classify(msg);
         let sub = wubbalubbadubdub.subject;
+        if (sub == undefined){
+          sub = msg;
+        }
         var mod = allMods[toLoad];
         return (mod(sub));
         // We now just need to execute the module that is associated with the name

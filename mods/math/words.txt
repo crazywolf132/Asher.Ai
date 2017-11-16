@@ -1,4 +1,7 @@
 what is 5 times 5
+what is 99999 times 2
+what is 22 times 53333
+what is 4444 times 1111
 what is 9 minus 8
 what is 20 plus 12
 what is 40 divided by 60
@@ -14,5 +17,24 @@ what is the sum of 1 - 2
 what is the sum of 7 plus 12
 what is the sum of 8 minus 9
 what is the sum of 12 times 11
+what is the sum of 2 times 1
+what is the sum of 3 times 99
+what is the sum of 2929292 times 10000
 what is the sum of 18 divide 0
 what is the sum of 18 divided by 2
+how much is 11 times 2
+how much is 49 times 58
+whats 11 times by 12
+whats 9 times 51
+whats 42 times 128
+what 3 plus 7
+whats 8 plus 21
+whats 1 plus 99
+whats 100 minus 12
+whats 87 minus 14
+whats 256 minus 1
+what is 5 times by 12
+what is 7 times by 14
+what is 9 times by 16
+whats math
+math question
