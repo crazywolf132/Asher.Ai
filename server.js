@@ -17,6 +17,10 @@ require(`./mods/natural-language`)(Asher);
 require(`./mods/core`)(Asher);
 
 var speak = require('speakeasy-nlp')
+var NLP = require('natural');
+var fs = require('fs');
+var sentiment = require('sentiment');
+var builtinPhrases = require('./builtins');
 var swears = []
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up app                                //
@@ -75,16 +79,71 @@ getUser=(function(user,cb=(()=>{})){
 let test1 = "what is the time";
 let test2 = "what is the date";
 let test3 = "what time is it";
+let test4 = "what is the tempreature";
+let test5 = "what is the weather";
 
 workItOut = function(msg){
+  // This is just here for testing purposes...
+  //console.log(speak.closest(msg, [test1, test2, test3]));
+  let correct = speak.closest(msg, commands);
+  let res = speak.classify(correct).subject;
 
-  console.log(speak.closest(msg, [test1, test2, test3]));
+  let guess = speak.classify(msg).subject;
+  if (res == guess){
+    console.log('We are definetly talking about: ' + res)
+  }
+  //console.log("We are talking about: " + res.subject)
 }
 
-makeSame = function(list1, list2){
-  console.log('running')
-  list1 = list2
+eachThing = function(list, called){
+  Object.keys(list).forEach(function(key) {
+    teach(key, called)
+  })
 }
+eachKey = function(object, place_to_send) {
+  Object.keys(object).forEach(function(key) {
+    teach(key, object[key]);
+  });
+}
+
+let minConfidence = 0.7
+var classifier = new NLP.LogisticRegressionClassifier();
+function toMaxValue(x, y) {
+  return x && x.value > y.value ? x : y;
+}
+teach = function(theFile, label) {
+  var fs = require('fs');
+  var array = fs.readFileSync(theFile).toString().split("\n");
+  for(i in array) {
+    console.log('Ingesting example for ' + label + ': ' + array[i]);
+    classifier.addDocument(array[i], label);
+  }
+}
+think = function() {
+  classifier.train();
+
+  // save the classifier for later use
+  var aPath = './core/classifier.json';
+  classifier.save(aPath, function(err, classifier) {
+    if (err){
+      console.log("WE HIT AN ERROR: " + err)
+    }
+    // the classifier is saved to the classifier.json file!
+    console.log('Writing: Creating a Classifier file in SRC.');
+  });
+};
+interpret = function(phrase) {
+  var guesses = classifier.getClassifications(phrase);
+
+  var guess = guesses.reduce(toMaxValue);
+  console.log("###")
+  console.log(guess.value)
+  console.log("###")
+  return {
+    probabilities: guesses,
+    guess: guess.value > minConfidence ? guess.label : null
+  };
+};
 
 fileToArray = function(file, list){
   var fs = require('fs');
@@ -98,7 +157,20 @@ fileToArray = function(file, list){
 //                              Setting up routes                             //
 ////////////////////////////////////////////////////////////////////////////////
 fileToArray('swears.txt', swears)
-console.log(swears)
+let jokes = []
+let commands = []
+fileToArray('jokes.txt', commands)
+let _time = []
+fileToArray('time.txt', commands)
+//eachThing(jokes, 'jokes')
+//eachKey(builtinPhrases, teach());
+teach('time.txt', 'time')
+teach('jokes.txt', 'jokes');
+think();
+let result = '';
+console.log(interpret("can you tell me a joke"))
+
+
 
 api_router.use(function(req,res,next){
     console.log(`Something is happening.`);
@@ -182,8 +254,12 @@ api_router.route(`/talk/:command`)
       workItOut(command);
       let sub = speak.classify(command)
       let feeling = speak.sentiment.analyze(command);
+      //We want this...
       console.log(`# ${sub.subject}`);
-      console.log(feeling)
+      console.log(feeling.negative.words)
+      console.log('\n\n\n\n\n\n\n\n\n\n\n')
+      console.log(interpret(command))
+      //console.log(classifier)
 });
 
 app.use(`/api`,api_router);

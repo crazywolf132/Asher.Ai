@@ -33,6 +33,6 @@ module.exports = {
     'are you alive',
     'are you up',
     'who are you',
-    'what are you'    
+    'what are you'
   ]
 };
