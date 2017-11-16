@@ -217,7 +217,7 @@ loadAllMods = function(_dict) {
         findFilesAndFolders(`./mods/` + mod + `/`, holder, false, false, true)
         holder.forEach(function(file) {
             if (file == `./mods/` + mod + `/mod.js`) {
-                _dict[mod] = `./mods/` + mod + `/mod.js`
+                _dict[mod] = require(`./mods/` + mod + `/mod.js`);
             }
         })
     })
