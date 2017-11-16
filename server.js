@@ -106,7 +106,8 @@ workItOut = function(msg){
     // `current time`...
     let sub = speak.classify(msg).subject;
     allMods[toLoad]
-    // We now just need to
+    // We now just need to execute the module that is associated with the name
+    // inside the dictionary, that is loaded before...
   }
 }
 
