@@ -16,29 +16,28 @@ module.exports=(
     }
     switch(word) {
       case "plus":
-          let math = num1 + num2;
-          return math;
+          return (parseInt(num1) + parseInt(num2));
           break;
       case "minus":
-          return (num1-num2);
+          return (parseInt(num1) - parseInt(num2));
           break;
       case "devide":
-          return (num1/num2);
+          return (parseInt(num1) / parseInt(num2));
           break;
       case "times":
-          return (num1*num2);
+          return (parseInt(num1) * parseInt(num2));
           break;
       case "+":
-          return (num1+num2);
+          return (parseInt(num1) + parseInt(num2));
           break;
       case "-":
-          return (num1-num2);
+          return (parseInt(num1) - parseInt(num2));
           break;
       case "/":
-          return (num1/num2);
+          return (parseInt(num1) / parseInt(num2));
           break;
       case "*":
-          return (num1*num2);
+          return (parseInt(num1) * parseInt(num2));
           break;
       default:
           ""
