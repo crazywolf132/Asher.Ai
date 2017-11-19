@@ -10,7 +10,7 @@ var User = require(`./models/user`);
 var fs = require(`fs`);
 
 var speak = require(`speakeasy-nlp`)
-var NLP = require(`natural`);
+var nlp = require('compromise');
 var fs = require(`fs`);
 var sentiment = require(`sentiment`);
 var builtinPhrases = require(`./builtins`);
@@ -78,86 +78,53 @@ getUser = (function(user, cb = (() => {})) {
 });
 
 workItOut = function(msg) {
-    let holdGuess = interpret(msg);
-    console.log(holdGuess);
-    if (holdGuess.guess == null) {
-        //We are now going to check how high the negativity of the message is..
-        //if the negativity is -2 or below... we will make a comment of.
-        // "Now now, there is no need for that talk..." [ ONLY RUN THIS IF WE FIND
-        // SWEARS IN THE MESSAGE].
-        let neg = speak.sentiment.negativity(msg)
-        let neg_score = neg.score;
-        let neg_words = neg.words;
-        let s_words = false;
-        neg_words.forEach(function(n_word) {
-            swears.forEach(function(s_word) {
-                if (n_word === s_word) {
-                    s_words = true;
-                }
-            })
-        })
-        if (s_words && neg_score >= 2) {
-            // We now need to reply with "Now now, there is no need for that talk..."
-            return ("Now now, there is no need for that talk...");
-        } else if (!s_words && neg_score == 1) {
-            // We now need to reply with "Your not being very nice."
-            return ("Your not being very nice.");
-        } else {
-            return ("Sorry, I dont know how to help...");
-        }
+    /* SAVING THIS FOR LATER...
+
+    if (s_words && neg_score >= 2) {
+        // We now need to reply with "Now now, there is no need for that talk..."
+        return ("Now now, there is no need for that talk...");
+    } else if (!s_words && neg_score == 1) {
+        // We now need to reply with "Your not being very nice."
+        return ("Your not being very nice.");
     } else {
-        // We need to work out what module it is...
-        let toLoad = holdGuess.guess;
-        // We will also parse `sub` to the module incase it gives hints such as
-        // `current time`...
-
-        console.log(holdGuess);
-        let wubbalubbadubdub = speak.classify(msg);
-        let sub = wubbalubbadubdub.subject;
-        if (sub == undefined){
-          sub = msg;
-        }
-        var mod = allMods[toLoad];
-        return (mod(sub));
-        // We now just need to execute the module that is associated with the name
-        // inside the dictionary, that is loaded before...
+        return ("Sorry, I dont know how to help...");
     }
-}
 
-let minConfidence = 0.7
-var classifier = new NLP.LogisticRegressionClassifier();
-
-function toMaxValue(x, y) {
-    return x && x.value > y.value ? x : y;
-}
-
-teach = function(theFile, label) {
-    var fs = require(`fs`);
-    var array = fs.readFileSync(theFile).toString().split("\n");
-    for (i in array) {
-        console.log(`Ingesting example for ` + label + `: ` + array[i]);
-        classifier.addDocument(array[i], label);
+    */
+    _got = nlp(msg).out('normal');
+    _tokes = nlp(_got).terms().data()
+    let _questionType = ''
+    //console.log(_tokes)
+    _firstWord = _tokes[0]
+    if (_firstWord.bestTag === 'QuestionWord'){
+      switch(_firstWord.text){
+        case "what":
+          _questionType = 'what';
+          break;
+        case "who":
+          _questionType = 'who';
+          break;
+        case "when":
+          _questionType = 'when';
+          break;
+        case "where":
+          _questionType = 'where';
+          break;
+        case "why":
+          _questionType = 'why';
+          break;
+        case "how":
+          _questionType = 'how';
+          break;
+        default:
+          ""
+      }
+    } else {
+      // We are going to assume it is general conversation...
+      _questionType = 'other';
     }
+    //console.log(_firstWord)
 }
-
-think = function() {
-    classifier.train();
-    // save the classifier for later use
-    var aPath = `./core/classifier.json`;
-    classifier.save(aPath, function(err, classifier) {
-        // the classifier is saved to the classifier.json file!
-        console.log(`Writing: Creating a Classifier file in SRC.`);
-    });
-};
-
-interpret = function(phrase) {
-    var guesses = classifier.getClassifications(phrase);
-    var guess = guesses.reduce(toMaxValue);
-    return {
-        probabilities: guesses,
-        guess: guess.value > minConfidence ? guess.label : null
-    };
-};
 
 fileToArray = function(file, list) {
     var fs = require(`fs`);
@@ -225,14 +192,14 @@ loadAllMods = function(_dict) {
 //                              Setting up mods                               //
 ////////////////////////////////////////////////////////////////////////////////
 console.log(`Configuring mods...`);
-fileToArray(`swears.txt`, swears)
+/*fileToArray(`swears.txt`, swears)
 let jokes = []
 let commands = []
 let allMods = {}
 trainAllMods();
 think();
 loadAllMods(allMods);
-console.log(allMods);
+console.log(allMods);*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up routes                             //
