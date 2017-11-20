@@ -156,7 +156,6 @@ workItOut = function(msg) {
     console.log('Question type = ' + _questionType)
 
     let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
-    console.log("??? " + _testy)
     mods.forEach(function(mod){
       if (_mod_types[mod] === _questionType){
         _ins = []
@@ -165,9 +164,7 @@ workItOut = function(msg) {
             _sentance.replace(/\r?\n?/g, '')
             _sentance.trim()
             let r = nlp(msg)
-            console.log("### " + _sentance)
             let result = r.match(_sentance).found
-            console.log(result)
             if (result){
               console.log('The module to run is: ' + mod)
             }
