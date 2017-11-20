@@ -15,6 +15,15 @@ var fs = require(`fs`);
 var sentiment = require(`sentiment`);
 var builtinPhrases = require(`./builtins`);
 var swears = []
+var _mod_types = {}
+var _who = {}
+var _what = {}
+var _when = {}
+var _where = {}
+var _why = {}
+var _how = {}
+var _other = {}
+let mods = []
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up app                                //
 ////////////////////////////////////////////////////////////////////////////////
@@ -92,37 +101,78 @@ workItOut = function(msg) {
 
     */
     _got = nlp(msg).out('normal');
+    _test =
     _tokes = nlp(_got).terms().data()
     let _questionType = ''
     //console.log(_tokes)
     _firstWord = _tokes[0]
-    if (_firstWord.bestTag === 'QuestionWord'){
-      switch(_firstWord.text){
-        case "what":
-          _questionType = 'what';
-          break;
-        case "who":
-          _questionType = 'who';
-          break;
-        case "when":
-          _questionType = 'when';
-          break;
-        case "where":
-          _questionType = 'where';
-          break;
-        case "why":
-          _questionType = 'why';
-          break;
-        case "how":
-          _questionType = 'how';
-          break;
-        default:
-          ""
-      }
-    } else {
-      // We are going to assume it is general conversation...
-      _questionType = 'other';
+    switch(_firstWord.text){
+      case "whats":
+        _firstWord = 'what'
+        break
+      case "whos":
+        _firstWord = 'who'
+        break
+      case "whens":
+        _firstWord = 'when'
+        break
+      case "wheres":
+        _firstWord = 'wheres'
+        break
+      case "whys":
+        _firstWord = 'why'
+        break
+      case "hows":
+        _firstWord = 'how'
+        break
+      default:
+        _ex = nlp(msg).contractions().expand().out('normal');
+        _firstWord = _ex[0]
     }
+    console.log(_firstWord)
+    switch(_firstWord){
+      case "what":
+        _questionType = 'what';
+        break;
+      case "who":
+        _questionType = 'who';
+        break;
+      case "when":
+        _questionType = 'when';
+        break;
+      case "where":
+        _questionType = 'where';
+        break;
+      case "why":
+        _questionType = 'why';
+        break;
+      case "how":
+        _questionType = 'how';
+        break;
+      default:
+        // We are going to assume it is general conversation...
+        _questionType = 'what';
+    }
+    console.log('Question type = ' + _questionType)
+
+
+    mods.forEach(function(mod){
+      if (_mod_types[mod] === _questionType){
+        _ins = []
+        fileToArray(`./mods/` + mod + `/words.txt`, _ins)
+        _ins.forEach(function(_sentance){
+            _sentance.replace(/\r?\n?/g, '')
+            _sentance.trim()
+            let r = nlp(_got)
+            console.log(_sentance)
+            let result = r.match(_sentance).found
+            console.log(result)
+            if (result){
+              console.log('The module to run is: ' + mod)
+            }
+        })
+      }
+    })
     //console.log(_firstWord)
 }
 
@@ -132,7 +182,7 @@ fileToArray = function(file, list) {
     for (var i = 0; i < array.length; i++) {
         list.push(array[i]);
     }
-    console.log(list);
+    //console.log(list);
 }
 
 findFilesAndFolders = function(_path, _list, returnNamesOnly, checkForDir, checkForFile) {
@@ -160,7 +210,6 @@ findFilesAndFolders = function(_path, _list, returnNamesOnly, checkForDir, check
 }
 
 trainAllMods = function() {
-    let mods = []
     findFilesAndFolders(`./mods/`, mods, true, true, false)
     mods.forEach(function(item) {
         let holder = [];
@@ -175,7 +224,6 @@ trainAllMods = function() {
 }
 
 loadAllMods = function(_dict) {
-    let mods = []
     findFilesAndFolders(`./mods/`, mods, true, true, false)
     mods.forEach(function(mod) {
         let holder = []
@@ -184,14 +232,39 @@ loadAllMods = function(_dict) {
             if (file == `./mods/` + mod + `/mod.js`) {
                 _dict[mod] = require(`./mods/` + mod + `/mod.js`);
             }
+            if (file == `./mods/` + mod + `/type.txt`) {
+              _gotType = []
+              fileToArray(file, _gotType)
+              _dict[mod] = _gotType[0]
+            }
         })
     })
 }
+
+/*const mods = {}; // global for convenience
+
+loadAllMods = function(_dict) {
+    let mods = []
+    findFilesAndFolders(`./mods/`, mods, true, true, false)
+    mods.forEach(function(mod) {
+        let holder = []
+        findFilesAndFolders(`./mods/` + mod + `/`, holder, false, false, true)
+        holder.forEach(function(file) {
+            if (file == `./mods/` + mod + `/mod.js`) {
+              //Code here for assigning to the seperate arrays... (the name of the array should be the 'mod' variable
+              mods[mod] = mods[mod] || []; //will define if not defined, otherwise stays the same
+              //put whatever you need into array
+            }
+        })
+    })
+}*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up mods                               //
 ////////////////////////////////////////////////////////////////////////////////
 console.log(`Configuring mods...`);
+loadAllMods(_mod_types);
+console.log(_mod_types)
 /*fileToArray(`swears.txt`, swears)
 let jokes = []
 let commands = []
