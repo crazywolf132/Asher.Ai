@@ -1,5 +1,5 @@
 module.exports=(
-  function(input){
-    return("no fucking joke for you "+input);
+  function(subject, message){
+    return("no fucking joke for you "+subject);
   }
 );

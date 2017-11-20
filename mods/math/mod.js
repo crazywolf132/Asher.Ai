@@ -1,7 +1,8 @@
 module.exports=(
-  function(input){
+  function(subject, message){
     // We are going to convert the word to a symbol...
-    let holder = input.split(' ');
+    let msg = nlp(message).match('#Value . #Value').out('text')
+    let holder = msg.split(' ');
     let num1;
     let num2;
     let word;
