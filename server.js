@@ -319,7 +319,7 @@ api_router.route(`/login`)
         });
     });
 
-api_router.route(` / signup `)
+api_router.route(`/signup`)
     .post(function(req, res) {
         if (!req.body.username || !req.body.password) {
             res.json({
