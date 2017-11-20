@@ -229,7 +229,7 @@ trainAllMods = function() {
     console.log("Only found " + mods.length + " mods")
 }
 
-loadAllMods = function(_all_Mods, _dict) {
+loadAllMods = function(_all_Mods, _dict, loadType) {
     findFilesAndFolders(`./mods/`, mods, true, true, false)
     mods.forEach(function(mod) {
         let holder = []
@@ -238,10 +238,12 @@ loadAllMods = function(_all_Mods, _dict) {
             if (file == `./mods/` + mod + `/mod.js`) {
                 _all_Mods[mod] = require(`./mods/` + mod + `/mod.js`);
             }
-            if (file == `./mods/` + mod + `/type.txt`) {
-              _gotType = []
-              fileToArray(file, _gotType)
-              _dict[mod] = _gotType[0]
+            if (loadType){
+              if (file == `./mods/` + mod + `/type.txt`) {
+                _gotType = []
+                fileToArray(file, _gotType)
+                _dict[mod] = _gotType[0]
+              }
             }
         })
     })
@@ -270,7 +272,7 @@ loadAllMods = function(_dict) {
 ////////////////////////////////////////////////////////////////////////////////
 console.log(`Configuring mods...`);
 let allMods = {}
-loadAllMods(allMods, _mod_types);
+loadAllMods(allMods, _mod_types, true);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up routes                             //
