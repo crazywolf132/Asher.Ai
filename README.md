@@ -14,3 +14,8 @@
 This is the Node.js API for the Asher personal assistant. Asher is a personal assistant with the aim of matching all the commands that products such as the Google Home can offer, and much more.
 
 Asher is modular allowing for the community to add their part to his ever increasing module base.
+
+### Special thanks to...
+- [Brayden Moon](https://github.com/crazywolf132)
+- [Jamie](https://github.com/jsProj)
+- [Kaidan](https://github.com/imnotbad/)

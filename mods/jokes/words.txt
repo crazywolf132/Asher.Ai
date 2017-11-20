@@ -1,0 +1,5 @@
+tell .? joke
+.? humour .?
+how about a joke .?
+make .? laugh .?
+joke around .?
