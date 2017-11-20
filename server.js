@@ -16,14 +16,8 @@ var sentiment = require(`sentiment`);
 var builtinPhrases = require(`./builtins`);
 var swears = []
 var _mod_types = {}
-var _who = {}
-var _what = {}
-var _when = {}
-var _where = {}
-var _why = {}
-var _how = {}
-var _other = {}
 let mods = []
+let toLoad = ''
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up app                                //
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +123,6 @@ workItOut = function(msg) {
         _ex = nlp(msg).contractions().expand().out('normal');
         _firstWord = _ex[0]
     }
-    console.log(_firstWord)
     switch(_firstWord){
       case "what":
         _questionType = 'what';
@@ -153,34 +146,41 @@ workItOut = function(msg) {
         // We are going to assume it is general conversation...
         _questionType = 'what';
     }
-    console.log('Question type = ' + _questionType)
 
     let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
-    let toLoad = ''
-    mods.forEach(function(mod){
-      if (_mod_types[mod] === _questionType){
-        _ins = []
-        fileToArray(`./mods/` + mod + `/words.txt`, _ins)
-        _ins.forEach(function(_sentance){
-            _sentance.replace(/\r?\n?/g, '')
-            _sentance.trim()
-            let r = nlp(msg)
-            let result = r.match(_sentance).found
-            if (result){
-              console.log('The module to run is: ' + mod)
-              toLoad = mod
-            }
-        })
+
+    getMod(mods, _mod_types, _questionType, msg)
+    if (toLoad === '' && _questionType != 'other'){
+      getMod(mods, _mod_types, 'other', msg)
+      if (toLoad === ''){
+        return 'I am horribly sorry, but i just dont know what to respond...'
       }
-    })
-    //console.log(_firstWord)
+    }
     let wubbalubbadubdub = speak.classify(msg);
     let sub = wubbalubbadubdub.subject;
     if (sub == undefined){
       sub = msg;
     }
     var _mod_to_run = allMods[toLoad];
-    return (_mod_to_run(sub));
+    return (_mod_to_run(sub, msg));
+}
+
+getMod = function(_mods, _modTypes, _questionType, _msg){
+  _mods.forEach(function(mod){
+    if (_modTypes[mod] === _questionType){
+      _ins = []
+      fileToArray(`./mods/` + mod + `/words.txt`, _ins)
+      _ins.forEach(function(_sentance){
+        _sentance.replace(/\r?\n?/g, '')
+        _sentance.trim()
+        let result = nlp(_msg).match(_sentance).found
+        if (result){
+          console.log('The module to run is: ' + mod)
+          toLoad = mod
+        }
+      })
+    }
+  })
 }
 
 fileToArray = function(file, list) {
@@ -189,7 +189,6 @@ fileToArray = function(file, list) {
     for (var i = 0; i < array.length; i++) {
         list.push(array[i]);
     }
-    //console.log(list);
 }
 
 findFilesAndFolders = function(_path, _list, returnNamesOnly, checkForDir, checkForFile) {
@@ -272,15 +271,6 @@ loadAllMods = function(_dict) {
 console.log(`Configuring mods...`);
 let allMods = {}
 loadAllMods(allMods, _mod_types);
-console.log(_mod_types)
-/*fileToArray(`swears.txt`, swears)
-let jokes = []
-let commands = []
-
-trainAllMods();
-think();
-loadAllMods(allMods);
-console.log(allMods);*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up routes                             //

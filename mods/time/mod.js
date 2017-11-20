@@ -1,1 +1,5 @@
-module.exports=(function(input){return("time to get a fucking watch "+input);});
+module.exports=(
+  function(subject, message){
+    return("time to get a fucking watch "+subject);
+  }
+);
