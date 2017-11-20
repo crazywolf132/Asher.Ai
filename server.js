@@ -156,6 +156,7 @@ workItOut = function(msg) {
     console.log('Question type = ' + _questionType)
 
     let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
+    let toLoad = ''
     mods.forEach(function(mod){
       if (_mod_types[mod] === _questionType){
         _ins = []
@@ -167,11 +168,19 @@ workItOut = function(msg) {
             let result = r.match(_sentance).found
             if (result){
               console.log('The module to run is: ' + mod)
+              toLoad = mod
             }
         })
       }
     })
     //console.log(_firstWord)
+    let wubbalubbadubdub = speak.classify(msg);
+    let sub = wubbalubbadubdub.subject;
+    if (sub == undefined){
+      sub = msg;
+    }
+    var _mod_to_run = allMods[toLoad];
+    return (_mod_to_run(sub));
 }
 
 fileToArray = function(file, list) {
@@ -221,14 +230,14 @@ trainAllMods = function() {
     console.log("Only found " + mods.length + " mods")
 }
 
-loadAllMods = function(_dict) {
+loadAllMods = function(_all_Mods, _dict) {
     findFilesAndFolders(`./mods/`, mods, true, true, false)
     mods.forEach(function(mod) {
         let holder = []
         findFilesAndFolders(`./mods/` + mod + `/`, holder, false, false, true)
         holder.forEach(function(file) {
             if (file == `./mods/` + mod + `/mod.js`) {
-                _dict[mod] = require(`./mods/` + mod + `/mod.js`);
+                _all_Mods[mod] = require(`./mods/` + mod + `/mod.js`);
             }
             if (file == `./mods/` + mod + `/type.txt`) {
               _gotType = []
@@ -261,12 +270,13 @@ loadAllMods = function(_dict) {
 //                              Setting up mods                               //
 ////////////////////////////////////////////////////////////////////////////////
 console.log(`Configuring mods...`);
-loadAllMods(_mod_types);
+let allMods = {}
+loadAllMods(allMods, _mod_types);
 console.log(_mod_types)
 /*fileToArray(`swears.txt`, swears)
 let jokes = []
 let commands = []
-let allMods = {}
+
 trainAllMods();
 think();
 loadAllMods(allMods);
