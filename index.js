@@ -7,13 +7,13 @@ var mongoose      = require(`mongoose`);
 var config        = require(`./config/database`);
 var User          = require(`./models/user`);
 
-var Asher         = require(`./core/asher`)();
-require(`./core/asherCommands`)(Asher);
+//var Asher         = require(`./core/asher`)();
+//require(`./core/asherCommands`)(Asher);
 // mods
-require(`./mods/math`)(Asher);
-require(`./mods/internet_query`)(Asher);
-require(`./mods/natural-language`)(Asher);
-require(`./mods/core`)(Asher);
+//require(`./mods/math`)(Asher);
+//require(`./mods/internet_query`)(Asher);
+//require(`./mods/natural-language`)(Asher);
+//require(`./mods/core`)(Asher);
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,14 @@ getUser=(function(user,cb=(()=>{})){
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up routes                             //
 ////////////////////////////////////////////////////////////////////////////////
+
+
+var io = require('socket.io')(4416);
+
+io.on('connection', function (socket) {
+  socket.send(socket.id);
+});
+
 
 api_router.use(function(req,res,next){
     console.log(`Something is happening.`);
