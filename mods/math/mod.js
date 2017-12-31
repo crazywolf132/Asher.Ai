@@ -40,6 +40,9 @@ module.exports=(
       case "*":
           return (parseInt(num1) * parseInt(num2));
           break;
+      case "x":
+          return (parseInt(num1) * parseInt(num2));
+          break;
       default:
           ""
     }
