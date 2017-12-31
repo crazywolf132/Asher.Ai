@@ -362,10 +362,17 @@ api_router.route(`/talk`)
         console.log(`receiving '${command}'`);
         let response = workItOut(command);
         console.log(`responded with '${response}'`);
-        res.json({
-            status: "success",
-            reply: response
-        });
+        if (response != 'undefined'){
+          res.json({
+              status: "success",
+              reply: response
+          });
+        } else {
+          res.json({
+            status: "unknown"
+          })
+        }
+
     });
 
 app.use(`/api`, api_router);
