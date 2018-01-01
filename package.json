@@ -21,6 +21,7 @@
     "natural": "^0.5.4",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.1",
+    "request": "^2.83.0",
     "sentiment": "^4.1.0",
     "socket.io": "^2.0.4",
     "speakeasy-nlp": "^0.2.12",
