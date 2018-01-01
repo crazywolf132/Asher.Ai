@@ -4,8 +4,9 @@ module.exports=(
     let query = input[input.length - 1];
     console.log(input)
     console.log("Query is: " + query)
-    var msg = ""
-    return ask(query)
+    var msg = const msg = await ask(query)
+    return msg
+    //return ask(query)
   }
 
 
