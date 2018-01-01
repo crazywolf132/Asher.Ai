@@ -10,9 +10,9 @@ module.exports=(
             console.log(body)
             //{ status: 'success', reply: 92 }
             if ( body.Abstract ){
-              return = body.Abstract;
+              return body.Abstract;
             }else{
-              return = "I'm sorry I couldn't find any information about " + query
+              return "I'm sorry I couldn't find any information about " + query
             }
         }
     })
