@@ -4,10 +4,8 @@ module.exports=(
     let query = input[input.length - 1];
     console.log(input)
     console.log("Query is: " + query)
-    var request = require('request');
-    ask(query).then(results => {
-        return String(results)
-    })
+    var msg = ""
+    return ask(query)
   }
 
 

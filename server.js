@@ -8,6 +8,7 @@ var mongoose = require(`mongoose`);
 var config = require(`./config/database`);
 var User = require(`./models/user`);
 var fs = require(`fs`);
+var request = require('request');
 
 var speak = require(`speakeasy-nlp`)
 var nlp = require('compromise');
