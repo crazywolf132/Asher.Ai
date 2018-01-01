@@ -2,6 +2,7 @@ module.exports=(
   function(subject, message) {
     input = message.split(' ');
     let query = input[-1];
+    console.log("the query is...")
     var request = require('request');
     var msg = ""
     request.post('http://api.duckduckgo.com/?q=Where+is+'+query+'&format=json&pretty=1', (err, resp, body) => {
