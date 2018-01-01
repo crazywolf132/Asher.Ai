@@ -1,4 +1,4 @@
-module.exports=(
+module.exports=(async
   function(subject, message) {
     input = message.split(' ');
     let query = input[input.length - 1];
