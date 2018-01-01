@@ -1,0 +1,4 @@
+.? information about .?
+what is (the|an|a) .?
+tell .? about .?
+what are .?
