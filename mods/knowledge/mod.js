@@ -12,11 +12,12 @@ module.exports=(
             var body = JSON.parse(body);
             //{ status: 'success', reply: 92 }
             if ( body.Abstract ){
-              return body.Abstract;
+              msg = body.Abstract;
             }else{
-              return "I'm sorry I couldn't find any information about " + query
+              msg = "I'm sorry I couldn't find any information about " + query
             }
         }
     })
+    return msg
   }
 )
