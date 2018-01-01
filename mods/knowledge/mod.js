@@ -9,7 +9,7 @@ module.exports=(
     request.post('http://api.duckduckgo.com/?q=Where+is+'+query+'&format=json&pretty=1', (err, resp, body) => {
         //do stuff
         if (!err && resp.statusCode == 200) {
-            console.log(body)
+            var body = JSON.parse(body);
             //{ status: 'success', reply: 92 }
             if ( body.Abstract ){
               return body.Abstract;
