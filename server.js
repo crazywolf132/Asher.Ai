@@ -361,7 +361,7 @@ api_router.route(`/talk`)
             });
         }
         console.log(`receiving '${command}'`);
-        let response = workItOut(command);
+        //let response = workItOut(command);
         Promise.resolve(workItOut(command)).then((response) => {
           console.log(`responded with '${response}'`);
           if (response != 'undefined'){
