@@ -14,7 +14,8 @@ function ask(query){
             if (!err && resp.statusCode == 200) {
                 var body = JSON.parse(body);
                 if ( body.Abstract ){
-                  resolve(body.Abstract);
+                  var response = body.Abstract;
+                  resolve(response.substring(0, response.indexOf('.') + 1))
                 }else{
                   resolve("I'm sorry I couldn't find any information about " + query);
                 }
