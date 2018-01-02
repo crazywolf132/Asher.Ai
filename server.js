@@ -9,7 +9,7 @@ var config = require(`./config/database`);
 var User = require(`./models/user`);
 var fs = require(`fs`);
 var request = require('request');
-
+var io = require('socket.io')(4416);
 var speak = require(`speakeasy-nlp`)
 var nlp = require('compromise');
 var fs = require(`fs`);
@@ -18,6 +18,7 @@ var builtinPhrases = require(`./builtins`);
 var swears = []
 var _mod_types = {}
 let mods = []
+let clients = []
 let toLoad = ''
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up app                                //
@@ -35,13 +36,18 @@ app.use(function(req, res, next) {
     next();
 });
 
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 8080;
 
 var api_router = express.Router();
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              All our functions                             //
 ////////////////////////////////////////////////////////////////////////////////
+
+socketRegistration = (function(passcode) {
+  clients.push(passcode)
+  console.log('remembering: ' + passcode)
+})
 
 newToken = (function() {
     var generated = {};
@@ -380,6 +386,19 @@ api_router.route(`/talk`)
     });
 
 app.use(`/api`, api_router);
+
+io.on('connection', function(client) {
+    console.log('Client connected...');
+    socketRegistration(client.id)
+    client.on("message", data => {
+      Promise.resolve(workItOutSocket(data)).then((response) => {
+        console.log(`responded with '${response}'`);
+        if (response != 'undefined'){
+          socket.emit('result', String(response))
+        }
+      });
+    });
+})
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up listener                           //
