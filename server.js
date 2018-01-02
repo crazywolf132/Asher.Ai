@@ -36,7 +36,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 80;
 
 var api_router = express.Router();
 
