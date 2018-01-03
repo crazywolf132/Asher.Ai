@@ -1,5 +1,5 @@
 module.exports=(
-  function(subject, message){
+  function(subject, message, socket){
     // We are going to convert the word to a symbol...
     let msg = nlp(message).match('#Value . #Value').out('text')
     let holder = msg.split(' ');

@@ -1,5 +1,5 @@
 module.exports=(
-  async function(subject, message) {
+  async function(subject, message, socket) {
     input = message.split(' ');
     var query = input[input.length - 1];
     return await ask(query)

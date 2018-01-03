@@ -98,7 +98,7 @@ getUser = (function(user, cb = (() => {})) {
     });
 });
 
-workItOut = function(msg, usedSocket) {
+workItOut = function(msg, usedSocket, socket) {
   console.log(mods)
     let toLoad = ''
     /* SAVING THIS FOR LATER...
@@ -152,7 +152,7 @@ workItOut = function(msg, usedSocket) {
       sub = msg;
     }
     var _mod_to_run = allMods[toLoad];
-    return (_mod_to_run(sub, msg));
+    return (_mod_to_run(sub, msg, socket));
 }
 
 getMod = function(_mods, _modTypes, _questionType, _msg, _toLoad){
@@ -393,10 +393,10 @@ io.on('connection', function(client) {
     console.log('Client connected...');
     socketRegistration(client.id)
     client.on("message", data => {
-      Promise.resolve(workItOut(data, true)).then((response) => {
+      Promise.resolve(workItOut(data, true, client)).then((response) => {
         console.log(`responded with '${response}'`);
         if (response != 'undefined'){
-          socket.emit('result', String(response))
+          client.emit('result', String(response))
         }
       });
     });

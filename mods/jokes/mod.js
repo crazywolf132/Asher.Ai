@@ -1,5 +1,5 @@
 module.exports=(
-  function(subject, message){
+  function(subject, message, socket){
     return("no fucking joke for you "+subject);
   }
 );

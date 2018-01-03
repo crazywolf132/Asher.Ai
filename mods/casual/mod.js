@@ -1,5 +1,5 @@
 module.exports=(
-  function(subject, message){
+  function(subject, message, socket){
     // We now need to create sub modules... so then we can
     // create a natural language response... So then we dont
     // need to have a specific module for each single common

@@ -1,5 +1,5 @@
 module.exports=(
-  function(subject, message){
+  function(subject, message, socket){
     let msg = nlp(message).match('#Value .').out('text')
     let holder = msg.split(' ')
     let time = holder[0]
