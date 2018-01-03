@@ -388,7 +388,7 @@ io.on('connection', function(client) {
     console.log('Client connected...');
     socketRegistration(client.id)
     client.on("message", data => {
-      Promise.resolve(workItOutSocket(data)).then((response) => {
+      Promise.resolve(workItOut(data)).then((response) => {
         console.log(`responded with '${response}'`);
         if (response != 'undefined'){
           socket.emit('result', String(response))
@@ -405,11 +405,6 @@ io.on('connection', function(client) {
 ███████ ██ ███████    ██    ███████ ██   ████ ███████ ██   ██
 */
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                              Setting up listener                           //
-////////////////////////////////////////////////////////////////////////////////
 setTimeout(() => {
     app.listen(port);
     console.log(`Magic happens on port ${port}`);
