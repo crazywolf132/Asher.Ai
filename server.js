@@ -20,9 +20,15 @@ var _mod_types = {}
 let mods = []
 let clients = []
 let toLoad = ''
-////////////////////////////////////////////////////////////////////////////////
-//                              Setting up app                                //
-////////////////////////////////////////////////////////////////////////////////
+
+/*
+ ██████  ██████  ██████  ███████
+██      ██    ██ ██   ██ ██
+██      ██    ██ ██████  █████
+██      ██    ██ ██   ██ ██
+ ██████  ██████  ██   ██ ███████
+*/
+
 mongoose.connect(config.database);
 
 app.use(morgan(`dev`));
@@ -40,9 +46,13 @@ var port = process.env.PORT || 80;
 
 var api_router = express.Router();
 
-////////////////////////////////////////////////////////////////////////////////
-//                              All our functions                             //
-////////////////////////////////////////////////////////////////////////////////
+/*
+███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████
+██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██
+█████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████
+██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
+██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
+*/
 
 socketRegistration = (function(passcode) {
   clients.push(passcode)
@@ -105,64 +115,32 @@ workItOut = function(msg) {
     _test =
     _tokes = nlp(_got).terms().data()
     let _questionType = ''
-    //console.log(_tokes)
     _firstWord = _tokes[0]
-    switch(_firstWord.text){
-      case "whats":
-        _firstWord = 'what'
-        break
-      case "whos":
-        _firstWord = 'who'
-        break
-      case "whens":
-        _firstWord = 'when'
-        break
-      case "wheres":
-        _firstWord = 'wheres'
-        break
-      case "whys":
-        _firstWord = 'why'
-        break
-      case "hows":
-        _firstWord = 'how'
-        break
-      default:
-        _ex = nlp(msg).contractions().expand().out('normal');
-        _firstWord = _ex[0]
-    }
-    switch(_firstWord){
-      case "what":
-        _questionType = 'what';
-        break;
-      case "who":
-        _questionType = 'who';
-        break;
-      case "when":
-        _questionType = 'when';
-        break;
-      case "where":
-        _questionType = 'where';
-        break;
-      case "why":
-        _questionType = 'why';
-        break;
-      case "how":
-        _questionType = 'how';
-        break;
-      default:
-        // We are going to assume it is general conversation...
-        _questionType = 'what';
+
+    slang = ['whats', 'whos', 'whens', 'wheres', 'whys', 'hows']
+    normal = ['what', 'who', 'when', 'where', 'why', 'how']
+    if ( inArray(_firstWord.text, slang) ){
+      pos = slang.indexOf(_firstWord.text)
+      _firstWord = normal[pos]
+      _questionType = _firstWord
+    } else {
+      _ex = nlp(msg).contractions().expand().out('normal');
+      _firstWord = _ex[0]
+      _questionType = 'what';
     }
 
-    let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
+    // This is used for testing matches... to see if we can match a string to an example from a `words.txt` file.
+    //let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
 
     getMod(mods, _mod_types, _questionType, msg)
+
     if (toLoad === '' && _questionType != 'other'){
       getMod(mods, _mod_types, 'other', msg)
       if (toLoad === ''){
         return 'I am horribly sorry, but i just dont know what to respond...'
       }
     }
+
     let wubbalubbadubdub = speak.classify(msg);
     let sub = wubbalubbadubdub.subject;
     if (sub == undefined){
@@ -189,6 +167,16 @@ getMod = function(_mods, _modTypes, _questionType, _msg){
     }
   })
 }
+
+function inArray(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i] == needle)
+            return true;
+    }
+    return false;
+}
+
 
 fileToArray = function(file, list) {
     var fs = require(`fs`);
@@ -274,16 +262,25 @@ loadAllMods = function(_dict) {
     })
 }*/
 
-////////////////////////////////////////////////////////////////////////////////
-//                              Setting up mods                               //
-////////////////////////////////////////////////////////////////////////////////
+/*
+███    ███  ██████  ██████  ███████
+████  ████ ██    ██ ██   ██ ██
+██ ████ ██ ██    ██ ██   ██ ███████
+██  ██  ██ ██    ██ ██   ██      ██
+██      ██  ██████  ██████  ███████
+*/
+
 console.log(`Configuring mods...`);
 let allMods = {}
 loadAllMods(allMods, _mod_types, true);
 
-////////////////////////////////////////////////////////////////////////////////
-//                              Setting up routes                             //
-////////////////////////////////////////////////////////////////////////////////
+/*
+██████   ██████  ██    ██ ████████ ███████ ███████
+██   ██ ██    ██ ██    ██    ██    ██      ██
+██████  ██    ██ ██    ██    ██    █████   ███████
+██   ██ ██    ██ ██    ██    ██    ██           ██
+██   ██  ██████   ██████     ██    ███████ ███████
+*/
 
 api_router.use(function(req, res, next) {
     console.log(`Something is happening.`);
@@ -399,6 +396,16 @@ io.on('connection', function(client) {
       });
     });
 })
+
+/*
+██      ██ ███████ ████████ ███████ ███    ██ ███████ ██████
+██      ██ ██         ██    ██      ████   ██ ██      ██   ██
+██      ██ ███████    ██    █████   ██ ██  ██ █████   ██████
+██      ██      ██    ██    ██      ██  ██ ██ ██      ██   ██
+███████ ██ ███████    ██    ███████ ██   ████ ███████ ██   ██
+*/
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setting up listener                           //
