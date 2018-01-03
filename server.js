@@ -9,7 +9,7 @@ var config = require(`./config/database`);
 var User = require(`./models/user`);
 var fs = require(`fs`);
 var request = require('request');
-var io = require('socket.io')(8080);
+var io = require('socket.io')(4416);
 var speak = require(`speakeasy-nlp`)
 var nlp = require('compromise');
 var fs = require(`fs`);
@@ -43,7 +43,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-var port = process.env.PORT || 4416;
+var port = process.env.PORT || 80;
 
 var api_router = express.Router();
 
@@ -99,6 +99,7 @@ getUser = (function(user, cb = (() => {})) {
 });
 
 workItOut = function(msg, usedSocket) {
+  console.log(mods)
     let toLoad = ''
     /* SAVING THIS FOR LATER...
 
@@ -165,7 +166,7 @@ getMod = function(_mods, _modTypes, _questionType, _msg, _toLoad){
         let result = nlp(_msg).match(_sentance).found
         if (result){
           console.log('The module to run is: ' + mod)
-          toLoad = mod
+          _toLoad = mod
         }
       })
     }
