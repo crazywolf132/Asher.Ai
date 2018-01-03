@@ -9,7 +9,7 @@ var config = require(`./config/database`);
 var User = require(`./models/user`);
 var fs = require(`fs`);
 var request = require('request');
-var io = require('socket.io')(4416);
+var io = require('socket.io')(8080);
 var speak = require(`speakeasy-nlp`)
 var nlp = require('compromise');
 var fs = require(`fs`);
@@ -43,7 +43,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 4416;
 
 var api_router = express.Router();
 
@@ -138,7 +138,7 @@ workItOut = function(msg, usedSocket) {
     if (inArray(toLoad, socketMods) && !usedSocket) {
       return 'Sorry, to use this module. You need to connect to the server via socket.'
     }
-    if (toLoad === '' && _questionType != 'other'){
+    if (toLoad === ''){
       getMod(mods, _mod_types, 'other', msg, toLoad)
       if (toLoad === ''){
         return 'I am horribly sorry, but i just dont know what to respond...'
@@ -160,7 +160,7 @@ getMod = function(_mods, _modTypes, _questionType, _msg, _toLoad){
       _ins = []
       fileToArray(`./mods/` + mod + `/words.txt`, _ins)
       _ins.forEach(function(_sentance){
-        _sentance.replace(/\r?\n?/g, '')
+        _sentance.replace(/\r?\n?/gm, '')
         _sentance.trim()
         let result = nlp(_msg).match(_sentance).found
         if (result){
