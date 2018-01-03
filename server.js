@@ -20,7 +20,7 @@ var _mod_types = {}
 let mods = []
 let clients = []
 let socketMods = ['timers']
-let toLoad = ''
+
 
 /*
  ██████  ██████  ██████  ███████
@@ -99,6 +99,7 @@ getUser = (function(user, cb = (() => {})) {
 });
 
 workItOut = function(msg, usedSocket) {
+    let toLoad = ''
     /* SAVING THIS FOR LATER...
 
     if (s_words && neg_score >= 2) {
