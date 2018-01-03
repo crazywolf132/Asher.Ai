@@ -19,6 +19,7 @@ var swears = []
 var _mod_types = {}
 let mods = []
 let clients = []
+let socketMods = ['timers']
 let toLoad = ''
 
 /*
@@ -97,7 +98,7 @@ getUser = (function(user, cb = (() => {})) {
     });
 });
 
-workItOut = function(msg) {
+workItOut = function(msg, usedSocket) {
     /* SAVING THIS FOR LATER...
 
     if (s_words && neg_score >= 2) {
@@ -133,7 +134,9 @@ workItOut = function(msg) {
     //let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
 
     getMod(mods, _mod_types, _questionType, msg)
-
+    if (inArray(toLoad, socketMods) && !usedSocket) {
+      return 'Sorry, to use this module. You need to connect to the server via socket.'
+    }
     if (toLoad === '' && _questionType != 'other'){
       getMod(mods, _mod_types, 'other', msg)
       if (toLoad === ''){
@@ -365,7 +368,7 @@ api_router.route(`/talk`)
         }
         console.log(`receiving '${command}'`);
         //let response = workItOut(command);
-        Promise.resolve(workItOut(command)).then((response) => {
+        Promise.resolve(workItOut(command, false)).then((response) => {
           console.log(`responded with '${response}'`);
           if (response != 'undefined'){
             res.json({
@@ -388,7 +391,7 @@ io.on('connection', function(client) {
     console.log('Client connected...');
     socketRegistration(client.id)
     client.on("message", data => {
-      Promise.resolve(workItOut(data)).then((response) => {
+      Promise.resolve(workItOut(data, true)).then((response) => {
         console.log(`responded with '${response}'`);
         if (response != 'undefined'){
           socket.emit('result', String(response))
