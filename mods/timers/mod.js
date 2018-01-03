@@ -5,9 +5,15 @@ module.exports=(
     let time = holder[0]
     let unit = holder[1]
 
-    setTimer(time, unit, function(){
+    /*setTimer(time, unit, function(){
       return 'Your timer has finished'
-    })
+    })*/
+
+    function myFunc(arg) {
+      return arg;
+    }
+
+    setTimeout(myFunc, time * unitMultiplier(unit), 'Your timer has finished');
 
   }
 )
