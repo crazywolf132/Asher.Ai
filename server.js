@@ -135,12 +135,12 @@ workItOut = function(msg, usedSocket, socket) {
     // This is used for testing matches... to see if we can match a string to an example from a `words.txt` file.
     //let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
 
-    getMod(mods, _mod_types, _questionType, msg, toLoad)
+    toLoad = getMod(mods, _mod_types, _questionType, msg)
     if (inArray(toLoad, socketMods) && !usedSocket) {
       return 'Sorry, to use this module. You need to connect to the server via socket.'
     }
     if (toLoad === ''){
-      getMod(mods, _mod_types, 'other', msg, toLoad)
+      toLoad = getMod(mods, _mod_types, 'other', msg)
       if (toLoad === ''){
         return 'I am horribly sorry, but i just dont know what to respond...'
       }
@@ -155,7 +155,8 @@ workItOut = function(msg, usedSocket, socket) {
     return (_mod_to_run(sub, msg, socket));
 }
 
-getMod = function(_mods, _modTypes, _questionType, _msg, _toLoad){
+getMod = function(_mods, _modTypes, _questionType, _msg){
+  var holdme = ""
   _mods.forEach(function(mod){
     if (_modTypes[mod] === _questionType){
       _ins = []
@@ -166,11 +167,12 @@ getMod = function(_mods, _modTypes, _questionType, _msg, _toLoad){
         let result = nlp(_msg).match(_sentance).found
         if (result){
           console.log('The module to run is: ' + mod)
-          _toLoad = mod
+          holdme = mod
         }
       })
     }
   })
+  return holdme;
 }
 
 function inArray(needle, haystack) {
