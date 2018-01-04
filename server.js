@@ -99,7 +99,6 @@ getUser = (function(user, cb = (() => {})) {
 });
 
 workItOut = function(msg, usedSocket, socket) {
-  console.log(mods)
     let toLoad = ''
     /* SAVING THIS FOR LATER...
 
@@ -136,13 +135,14 @@ workItOut = function(msg, usedSocket, socket) {
     //let _testy = nlp('whats 5 divide 5').match('whats #Value (plus|minus|divide|times) .? #Value .?').found
 
     toLoad = getMod(mods, _mod_types, _questionType, msg)
-    if (inArray(toLoad, socketMods) && !usedSocket) {
-      return 'Sorry, to use this module. You need to connect to the server via socket.'
-    }
+
     if (toLoad === ''){
       toLoad = getMod(mods, _mod_types, 'other', msg)
       if (toLoad === ''){
         return 'I am horribly sorry, but i just dont know what to respond...'
+      } else if (inArray(toLoad, socketMods) && !usedSocket) {
+        console.log("Should not be able to run...")
+        return 'Sorry, to use this module. You need to connect to the server via socket.'
       }
     }
 
