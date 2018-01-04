@@ -10,7 +10,7 @@ module.exports=(
     })*/
 
     function myFunc(arg) {
-      return arg;
+      socket.emit('result', 'your timer has gone off!')
     }
 
     setTimeout(myFunc, time * unitMultiplier(unit), 'Your timer has finished');
