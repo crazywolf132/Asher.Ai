@@ -2,18 +2,14 @@ module.exports=(
   function(subject, message, socket){
     let msg = nlp(message).match('#Value .').out('text')
     let holder = msg.split(' ')
-    let time = holder[0]
-    let unit = holder[1]
+    console.log(holder)
+    let time = holder[1]
+    let unit = holder[2]
 
-    /*setTimer(time, unit, function(){
-      return 'Your timer has finished'
-    })*/
-
-    function myFunc(arg) {
-      socket.emit('result', 'your timer has gone off!')
-    }
-
-    setTimeout(myFunc, time * unitMultiplier(unit), 'Your timer has finished');
+    setTimer(time, unit, function(){
+      socket.emit('result', "timer is going off now!")
+    })
+    return "timer is set"
 
   }
 )
