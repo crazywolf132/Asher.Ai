@@ -10,19 +10,50 @@ module.exports=(
     //load the words.txt file... check if any of those match the `message` input...
     let subMods = []
     findFilesAndFolders(`./mods/casual/`, subMods, true, true, false)
-    return await getMods(allSubMods, subMods, toRun, subject, message, socket)
-
+    //return await getMods(allSubMods, subMods, toRun, subject, message, socket)
+    return await working(message, subMods)
     //return await perform(toRun, allSubMods, subject, message, socket)
   }
 )
+function working(message, subMods){
+  return new Promise( resolve => {
+    subMods.forEach( function( item ) {
+      let holder = [];
+      findFilesAndFolders( `./mods/casual/` + item + `/`, holder, false, false, true )
+      holder.forEach( function( file ) {
+        if ( file == `./mods/casual/` + item + `/words.txt` ) {
+          //We are just going to assume there is a responses.txt file...
+          let wordsHolder = []
+          fileToArray( `./mods/casual/` + item + `/words.txt`, wordsHolder )
+          wordsHolder.forEach( function(sentance) {
+            if ( nlp( message ).match(sentance).found ) {
+              console.log( "Going to run the sub-module: " + item )
+              let res = []
+              fileToArray( `./mods/casual/` + item + `/responses.txt`, res )
+              var randomResponse = res[Math.floor(Math.random() * res.length)]
+              console.log("Going to respond to this question with: " + randomResponse)
+              resolve( randomResponse )
+            }
+          } )
+        }
+      } )
+    } )
+  } )
+}
+/*function getResponse(subject, message, socket) {
+  let allSubMods = {}
+  let subMods = []
+  findFiles
+}
 
 function getMods(allSubMods, subMods, toRun, subject, message, socket) {
   subMods.forEach(function(item) {
       let holder = [];
       findFilesAndFolders(`./mods/casual/` + item + `/`, holder, false, false, true)
       holder.forEach(function(file) {
-          if (file == `./mods/casual/` + item + `/mod.js`) {
-              allSubMods[item] = require(`./` + item + `/mod.js`);
+          if (file == `./mods/casual/` + item + `/responses.txt`) {
+              //allSubMods[item] = require(`./` + item + `/mod.js`);
+
           } else if (file == `./mods/casual/` + item + `/words.txt`) {
               let wordsHolder = []
               fileToArray(`./mods/casual/` + item + `/words.txt`, wordsHolder)
@@ -49,4 +80,4 @@ function perform(item, allSubMods, subject, message, socket) {
     let result = toRun(subject, message, socket)
     resolve(result)
   })
-}
+}*/
