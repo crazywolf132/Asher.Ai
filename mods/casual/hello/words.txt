@@ -1,1 +1,1 @@
-.? (hello|hi|hey|hiya|gday) .?
+.?(hello|hi|hey|hiya|gday).?
