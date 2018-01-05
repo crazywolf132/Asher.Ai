@@ -1,12 +1,10 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/Logo.png">
+<p align="center" style="margin-top: -25px;">
+  <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/bg.png">
 </p>
-<h2 align="center">Asher: The Ai for the person of tomorrow
+<h2 align="center">
     <a href="https://circleci.com/gh/crazywolf132/AsherAPI"><img src="https://circleci.com/gh/manekinekko/google-actions-server.svg?style=svg"/></a>
-    <br />
     <a href="https://codeclimate.com/github/crazywolf132/AsherAPI/maintainability"><img src="https://api.codeclimate.com/v1/badges/e66235017865b51adbf2/maintainability" /></a>
 </h2>
-<p align="center">A Node.js API for handling all your requests.</p>
 <br />
 <br />
 <br />
