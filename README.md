@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/Logo.png">
+  <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/bg.png">
 </p>
 <h2 align="center">Asher: The Ai for the person of tomorrow
     <a href="https://circleci.com/gh/crazywolf132/AsherAPI"><img src="https://circleci.com/gh/manekinekko/google-actions-server.svg?style=svg"/></a>
