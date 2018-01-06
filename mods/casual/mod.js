@@ -16,9 +16,9 @@ async function working(allSubMods, subject, message, socket, subMods) {
             const holder = [];
             findFilesAndFolders(`./mods/casual/${item}/`, holder, false, false, true);
             holder.forEach((file) => {
-                if (file == `./mods/casual/${item}/mod.js`){
+                if (file === `./mods/casual/${item}/mod.js`){
                   allSubMods[item] = require(`./` + item + `/mod.js`);
-                } else if (file == `./mods/casual/${item}/words.txt`) {
+                } else if (file === `./mods/casual/${item}/words.txt`) {
                     //We are just going to assume there is a responses.txt file...
                     const wordsHolder = [];
                     fileToArray(`./mods/casual/${item}/words.txt`, wordsHolder);
@@ -30,13 +30,13 @@ async function working(allSubMods, subject, message, socket, subMods) {
                             //const randomResponse = res[Math.floor(Math.random() * res.length)];
                             //console.log("Going to respond to this question with: " + randomResponse);
                             //resolve(randomResponse);
-                            var toRun = allSubMods[item]
-                            let result = toRun(subject, message, socket)
-                            resolve(result)
+                            var toRun = allSubMods[item];
+                            let result = toRun(subject, message, socket);
+                            resolve(result);
                         }
                     });
                 }
             });
         });
     });
-};
+}
