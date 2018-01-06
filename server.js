@@ -13,7 +13,6 @@ const io = require(`socket.io`)(4416);
 const speak = require(`speakeasy-nlp`);
 const nlp = require(`compromise`);
 const sentiment = require(`sentiment`);
-const builtinPhrases = require(`./builtins`);
 const swears = [];
 const _mod_types = {};
 const mods = [];
