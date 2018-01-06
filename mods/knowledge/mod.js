@@ -1,9 +1,9 @@
-module.exports = (async function (subject, message, socket) {
+module.exports = (async (subject, message, socket) => {
     const input = message.split(' ');
     const query = input[input.length - 1];
     return await ask(query)
 });
-function ask(query) {
+ask = (query) => {
     const request = require('request');
     return new Promise((resolve) => {
         request.get('http://api.duckduckgo.com/?q=Where+is+' + query + '&format=json&pretty=1', (err, resp, body) => {
