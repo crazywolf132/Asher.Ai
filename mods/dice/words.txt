@@ -1,0 +1,5 @@
+roll a .?
+roll a #Value .?
+.? a (dice|die)
+roll a dice
+throw a die

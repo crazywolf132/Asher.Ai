@@ -1,0 +1,5 @@
+.? a coin .?
+flip a .?
+toss a .?
+flip .?
+toss .?
