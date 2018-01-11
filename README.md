@@ -30,7 +30,7 @@ Mods are constructed of 3 parts.
 
 To start off, we need to create a folder in the `mods` directory for our new Mod.
 We are going to make a mod called `funny`.
-We then need to create all 3 of those files inside that folder, as shown below.
+We then need to create all 3 of those files inside that folder.
 
 We are going to start work on the `words.txt` file. We now need to decide different examples of triggering the mod. Seeing as our mod is going to be a joke mod. Here is what our words file is going to look like.
 ```
