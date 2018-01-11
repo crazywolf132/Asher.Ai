@@ -10,19 +10,19 @@
 <br />
 <br />
 
-### What the heck is this?
+## What the heck is this?
 This is the Node.js API for the Asher personal assistant. Asher is a personal assistant with the aim of matching all the commands that products such as the Google Home can offer, and much more.
 
 Asher is modular allowing for the community to add their part to his ever increasing module base.
 
-### How do I connect?
+## How do I connect?
 There are 2 ways to connect to Asher.
 1. Via REST API requests. Simply post a `get` request to `http://165.227.116.53/api/talk`, with the argument `command` and ur message.
 2. Via sockets. Port `4416` is open at `http://165.227.116.53/`, send a `message` through the socket with the raw text.
 
 Asher allows for any language that can either use sockets or send get requests to interact with him. We just need the raw text input, and we will do the rest.
 
-### Lets build a mod!
+## Lets build a mod!
 Mods are constructed of 3 parts.
 - The Actual mod file `mod.js`
 - The words file `words.txt`, which contains examples of triggers
@@ -72,7 +72,7 @@ module.exports = (async (subject, message, socket) => {
 
 Thats it. Asher now knows our `Funny` module, Once he restarts... we will be able to say one of our trigger words from `words.txt` and he will run this mod.
 
-### Special thanks to...
+## Special thanks to...
 - [Brayden Moon](https://github.com/crazywolf132)
 - [Jamie](https://github.com/jsProj)
 - [Kaidan](https://github.com/imnotbad/)
