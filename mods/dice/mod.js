@@ -1,6 +1,4 @@
 module.exports = (async (subject, message, socket) => {
-    let msg = nlp(message).match('#Value sided').out('text')
-    let holder =  msg.split(' ');
-    let num = holder[0]
-    return (Math.floor((Math.random() * num) + 1););
+    //The subject contains the number of sides the user has said...
+    return (Math.floor((Math.random() * subject) + 1));
 });
