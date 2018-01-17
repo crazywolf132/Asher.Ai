@@ -5,12 +5,12 @@ module.exports = (
    console.log(message)
    const responses = ['hello', 'hey', "G'day", 'hi', 'howdy', 'aloha'];
    const question = ', how are you?'
-   //if (Math.floor((Math.random() * 2) + 1) === 2){
-   if (2 === 2) {
-     remember('111034', 'hru')
+   if (Math.floor((Math.random() * 2) + 1) === 2){
+   //if (2 === 2) {
+     remember(socket.id, 'casual/hru')
      return (responses[Math.floor(Math.random() * responses.length - 1)] + question)
    } else {
-     //forget('111034')
+     forget(socket.id)
      return (responses[Math.floor(Math.random() * responses.length - 1)]);
    }
   }

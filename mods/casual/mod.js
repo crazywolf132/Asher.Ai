@@ -5,12 +5,10 @@ module.exports = (async function (subject, message, socket, socketUsed) {
     // need to have a specific module for each single common
     // response.
     const remember = require('../../server').remember
-    //remember('11101011', 'wanker')
     if (socketUsed) {
       holder = message.split("$$")
       message = holder[0]
       socketID = holder[1]
-
     }
 
     const allSubMods = {};
