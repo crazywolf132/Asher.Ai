@@ -18,6 +18,8 @@ const _mod_types = {};
 const mods = [];
 const clients = [];
 const socketMods = [`timers`];
+const savedStates = {};
+const currentMods = {}
 
 
 /*
@@ -51,12 +53,24 @@ const api_router = express.Router();
 ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
 ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
 */
+module.exports.remember = function(socketID, mod) {
+    console.log("running the remember thingo")
+    savedStates[socketID] = 'true'
+    currentMods[socketID] = mod
+}
+
+module.exports.forget = function(socketID) {
+  savedStates[socketID] = 'false'
+  currentMods[socketID] = ''
+}
 
 socketRegistration = ((passcode) => {
     clients.push(passcode);
     console.log(`remembering: ` + passcode);
 })
-
+remember = (() => {
+  console.log("wow")
+})
 newToken = (() => {
     const generated = {};
     const generate = () => {
@@ -144,6 +158,11 @@ workItOut = (msg, usedSocket, socket) => {
         sub = msg;
     }
     let _mod_to_run = allMods[toLoad];
+    if (toLoad === 'casual' && usedSocket){
+      return (_mod_to_run(sub, msg + "$$" + socket.id, socket, usedSocket))
+    } else if (toLoad === 'casual' && !usedSocket){
+      return (_mod_to_run(sub, msg, socket, usedSocket))
+    }
     return (_mod_to_run(sub, msg, socket));
 }
 
@@ -234,24 +253,6 @@ loadAllMods = (_all_Mods, _dict, loadType) => {
         });
     });
 };
-
-/*const mods = {}; // global for convenience
-
-loadAllMods = function(_dict) {
-    let mods = []
-    findFilesAndFolders(`./mods/`, mods, true, true, false)
-    mods.forEach(function(mod) {
-        let holder = []
-        findFilesAndFolders(`./mods/` + mod + `/`, holder, false, false, true)
-        holder.forEach(function(file) {
-            if (file == `./mods/` + mod + `/mod.js`) {
-              //Code here for assigning to the seperate arrays... (the name of the array should be the `mod` variable
-              mods[mod] = mods[mod] || []; //will define if not defined, otherwise stays the same
-              //put whatever you need into array
-            }
-        })
-    })
-}*/
 
 /*
 ███    ███  ██████  ██████  ███████

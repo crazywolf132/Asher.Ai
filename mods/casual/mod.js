@@ -1,14 +1,29 @@
-module.exports = (async function (subject, message, socket) {
+module.exports = (async function (subject, message, socket, socketUsed) {
+    //const handler = require('../server')
     // We now need to create sub modules... so then we can
     // create a natural language response... So then we dont
     // need to have a specific module for each single common
     // response.
+    const remember = require('../../server').remember
+    //remember('11101011', 'wanker')
+    if (socketUsed) {
+      holder = message.split("$$")
+      message = holder[0]
+      socketID = holder[1]
+
+    }
+
     const allSubMods = {};
+    // These next two arrays are for the users... For when saving state
+    // and allowing the continuation of a mod.
+    const savedStates = {};
+    const currentMods = {}
     //Find every module folder... go into it... check for the mod.js file,
     //load the words.txt file... check if any of those match the `message` input...
     const subMods = [];
     findFilesAndFolders(`./mods/casual/`, subMods, true, true, false);
     return await working(allSubMods, subject, message, socket, subMods);
+
 });
 async function working(allSubMods, subject, message, socket, subMods) {
     return new Promise((resolve) => {
