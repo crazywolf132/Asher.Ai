@@ -20,16 +20,15 @@ const loadAllMods = mod_handler.loadAllMods;
 const getMod = mod_handler.getMod;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
-const removeFromArray = helper.removeFromArray;
 const swears = [];
 const _mod_types = {};
 const mods = mod_handler.mods;
-const clients = [];
+var clients = [];
 const socketMods = [`timers`];
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.
-const savedStates = {};
-const currentMods = {}
+var savedStates = {};
+var currentMods = {}
 const api_router = require(`./routes/api`);
 
 
@@ -65,7 +64,6 @@ const router = express.Router();
 ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
 */
 module.exports.remember = function(socketID, mod) {
-    console.log("running the remember thingo")
     savedStates[socketID] = 'true'
     currentMods[socketID] = mod
 }
@@ -90,9 +88,8 @@ socketRegistration = ((passcode) => {
 })
 
 socketRemovale = ((passcode) => {
-    removeFromArray(savedStates, passcode);
-    removeFromArray(clients, passcode);
-    console.log(`forgotten: ` + passcode)
+    delete savedStates[passcode]
+    clients = clients.filter(clients => clients !== passcode)
 })
 
 workItOut = (msg, usedSocket, socket) => {
@@ -129,6 +126,11 @@ workItOut = (msg, usedSocket, socket) => {
 
     // This is used for testing matches... to see if we can match a string to an example from a `words.txt` file.
     //let _testy = nlp(`whats 5 divide 5`).match(`whats #Value (plus|minus|divide|times) .? #Value .?`).found
+
+    if (usedSocket) {
+      _res = module.exports.memeory(socket.id)
+      console.log(_res)
+    }
 
     toLoad = getMod(mods, _mod_types, _questionType, msg)
     if (toLoad === ``) {
@@ -197,6 +199,7 @@ io.on(`connection`, (client) => {
         });
     });
     client.on(`disconnect`, function(){
+      console.log('disconnected...')
       socketRemovale(client.id)
     })
 })

@@ -32,10 +32,28 @@ exports.findFilesAndFolders = (_path, _list, returnNamesOnly, checkForDir, check
     });
 }
 
-exports.removeFromArray = (array, element) => {
-  const index = array.indexOf(element);
+exports.removeFromArray = (array, element, isDict) => {
 
-  if (index !== -1) {
-    array.splice(index, 1)
-  }
+  /*
+  let value = 3
+
+  let arr = [1, 2, 3, 4, 5, 3]
+
+  arr = arr.filter(item => item !== value)
+
+  console.log(arr)
+  // [ 1, 2, 4, 5 ]
+  */
+
+  array = array.filter(item => item !== element)
+
+  /*if (!isDict){
+    const index = array.indexOf(element);
+
+    if (index !== -1) {
+      array.splice(index, 1)
+    }
+  } else {
+    delete array[element];
+  }*/
 }
