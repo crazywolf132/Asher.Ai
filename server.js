@@ -129,9 +129,27 @@ workItOut = (msg, usedSocket, socket) => {
 
     if (usedSocket) {
       _res = module.exports.memeory(socket.id)
-      console.log(_res)
+      // If there happens to already be a mod in use... we will run that...
+      // otherwise, there is no other catches... so we will continue onto the
+      // rest of the code below...
+      if (_res != 'false') {
+        // We have detected a running mod, so we will work out what one... and
+        // continue where left off. We will also forget the module, so then we
+        // dont have module_devs forgetting to clear the memory.
+        module.exports.forget(socket.id);
+        if (_res.indexOf('/') >= 0){
+          holder = _res.split('/')
+          _res = holder[0]
+        }
+        let _mod_to_run = allMods[_res]
+        if (_res === 'casual'){
+          return (_mod_to_run(sub, msg + "$$" + socket.id, socket, usedSocket))
+        }
+        return(_mod_to_run(sub, msg, socket))
+      }
     }
 
+    // This is the rest of the code that will be run if there is no running mods...
     toLoad = getMod(mods, _mod_types, _questionType, msg)
     if (toLoad === ``) {
         toLoad = getMod(mods, _mod_types, `other`, msg);
