@@ -13,13 +13,24 @@ const io = require(`socket.io`)(4416);
 const speak = require(`speakeasy-nlp`);
 const nlp = require(`compromise`);
 const sentiment = require(`sentiment`);
+const mod_handler = require(`./core/functions/mod_handler`);
+const helper = require(`./core/functions/helper`);
+const trainAllMods = mod_handler.trainAllMods;
+const loadAllMods = mod_handler.loadAllMods;
+const getMod = mod_handler.getMod;
+const fileToArray = helper.fileToArray;
+const findFilesAndFolders = helper.findFilesAndFolders;
+const removeFromArray = helper.removeFromArray;
 const swears = [];
 const _mod_types = {};
-const mods = [];
+const mods = mod_handler.mods;
 const clients = [];
 const socketMods = [`timers`];
+// These next two arrays are for the users... For when saving state
+// and allowing the continuation of a mod.
 const savedStates = {};
 const currentMods = {}
+const api_router = require(`./routes/api`);
 
 
 /*
@@ -44,7 +55,7 @@ app.use((req, res, next) => {
 });
 const port = process.env.PORT || 8080;
 
-const api_router = express.Router();
+const router = express.Router();
 
 /*
 ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████
@@ -64,13 +75,26 @@ module.exports.forget = function(socketID) {
   currentMods[socketID] = ''
 }
 
+module.exports.memeory = function(socketID) {
+  if (savedStates[socketID] === 'true') {
+    return currentMods[socketID]
+  } else {
+    return 'false'
+  }
+}
+
 socketRegistration = ((passcode) => {
+    savedStates[passcode] = 'false'
     clients.push(passcode);
     console.log(`remembering: ` + passcode);
 })
-remember = (() => {
-  console.log("wow")
+
+socketRemovale = ((passcode) => {
+    removeFromArray(savedStates, passcode);
+    removeFromArray(clients, passcode);
+    console.log(`forgotten: ` + passcode)
 })
+
 newToken = (() => {
     const generated = {};
     const generate = () => {
@@ -140,8 +164,7 @@ workItOut = (msg, usedSocket, socket) => {
     // This is used for testing matches... to see if we can match a string to an example from a `words.txt` file.
     //let _testy = nlp(`whats 5 divide 5`).match(`whats #Value (plus|minus|divide|times) .? #Value .?`).found
 
-    toLoad = getMod(mods, _mod_types, _questionType, msg);
-
+    toLoad = getMod(mods, _mod_types, _questionType, msg)
     if (toLoad === ``) {
         toLoad = getMod(mods, _mod_types, `other`, msg);
         if (toLoad === ``) {
@@ -157,6 +180,7 @@ workItOut = (msg, usedSocket, socket) => {
     if (sub === undefined) {
         sub = msg;
     }
+    console.log('Running: "' + toLoad + '"')
     let _mod_to_run = allMods[toLoad];
     if (toLoad === 'casual' && usedSocket){
       return (_mod_to_run(sub, msg + "$$" + socket.id, socket, usedSocket))
@@ -166,93 +190,7 @@ workItOut = (msg, usedSocket, socket) => {
     return (_mod_to_run(sub, msg, socket));
 }
 
-getMod = (_mods, _modTypes, _questionType, _msg) => {
-    let holdme = ``;
-    let _sentance;
-    _mods.forEach((mod) => {
-        if (_modTypes[mod] === _questionType) {
-            _ins = [];
-            fileToArray(`./mods/${mod}/words.txt`, _ins);
-            _ins.forEach((_sentance) => {
-                _sentance = _sentance.replace(/\r?\n?/gm, ``);
-                _sentance.trim();
-                let result = nlp(_msg).match(_sentance).found;
-                if (result) {
-                    console.log(`The module to run is: ${mod}`);
-                    holdme = mod;
-                }
-            })
-        }
-    })
-    return (holdme);
-}
 
-
-fileToArray = (file, list) => {
-    const fs = require(`fs`);
-    const array = fs.readFileSync(file).toString().split(`\n`);
-    for (let i = 0; i < array.length; i++) {
-        list.push(array[i]);
-    }
-}
-
-findFilesAndFolders = (_path, _list, returnNamesOnly, checkForDir, checkForFile) => {
-    fs.readdirSync(_path).forEach((file) => {
-        if (checkForDir && !checkForFile) {
-            if (fs.statSync(`${_path}${file}`).isDirectory()) {
-                if (returnNamesOnly) {
-                    _list.push(file);
-                } else {
-                    _list.push(`${_path}${file}`);
-                }
-            }
-        } else if (!checkForDir && checkForFile) {
-            if (fs.statSync(_path + file).isFile()) {
-                _list.push(`${_path}${file}`);
-            }
-        } else {
-            if (returnNamesOnly) {
-                _list.push(file);
-            } else {
-                _list.push(`${_path}${file}`);
-            }
-        }
-    });
-}
-
-trainAllMods = () => {
-    findFilesAndFolders(`./mods/`, mods, true, true, false);
-    mods.forEach((item) => {
-        let holder = [];
-        findFilesAndFolders(`./mods/${item}/`, holder, false, false, true)
-        holder.forEach((file) => {
-            if (file === `./mods/${item}/words.txt`) {
-                teach(`./mods/${item}/words.txt`, item);
-            }
-        })
-    })
-    console.log(`Only found ${mods.length} mods`);
-};
-
-loadAllMods = (_all_Mods, _dict, loadType) => {
-    findFilesAndFolders(`./mods/`, mods, true, true, false);
-    mods.forEach((mod) => {
-        let holder = [];
-        findFilesAndFolders(`./mods/${mod}/`, holder, false, false, true);
-        holder.forEach((file) => {
-            if (file === `./mods/${mod}/mod.js`) {
-                _all_Mods[mod] = require(`./mods/${mod}/mod.js`);
-            }
-            if (loadType) {
-                if (file === `./mods/${mod}/type.txt`) {
-                    _gotType = [];
-                    fileToArray(file, _gotType);
-                    _dict[mod] = _gotType[0];
-                }
-            }
-        });
-    });
-};
 
 /*
 ███    ███  ██████  ██████  ███████
@@ -279,96 +217,7 @@ api_router.use((req, res, next) => {
     next();
 });
 
-api_router.route(`/login`)
-    .post((req, res) => {
-        const user = req.body.username || false;
-        if (user === false) {
-            return (res.status(401).send({
-                status: `fail`,
-                error: `No user provided!`
-            }));
-        }
-        getUser(user, (exist, user) => {
-            if (!exist) {
-                return (res.status(401).send({
-                    status: `fail`,
-                    error: `User doesn\`t exist!`
-                }));
-            }
-            const password = req.body.password || false;
-            if (password === false) {
-                return (res.status(401).send({
-                    status: `fail `,
-                    error: `No password supplied!`
-                }));
-            }
-            user.comparePassword(password, (err, isMatch) => {
-                if (isMatch && !err) {
-                    const token = newToken();
-                    return (res.json({
-                        status: `success`,
-                        message: `Login success!`,
-                        token: token
-                    }));
-                }
-            });
-        });
-    });
 
-api_router.route(`/ signup`).post((req, res) => {
-    if (!req.body.username || !req.body.password) {
-        res.json({
-            status: `fail`,
-            error: `Please supply username and / or password!`
-        });
-    } else {
-        var newUser = new User({
-            username: req.body.username,
-            password: req.body.password
-        });
-        newUser.save((err) => {
-            if (err) {
-                return (res.json({
-                    status: `fail`,
-                    error: `Username already exists.`
-                }));
-            }
-            res.json({
-                status: `success`,
-                message: `Successfully created new user.`
-            });
-        });
-    }
-});
-
-
-api_router.route(`/ talk`).post(function (req, res) {
-    console.log(`Incomming...`);
-    let command = req.body.command || null;
-    if (command === null) {
-        return (res.json({
-            status: `fail`,
-            error: `No command provided!`
-        }));
-    }
-    console.log(`receiving \`${command}\``);
-    //let response = workItOut(command);
-    Promise.resolve(workItOut(command, false)).then((response) => {
-        console.log(`responded with \`${response}\``);
-        if (response !== `undefined`) {
-            res.json({
-                status: `success`,
-                reply: response
-            });
-        } else {
-            res.json({
-                status: `unknown`
-            })
-        }
-    });
-
-
-});
 
 app.use(`/api`, api_router);
 
@@ -383,6 +232,9 @@ io.on(`connection`, (client) => {
             }
         });
     });
+    client.on(`disconnect`, function(){
+      socketRemovale(client.id)
+    })
 })
 
 /*
