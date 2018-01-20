@@ -95,40 +95,6 @@ socketRemovale = ((passcode) => {
     console.log(`forgotten: ` + passcode)
 })
 
-newToken = (() => {
-    const generated = {};
-    const generate = () => {
-        const octets = [];
-        for (let i = 0; i < 32; i++) {
-            let octet = `${Math.round(Math.random() * 255).toString(16)}`;
-            if (octet.length === 1) {
-                octet = `0${octet}`;
-            }
-            octets.push(octet);
-        }
-        return (octets.join(`-`).toUpperCase());
-    };
-    const output = () => {
-        let new_token = generate();
-        while (generated[new_token] !== undefined) {
-            new_token = generate();
-        }
-        generated[new_token] = true;
-        return (new_token);
-    };
-    return output;
-})();
-
-getUser = ((user, cb = $ => $) => {
-    User.findOne({
-        username: user
-    }, (err, user) => {
-        if (err) { return (cb(false, null)); }
-        if (!user) { return (cb(false, null)); }
-        return (cb(true, user));
-    });
-});
-
 workItOut = (msg, usedSocket, socket) => {
     let toLoad = ``
     /* SAVING THIS FOR LATER...
