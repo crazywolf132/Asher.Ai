@@ -11,7 +11,6 @@ router.route(`/talk`).post(function (req, res) {
         }));
     }
     console.log(`receiving \`${command}\``);
-    //let response = workItOut(command);
     Promise.resolve(workItOut(command, false)).then((response) => {
         console.log(`responded with \`${response}\``);
         if (response !== `undefined`) {

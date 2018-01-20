@@ -111,7 +111,7 @@ workItOut = (msg, usedSocket, socket) => {
 
     */
     let _got = nlp(msg).out(`normal`);
-    let _test = _tokes = nlp(_got).terms().data();
+    let _tokes = nlp(_got).terms().data();
     let _questionType = ``;
     let _firstWord = _tokes[0];
 
@@ -136,15 +136,13 @@ workItOut = (msg, usedSocket, socket) => {
         if (toLoad === ``) {
             return (`I am horribly sorry, but i just dont know what to respond...`);
         } else if (socketMods.indexOf(toLoad) > -1 && !usedSocket) {
-            console.log(`Should not be able to run...`);
             return (`Sorry, to use this module. You need to connect to the server via socket.`);
         }
     }
 
-    let wubbalubbadubdub = speak.classify(msg);
-    let sub = wubbalubbadubdub.subject;
+    let sub = speak.classify(msg).subject;
     if (sub === undefined) {
-        sub = msg;
+      sub = msg;
     }
     console.log('Running: "' + toLoad + '"')
     let _mod_to_run = allMods[toLoad];
