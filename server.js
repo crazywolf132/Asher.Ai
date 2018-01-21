@@ -126,7 +126,10 @@ workItOut = (msg, usedSocket, socket) => {
 
     // This is used for testing matches... to see if we can match a string to an example from a `words.txt` file.
     //let _testy = nlp(`whats 5 divide 5`).match(`whats #Value (plus|minus|divide|times) .? #Value .?`).found
-
+    let sub = speak.classify(msg).subject;
+    if (sub === undefined) {
+      sub = msg;
+    }
     if (usedSocket) {
       _res = module.exports.memeory(socket.id)
       // If there happens to already be a mod in use... we will run that...
@@ -136,7 +139,7 @@ workItOut = (msg, usedSocket, socket) => {
         // We have detected a running mod, so we will work out what one... and
         // continue where left off. We will also forget the module, so then we
         // dont have module_devs forgetting to clear the memory.
-        module.exports.forget(socket.id);
+        //module.exports.forget(socket.id);
         if (_res.indexOf('/') >= 0){
           holder = _res.split('/')
           _res = holder[0]
@@ -160,10 +163,7 @@ workItOut = (msg, usedSocket, socket) => {
         }
     }
 
-    let sub = speak.classify(msg).subject;
-    if (sub === undefined) {
-      sub = msg;
-    }
+
     console.log('Running: "' + toLoad + '"')
     let _mod_to_run = allMods[toLoad];
     if (toLoad === 'casual' && usedSocket){

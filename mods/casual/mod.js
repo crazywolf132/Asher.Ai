@@ -4,9 +4,11 @@ module.exports = (async function (subject, message, socket, socketUsed) {
     // create a natural language response... So then we dont
     // need to have a specific module for each single common
     // response.
-    const memeory = require('../../server').memeory
-    const remember = require('../../server').remember
-    const core = require('../../server')
+    const mod_helper = require(`${process.cwd()}/core/functions/helper`)
+    const findFilesAndFolders = mod_helper.findFilesAndFolders
+    const memeory = require(`${process.cwd()}/server`).memeory
+    const remember = require(`${process.cwd()}/server`).remember
+    const core = require(`${process.cwd()}/server`)
     const allSubMods = {};
     //Find every module folder... go into it... check for the mod.js file,
     //load the words.txt file... check if any of those match the `message` input...
@@ -35,11 +37,16 @@ module.exports = (async function (subject, message, socket, socketUsed) {
 
 });
 async function continueModule(allSubMods, subject, message, socket, name, core){
-  var toRun = allSubMods[name];
-  let result = toRun(subject, message, socket, core);
-  resolve(result);
+  return new Promise((resolve) => {
+    allSubMods[name] = require(`./` + name + `/mod.js`);
+    let toRun = allSubMods[name]
+    let result = toRun(subject, message, socket, core, true);
+    resolve(result);
+  })
 }
 async function working(allSubMods, subject, message, socket, subMods, core) {
+    const findFilesAndFolders = require(`${process.cwd()}/core/functions/helper`).findFilesAndFolders
+    const fileToArray = require(`${process.cwd()}/core/functions/helper`).fileToArray
     return new Promise((resolve) => {
         subMods.forEach((item) => {
             const holder = [];
@@ -55,12 +62,8 @@ async function working(allSubMods, subject, message, socket, subMods, core) {
                         if (nlp(message).match(sentence).found) {
                             console.log("Going to run the sub-module: " + item);
                             const res = [];
-                            //fileToArray(`./mods/casual/${item}/responses.txt`, res);
-                            //const randomResponse = res[Math.floor(Math.random() * res.length)];
-                            //console.log("Going to respond to this question with: " + randomResponse);
-                            //resolve(randomResponse);
                             var toRun = allSubMods[item];
-                            let result = toRun(subject, message, socket, core);
+                            let result = toRun(subject, message, socket, core, false);
                             resolve(result);
                         }
                     });
