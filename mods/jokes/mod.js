@@ -4,5 +4,5 @@ module.exports = (async (subject, message, socket) => {
       '“Um.” —First horse that got ridden',
       'Some people just have a way with words, and other people … oh … not have way.'
     ]
-    return (jokes[Math.floor(Math.random() * jokes.length - 1)]);
+    return (jokes[Math.floor(Math.random()*jokes.length)]);
 });

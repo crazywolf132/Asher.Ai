@@ -16,6 +16,7 @@
 }
 
 .message {
+  margin-bottom: 50px;
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -28,7 +29,6 @@
           align-items: center;
 }
 .message--user2 {
-  margin-bottom: 50px;
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
@@ -40,11 +40,11 @@
   background-repeat: no-repeat;
 }
 .message--user1 .message__user {
-  background-image: url("http://repo.zectr.com/Development/Websites/Asher/img/man.png");
+  background-image: url("/img/man.png");
   background-size: 100px 141px;
 }
 .message--user2 .message__user {
-  background-image: url("http://repo.zectr.com/Development/Websites/Asher/img/woman 2.png");
+  background-image: url("/img/woman.png");
   background-size: 100px 120px;
   -webkit-transform: scaleX(-1);
           transform: scaleX(-1);
