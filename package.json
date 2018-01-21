@@ -9,24 +9,20 @@
   "author": "Brayden Moon",
   "license": "ISC",
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "compromise": "^11.1.0",
     "event-stream": "^3.3.4",
     "express": "^4.16.2",
     "fs": "0.0.1-security",
-    "jsonwebtoken": "^8.1.0",
-    "mongoose": "^4.13.1",
     "morgan": "^1.9.0",
     "natural": "^0.5.4",
     "nodemon": "^1.14.11",
-    "passport": "^0.4.0",
-    "passport-jwt": "^3.0.1",
+    "pug": "^2.0.0-rc.4",
     "request": "^2.83.0",
     "sentiment": "^4.1.0",
     "socket.io": "^2.0.4",
     "speakeasy-nlp": "^0.2.12",
-    "timer.js": "^1.0.4",
-    "uuid": "^3.1.0"
+    "stylus": "^0.54.5",
+    "timer.js": "^1.0.4"
   }
 }

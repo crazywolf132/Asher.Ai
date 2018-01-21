@@ -3,10 +3,8 @@ const express = require(`express`);
 const app = express();
 const morgan = require(`morgan`);
 const bodyParser = require(`body-parser`);
-const mongoose = require(`mongoose`);
-
-const config = require(`./config/database`);
-const User = require(`./models/user`);
+const path = require(`path`);
+const stylus = require(`stylus`);
 const fs = require(`fs`);
 const request = require(`request`);
 const io = require(`socket.io`)(4416);
@@ -30,6 +28,7 @@ const socketMods = [`timers`];
 var savedStates = {};
 var currentMods = {}
 const api_router = require(`./routes/api`);
+const home_router = require(`./routes/home`);
 
 
 /*
@@ -40,19 +39,21 @@ const api_router = require(`./routes/api`);
  ██████  ██████  ██   ██ ███████
 */
 
-mongoose.connect(config.database);
-
 app.use(morgan(`dev`));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug')
+app.use(stylus.middleware(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
     res.header(`Access-Control-Allow-Origin`, `*`);
     res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
     next();
 });
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 80;
 
 const router = express.Router();
 
@@ -196,14 +197,9 @@ loadAllMods(allMods, _mod_types, true);
 ██   ██  ██████   ██████     ██    ███████ ███████
 */
 
-api_router.use((req, res, next) => {
-    console.log(`Something is happening.`);
-    next();
-});
-
-
 
 app.use(`/api`, api_router);
+app.use(`/`, home_router);
 
 io.on(`connection`, (client) => {
     console.log(`Client connected...`);
