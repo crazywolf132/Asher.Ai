@@ -1,8 +1,9 @@
 var express = require(`express`);
 var router = express.Router();
+var logger = require(`${process.cwd()}/server`).logger
 
 router.route(`/talk`).post(function (req, res) {
-    console.log(`Incomming...`);
+    logger('Normal', `Incomming...`);
     let command = req.body.command || null;
     if (command === null) {
         return (res.json({
@@ -10,9 +11,9 @@ router.route(`/talk`).post(function (req, res) {
             error: `No command provided!`
         }));
     }
-    console.log(`receiving \`${command}\``);
+    logger('Normal', `receiving \`${command}\``);
     Promise.resolve(workItOut(command, false)).then((response) => {
-        console.log(`responded with \`${response}\``);
+        logger('Normal', `responded with \`${response}\``);
         if (response !== `undefined`) {
             res.json({
                 status: `success`,

@@ -1,4 +1,4 @@
-module.exports = (async (subject, message, socket) => {
+module.exports = (async (subject, message, socket, socketUsed) => {
     const input = message.split(' ');
     const query = input[input.length - 1];
     return await ask(query)

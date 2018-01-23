@@ -16,9 +16,7 @@ module.exports = (async function (subject, message, socket, socketUsed) {
     findFilesAndFolders(`./mods/casual/`, subMods, true, true, false);
 
     if (socketUsed) {
-      holder = message.split("$$")
-      message = holder[0]
-      socketID = holder[1]
+      socketID = socket.id
       result = memeory(socketID)
       if (result === 'false') {
         return await working(allSubMods, subject, message, socket, subMods, core);
@@ -60,7 +58,7 @@ async function working(allSubMods, subject, message, socket, subMods, core) {
                     fileToArray(`./mods/casual/${item}/words.txt`, wordsHolder);
                     wordsHolder.forEach((sentence) => {
                         if (nlp(message).match(sentence).found) {
-                            console.log("Going to run the sub-module: " + item);
+                            core.logger('INFO', "Going to run the sub-module: " + item);
                             const res = [];
                             var toRun = allSubMods[item];
                             let result = toRun(subject, message, socket, core, false);

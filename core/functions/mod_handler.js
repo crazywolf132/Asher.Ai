@@ -3,6 +3,7 @@ const path = require(`path`)
 const fs = require(`fs`);
 const findFilesAndFolders = require(`./helper`).findFilesAndFolders
 const fileToArray = require(`./helper`).fileToArray
+const logger = require(`${process.cwd()}/server`).logger
 exports.mods = mods = []
 exports.trainAllMods = () => {
     findFilesAndFolders(`${process.cwd()}/mods/`, mods, true, true, false);
@@ -15,7 +16,7 @@ exports.trainAllMods = () => {
             }
         })
     })
-    console.log(`Only found ${mods.length} mods`);
+    logger('Normal', `Only found ${mods.length} mods`);
 };
 
 exports.loadAllMods = (_all_Mods, _dict, loadType) => {

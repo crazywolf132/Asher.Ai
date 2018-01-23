@@ -7,19 +7,10 @@ module.exports = (
    const second_responses_good = ['Thats good to hear', 'Thats what i like to hear', 'Thats Great!']
    const second_responses_bad = ['Thats not good!', 'Oh no, thats not what i was wanting to hear.']
    if (continuation){
-     good_replys.forEach(function(item) {
-       if (nlp(message).match(item).found){
-         num = Math.floor(Math.random()*second_responses_good.length);
-         return (second_responses_good[num]);
-       }
-     })
-     bad_replys.forEach(function(item) {
-       if (nlp(message).match(item).found){
-         return (second_responses_bad[Math.floor(Math.random()*second_responses_bad.length)]);
-       }
-     })
+     core.logger('DEBUG', "we are continueing with this module...")
+     _result = await continueMod(nlp, good_replys, bad_replys, second_responses_good, second_responses_bad, message, core, socket)
    }else{
-     if (Math.random() === 1){
+     if (Math.random() >= 0.5){
        core.remember(socket.id, 'casual/hru')
        return (responses[Math.floor(Math.random()*responses.length)] + question)
      } else {
@@ -29,3 +20,23 @@ module.exports = (
    }
   }
 );
+
+async function continueMod(nlp, good_list, bad_list, good_res, bad_res, message, core, socket) {
+  core.logger('running the continuation module worker')
+  return new Promise((resolve) => {
+    core.logger('promise has been started')
+    good_list.forEach((item) => {
+      if (nlp(message).match(item).found) {
+        res = good_res[Math.floor(Math.random()*good_res.length)];
+        resolve(res)
+      }
+    })
+    bad_list.forEach((item) => {
+      if (nlp(message).match(item).found) {
+        res = bad_res[Math.floor(Math.random()*bad_res.length)];
+        resolve(res)
+      }
+    })
+    resolve('Sorry, i dont know how to respond to that...')
+  })
+}

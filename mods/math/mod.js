@@ -1,4 +1,4 @@
-module.exports = (async (subject, message, socket) => {
+module.exports = (async (subject, message, socket, socketUsed) => {
     // We are going to convert the word to a symbol...
     let msg = nlp(message).match('#Value . #Value').out('text')
     let holder = msg.split(' ');

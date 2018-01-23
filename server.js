@@ -1,4 +1,4 @@
-console.log(`Starting....`);
+console.log('[NORMAL]  Starting...')
 const express = require(`express`);
 const app = express();
 const morgan = require(`morgan`);
@@ -65,27 +65,42 @@ const router = express.Router();
 ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
 */
 module.exports.remember = function(socketID, mod) {
+    module.exports.logger('DEBUG', socketID + " is remembering " + mod)
     savedStates[socketID] = 'true'
     currentMods[socketID] = mod
 }
 
 module.exports.forget = function(socketID) {
+  module.exports.logger('DEBUG', socketID + " is forgetting their module")
   savedStates[socketID] = 'false'
   currentMods[socketID] = ''
 }
 
 module.exports.memeory = function(socketID) {
+  module.exports.logger('DEBUG', "Loading memory for " + socketID)
   if (savedStates[socketID] === 'true') {
+    module.exports.logger('DEBUG', "There is a memory")
     return currentMods[socketID]
   } else {
+    module.exports.logger('DEBUG', "There was no memory found")
     return 'false'
   }
+}
+
+module.exports.logger = function(type, message) {
+  if (type === 'NORMAL' || type === 'Normal' || type === ''){
+    type = 'INFO'
+
+  } else if (type === 'DEBUG' || type === 'Debug') {
+    type = 'DBUG'
+  }
+  console.log('[' + type +']  ' + message)
 }
 
 socketRegistration = ((passcode) => {
     savedStates[passcode] = 'false'
     clients.push(passcode);
-    console.log(`remembering: ` + passcode);
+    module.exports.logger('NORMAL', `remembering: ` + passcode);
 })
 
 socketRemovale = ((passcode) => {
@@ -146,10 +161,7 @@ workItOut = (msg, usedSocket, socket) => {
           _res = holder[0]
         }
         let _mod_to_run = allMods[_res]
-        if (_res === 'casual'){
-          return (_mod_to_run(sub, msg + "$$" + socket.id, socket, usedSocket))
-        }
-        return(_mod_to_run(sub, msg, socket))
+        return(_mod_to_run(sub, msg, socket, usedSocket))
       }
     }
 
@@ -165,14 +177,9 @@ workItOut = (msg, usedSocket, socket) => {
     }
 
 
-    console.log('Running: "' + toLoad + '"')
+    module.exports.logger('NORMAL', 'Running: "' + toLoad + '"')
     let _mod_to_run = allMods[toLoad];
-    if (toLoad === 'casual' && usedSocket){
-      return (_mod_to_run(sub, msg + "$$" + socket.id, socket, usedSocket))
-    } else if (toLoad === 'casual' && !usedSocket){
-      return (_mod_to_run(sub, msg, socket, usedSocket))
-    }
-    return (_mod_to_run(sub, msg, socket));
+    return (_mod_to_run(sub, msg, socket, usedSocket));
 }
 
 
@@ -185,7 +192,7 @@ workItOut = (msg, usedSocket, socket) => {
 ██      ██  ██████  ██████  ███████
 */
 
-console.log(`Configuring mods...`);
+module.exports.logger('NORMAL', `Configuring mods...`);
 let allMods = {};
 loadAllMods(allMods, _mod_types, true);
 
@@ -202,18 +209,19 @@ app.use(`/api`, api_router);
 app.use(`/`, home_router);
 
 io.on(`connection`, (client) => {
-    console.log(`Client connected...`);
+    module.exports.logger('NORMAL', `Client connected...`);
     socketRegistration(client.id);
     client.on(`message`, data => {
         Promise.resolve(workItOut(data, true, client)).then((response) => {
-            console.log(`responded with \`${response}\``);
+            module.exports.logger('NORMAL', `responded with \`${response}\``);
             if (response !== `undefined`) {
                 client.emit(`result`, String(response));
             }
+            console.log("###########################################")
         });
     });
     client.on(`disconnect`, function(){
-      console.log('disconnected...')
+      module.exports.logger('NORMAL', 'disconnected...')
       socketRemovale(client.id)
     })
 })
@@ -228,5 +236,5 @@ io.on(`connection`, (client) => {
 
 setTimeout(() => {
     app.listen(port);
-    console.log(`Magic happens on port ${port}`);
+    module.exports.logger('NORMAL', `Magic happens on port ${port}`);
 }, 1000);

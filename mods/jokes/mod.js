@@ -1,4 +1,4 @@
-module.exports = (async (subject, message, socket) => {
+module.exports = (async (subject, message, socket, socketUsed) => {
     jokes = [
       'I wrote a song about a tortilla. Well actually, it’s more of a wrap.',
       '“Um.” —First horse that got ridden',
