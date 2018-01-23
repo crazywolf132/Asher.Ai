@@ -54,13 +54,13 @@ So, we need to set it as `other`. Thats it, our system will be able to do the re
 We just now need to work on the actual `mod.js` file!
 Every mod is composed of:
 ```JS
-module.exports = (async (subject, message, socket) => {
+module.exports = (async (subject, message, socket, usedSocket) => {
     return //Your message to go back to the user.
 });
 ```
 We are going to take that template, and we are going to add our elements to it:
 ```JS
-module.exports = (async (subject, message, socket) => {
+module.exports = (async (subject, message, socket, usedSocket) => {
     jokes = [
       'I wrote a song about a tortilla. Well actually, it’s more of a wrap.',
       '“Um.” —First horse that got ridden',
