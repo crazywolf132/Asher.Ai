@@ -77,3 +77,4 @@ Thats it. Asher now knows our `Funny` module, Once he restarts... we will be abl
 - [Jamie](https://github.com/jsProj)
 - [Kaidan](https://github.com/imnotbad/)
 - [ThatsNoMoon](http://github.com/ThatsNoMoon)
+- [Jean-Philippe Sirois](https://github.com/veksen)
