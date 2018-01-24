@@ -116,7 +116,7 @@ function startDictation() {
 				e.results[0][0] &&
 				e.results[0][0].transcript;
 			console.log("This is the transcript: " + transcript);
-			// if e.results, results[0], or e.results[0][0] are `undefined`,
+			// if e.results, results[0], or e.results[0][0] are "undefined",
 			// all of these invocations will throw an exception, resulting in a stack drop before executing stop()
 			socket.emit("message", transcript);
 
