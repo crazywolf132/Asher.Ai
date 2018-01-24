@@ -2,22 +2,6 @@ var socket;
 var currentAppIndex;
 var homeAppIndex = 0;
 
-window.onload = function() {
-	var host = window.location.host + ":" + 4416;
-	connect(host);
-	setupWebSpeechAPI();
-	$("#message_box").bind("enterKey", function(e) {
-		addFemaleMessage(document.getElementById("message_box").value);
-		socket.emit("message", document.getElementById("message_box").value);
-		document.getElementById("message_box").value = "";
-	});
-	$("#message_box").keyup(function(e) {
-		if (e.keyCode == 13) {
-			$(this).trigger("enterKey");
-		}
-	});
-};
-
 function connect(host) {
 	localStorage.host = host;
 	socket = io(host);
@@ -133,3 +117,19 @@ function startDictation() {
 		};
 	}
 }
+
+window.onload = function() {
+	var host = window.location.host + ":" + 4416;
+	connect(host);
+	setupWebSpeechAPI();
+	$("#message_box").bind("enterKey", function(e) {
+		addFemaleMessage(document.getElementById("message_box").value);
+		socket.emit("message", document.getElementById("message_box").value);
+		document.getElementById("message_box").value = "";
+	});
+	$("#message_box").keyup(function(e) {
+		if (e.keyCode == 13) {
+			$(this).trigger("enterKey");
+		}
+	});
+};
