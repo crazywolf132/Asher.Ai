@@ -23,6 +23,7 @@ const _mod_types = {};
 const mods = mod_handler.mods;
 var clients = [];
 const socketMods = ["timers"];
+let allMods = {};
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.
 var savedStates = {};
@@ -198,7 +199,6 @@ workItOut = (msg, usedSocket, socket) => {
 */
 
 module.exports.logger("NORMAL", "Configuring mods...");
-let allMods = {};
 loadAllMods(allMods, _mod_types, true);
 
 /*
