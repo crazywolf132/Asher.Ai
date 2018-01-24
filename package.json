@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "codacy-coverage": "^2.0.3",
     "compromise": "^11.1.0",
     "event-stream": "^3.3.4",
     "express": "^4.16.2",
