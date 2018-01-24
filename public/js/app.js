@@ -2,6 +2,19 @@ var socket;
 var currentAppIndex;
 var homeAppIndex = 0;
 
+function readOutLoud(message) {
+	var speech = new SpeechSynthesisUtterance();
+
+	// Set the text and voice attributes.
+	speech.text = message;
+	speech.volume = 1;
+	speech.rate = 1;
+	speech.pitch = 1;
+
+	window.speechSynthesis.speak(speech);
+}
+
+
 function connect(host) {
 	localStorage.host = host;
 	socket = io(host);
@@ -69,18 +82,6 @@ function setupWebSpeechAPI() {
 	}
 }
 
-function readOutLoud(message) {
-	var speech = new SpeechSynthesisUtterance();
-
-	// Set the text and voice attributes.
-	speech.text = message;
-	speech.volume = 1;
-	speech.rate = 1;
-	speech.pitch = 1;
-
-	window.speechSynthesis.speak(speech);
-}
-
 function startDictation() {
 	if (supportsSpeechApi) {
 		var recognition = new webkitSpeechRecognition();
@@ -128,7 +129,7 @@ window.onload = function() {
 		document.getElementById("message_box").value = "";
 	});
 	$("#message_box").keyup(function(e) {
-		if (e.keyCode == 13) {
+		if (e.keyCode === 13) {
 			$(this).trigger("enterKey");
 		}
 	});
