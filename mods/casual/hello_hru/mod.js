@@ -8,7 +8,8 @@ module.exports = (
    const second_responses_bad = ['Thats not good!', 'Oh no, thats not what i was wanting to hear.']
    if (continuation){
      core.logger('DEBUG', "we are continueing with this module...")
-     _result = await continueMod(nlp, good_replys, bad_replys, second_responses_good, second_responses_bad, message, core, socket)
+     arrayHolder = good_replys + '$$' + bad_replys + '$$' + second_responses_good + '$$' + second_responses_bad
+     _result = await continueMod(nlp, arrayHolder, message, core, socket)
    }else{
      if (Math.random() >= 0.5){
        core.remember(socket.id, 'casual/hru')
@@ -21,7 +22,12 @@ module.exports = (
   }
 );
 
-async function continueMod(nlp, good_list, bad_list, good_res, bad_res, message, core, socket) {
+async function continueMod(nlp, arrayHolder, message, core, socket) {
+  let holder = arrayHolder.split('$$')
+  let good_list = holder[0]
+  let bad_list = holder[1]
+  let good_res = holder[2]
+  let bad_res = holder[3]
   core.logger('running the continuation module worker')
   return new Promise((resolve) => {
     core.logger('promise has been started')
