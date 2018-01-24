@@ -1,4 +1,3 @@
-console.log("[INFO]  Starting...");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
@@ -11,16 +10,16 @@ const io = require("socket.io")(4416);
 const speak = require("speakeasy-nlp");
 const nlp = require("compromise");
 const sentiment = require("sentiment");
-const mod_handler = require("./core/functions/mod_handler");
+const modHandler = require("./core/functions/mod_handler");
 const helper = require("./core/functions/helper");
-const trainAllMods = mod_handler.trainAllMods;
-const loadAllMods = mod_handler.loadAllMods;
-const getMod = mod_handler.getMod;
+const trainAllMods = modHandler.trainAllMods;
+const loadAllMods = modHandler.loadAllMods;
+const getMod = modHandler.getMod;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
 const swears = [];
-const _mod_types = {};
-const mods = mod_handler.mods;
+const modTypes = {};
+const mods = modHandler.mods;
 var clients = [];
 const socketMods = ["timers"];
 let allMods = {};
@@ -28,8 +27,8 @@ let allMods = {};
 // and allowing the continuation of a mod.
 var savedStates = {};
 var currentMods = {};
-const api_router = require("./routes/api");
-const home_router = require("./routes/home");
+const apiRouter = require("./routes/api");
+const homeRouter = require("./routes/home");
 
 /*
  ██████  ██████  ██████  ███████
@@ -38,7 +37,7 @@ const home_router = require("./routes/home");
 ██      ██    ██ ██   ██ ██
  ██████  ██████  ██   ██ ███████
 */
-
+console.log("[INFO]  Starting...");
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(
@@ -175,9 +174,9 @@ workItOut = (msg, usedSocket, socket) => {
 	}
 
 	// This is the rest of the code that will be run if there is no running mods...
-	toLoad = getMod(mods, _mod_types, _questionType, msg);
+	toLoad = getMod(mods, modTypes, _questionType, msg);
 	if (toLoad === "") {
-		toLoad = getMod(mods, _mod_types, "other", msg);
+		toLoad = getMod(mods, modTypes, "other", msg);
 		if (toLoad === "") {
 			return "I am horribly sorry, but i just dont know what to respond...";
 		} else if (socketMods.indexOf(toLoad) > -1 && !usedSocket) {
@@ -199,7 +198,7 @@ workItOut = (msg, usedSocket, socket) => {
 */
 
 module.exports.logger("NORMAL", "Configuring mods...");
-loadAllMods(allMods, _mod_types, true);
+loadAllMods(allMods, modTypes, true);
 
 /*
 ██████   ██████  ██    ██ ████████ ███████ ███████
@@ -209,8 +208,8 @@ loadAllMods(allMods, _mod_types, true);
 ██   ██  ██████   ██████     ██    ███████ ███████
 */
 
-app.use("/api", api_router);
-app.use("/", home_router);
+app.use("/api", apiRouter);
+app.use("/", homeRouter);
 
 io.on("connection", (client) => {
 	module.exports.logger("NORMAL", "Client connected...");
