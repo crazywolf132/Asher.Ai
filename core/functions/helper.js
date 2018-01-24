@@ -18,7 +18,7 @@ exports.findFilesAndFolders = (
 	checkForDir,
 	checkForFile
 ) => {
-	fs.readdirSync(_path).forEach(file => {
+	fs.readdirSync(_path).forEach((file) => {
 		if (checkForDir && !checkForFile) {
 			if (fs.statSync(_path + file).isDirectory()) {
 				if (returnNamesOnly) {

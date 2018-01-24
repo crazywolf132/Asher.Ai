@@ -3,9 +3,9 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	const query = input[input.length - 1];
 	return await ask(query);
 };
-ask = query => {
+ask = (query) => {
 	const request = require("request");
-	return new Promise(resolve => {
+	return new Promise((resolve) => {
 		request.get(
 			"http://api.duckduckgo.com/?q=Where+is+" +
 				query +

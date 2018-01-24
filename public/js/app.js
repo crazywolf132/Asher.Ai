@@ -47,7 +47,7 @@ addMaleMessage = function(message) {
 	_div3.appendChild(_msg);
 	$("html, body").animate(
 		{
-			scrollTop: $(_div1).offset().top
+			scrollTop: $(_div1).offset().top,
 		},
 		2000
 	);
@@ -68,7 +68,7 @@ addFemaleMessage = function(message) {
 	_div3.appendChild(_msg);
 	$("html, body").animate(
 		{
-			scrollTop: $(_div1).offset().top
+			scrollTop: $(_div1).offset().top,
 		},
 		2000
 	);

@@ -42,7 +42,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(
 	bodyParser.urlencoded({
-		extended: true
+		extended: true,
 	})
 );
 app.set("views", path.join(__dirname, "views"));
@@ -100,15 +100,15 @@ module.exports.logger = function(type, message) {
 	console.log("[" + type + "]  " + message);
 };
 
-socketRegistration = passcode => {
+socketRegistration = (passcode) => {
 	savedStates[passcode] = "false";
 	clients.push(passcode);
 	module.exports.logger("NORMAL", "remembering: " + passcode);
 };
 
-socketRemovale = passcode => {
+socketRemovale = (passcode) => {
 	delete savedStates[passcode];
-	clients = clients.filter(clients => clients !== passcode);
+	clients = clients.filter((clients) => clients !== passcode);
 };
 
 workItOut = (msg, usedSocket, socket) => {
@@ -159,7 +159,7 @@ workItOut = (msg, usedSocket, socket) => {
 		// If there happens to already be a mod in use... we will run that...
 		// otherwise, there is no other catches... so we will continue onto the
 		// rest of the code below...
-		if (_res != "false") {
+		if (_res !== "false") {
 			// We have detected a running mod, so we will work out what one... and
 			// continue where left off. We will also forget the module, so then we
 			// dont have module_devs forgetting to clear the memory.
@@ -212,11 +212,11 @@ loadAllMods(allMods, _mod_types, true);
 app.use("/api", api_router);
 app.use("/", home_router);
 
-io.on("connection", client => {
+io.on("connection", (client) => {
 	module.exports.logger("NORMAL", "Client connected...");
 	socketRegistration(client.id);
-	client.on("message", data => {
-		Promise.resolve(workItOut(data, true, client)).then(response => {
+	client.on("message", (data) => {
+		Promise.resolve(workItOut(data, true, client)).then((response) => {
 			module.exports.logger("NORMAL", "responded with " + response);
 			if (response !== "undefined") {
 				client.emit("result", String(response));

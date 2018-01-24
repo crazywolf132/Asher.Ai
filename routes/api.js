@@ -8,20 +8,20 @@ router.route("/talk").post(function(req, res) {
 	if (command === null) {
 		return res.json({
 			status: "fail",
-			error: "No command provided!"
+			error: "No command provided!",
 		});
 	}
 	logger("Normal", "receiving " + command);
-	Promise.resolve(workItOut(command, false)).then(response => {
+	Promise.resolve(workItOut(command, false)).then((response) => {
 		logger("Normal", "responded with " + response);
 		if (response !== "undefined") {
 			res.json({
 				status: "success",
-				reply: response
+				reply: response,
 			});
 		} else {
 			res.json({
-				status: "unknown"
+				status: "unknown",
 			});
 		}
 	});

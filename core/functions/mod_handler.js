@@ -7,7 +7,7 @@ const logger = require(process.cwd() + "/server").logger;
 exports.mods = mods = [];
 exports.trainAllMods = () => {
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
-	mods.forEach(item => {
+	mods.forEach((item) => {
 		let holder = [];
 		findFilesAndFolders(
 			process.cwd() + "/mods/" + item + "/",
@@ -16,7 +16,7 @@ exports.trainAllMods = () => {
 			false,
 			true
 		);
-		holder.forEach(file => {
+		holder.forEach((file) => {
 			if (file === process.cwd() + "/mods/" + item + "/words.txt") {
 				teach(process.cwd() + "/mods/" + item + "/words.txt", item);
 			}
@@ -27,7 +27,7 @@ exports.trainAllMods = () => {
 
 exports.loadAllMods = (_all_Mods, _dict, loadType) => {
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
-	mods.forEach(mod => {
+	mods.forEach((mod) => {
 		let holder = [];
 		findFilesAndFolders(
 			process.cwd() + "/mods/" + mod + "/",
@@ -36,7 +36,7 @@ exports.loadAllMods = (_all_Mods, _dict, loadType) => {
 			false,
 			true
 		);
-		holder.forEach(file => {
+		holder.forEach((file) => {
 			if (file === process.cwd() + "/mods/" + mod + "/mod.js") {
 				_all_Mods[mod] = require(process.cwd() + "/mods/" + mod + "/mod.js");
 			}
@@ -55,11 +55,11 @@ exports.getMod = (_mods, _modTypes, _questionType, _msg) => {
 	let holdme = "";
 	let _sentence;
 
-	_mods.forEach(mod => {
+	_mods.forEach((mod) => {
 		if (_modTypes[mod] === _questionType) {
 			_ins = [];
 			fileToArray(process.cwd() + "/mods/" + mod + "/words.txt", _ins);
-			_ins.forEach(_sentence => {
+			_ins.forEach((_sentence) => {
 				_sentence = _sentence.replace(/\r?\n?/gm, "");
 				_sentence.trim();
 				let result = nlp(_msg).match(_sentence).found;

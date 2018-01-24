@@ -48,7 +48,7 @@ async function continueModule(
 	name,
 	core
 ) {
-	return new Promise(resolve => {
+	return new Promise((resolve) => {
 		allSubMods[name] = require("./" + name + "/mod.js");
 		let toRun = allSubMods[name];
 		let result = toRun(subject, message, socket, core, true);
@@ -60,8 +60,8 @@ async function working(allSubMods, subject, message, socket, subMods, core) {
 		.findFilesAndFolders;
 	const fileToArray = require(process.cwd() + "/core/functions/helper")
 		.fileToArray;
-	return new Promise(resolve => {
-		subMods.forEach(item => {
+	return new Promise((resolve) => {
+		subMods.forEach((item) => {
 			const holder = [];
 			findFilesAndFolders(
 				"./mods/casual/" + item + "/",
@@ -70,14 +70,14 @@ async function working(allSubMods, subject, message, socket, subMods, core) {
 				false,
 				true
 			);
-			holder.forEach(file => {
+			holder.forEach((file) => {
 				if (file === "./mods/casual/" + item + "/mod.js") {
 					allSubMods[item] = require("./" + item + "/mod.js");
 				} else if (file === "./mods/casual/" + item + "/words.txt") {
 					//We are just going to assume there is a responses.txt file...
 					const wordsHolder = [];
 					fileToArray("./mods/casual/" + item + "/words.txt", wordsHolder);
-					wordsHolder.forEach(sentence => {
+					wordsHolder.forEach((sentence) => {
 						if (nlp(message).match(sentence).found) {
 							core.logger("INFO", "Going to run the sub-module: " + item);
 							const res = [];
