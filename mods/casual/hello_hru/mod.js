@@ -49,18 +49,12 @@ async function continueMod(nlp, arrayHolder, message, core, socket) {
 	core.logger("running the continuation module worker");
 	return new Promise((resolve) => {
 		core.logger("promise has been started");
-		good_list.forEach((item) => {
-			if (nlp(message).match(item).found) {
-				res = good_res[Math.floor(Math.random() * good_res.length)];
-				resolve(res);
-			}
-		});
-		bad_list.forEach((item) => {
-			if (nlp(message).match(item).found) {
-				res = bad_res[Math.floor(Math.random() * bad_res.length)];
-				resolve(res);
-			}
-		});
+		core.addResponder(message, good_list, function(){
+			resolve(good_res[Math.floor(Math.randon() * good_res.length)]);
+		})
+		core.addResponder(message, bad_list, function(){
+			resolve(bad_res[Math.floor(Math.random() * bad_res.length)]);
+		})
 		resolve("Sorry, i dont know how to respond to that...");
 	});
 }

@@ -91,6 +91,16 @@ module.exports.memeory = function(socketID) {
 	}
 };
 
+module.exports.activeMemory = memory = {};
+
+module.exports.addResponder = (input, inArray, callback) => {
+	inArray.forEach((item) => {
+		if (nlp(input).match(item).found) {
+			callback();
+		}
+	})
+}
+
 module.exports.logger = function(type, message) {
 	if (type === "NORMAL" || type === "Normal" || type === "") {
 		type = "INFO";
