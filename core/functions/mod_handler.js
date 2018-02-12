@@ -7,6 +7,7 @@ const logger = require(process.cwd() + "/server").logger;
 
 exports.mods = mods = [];
 
+
 exports.trainAllMods = () => {
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
 	mods.forEach((item) => {
