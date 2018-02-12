@@ -249,5 +249,5 @@ io.on("connection", (client) => {
 
 setTimeout(() => {
 	app.listen(port);
-	module.exports.logger("NORMAL", "Magic happens on port " + port);
+	module.exports.logger("NORMAL", "Magic happens on port " + port + "\n\n");
 }, 1000);

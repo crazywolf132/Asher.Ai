@@ -78,6 +78,7 @@ async function working(allSubMods, subject, message, socket, subMods, core) {
 					const wordsHolder = [];
 					fileToArray("./mods/casual/" + item + "/words.txt", wordsHolder);
 					wordsHolder.forEach((sentence) => {
+						//TODO: Fix this bullshit... it runs 3 times...
 						if (nlp(message).match(sentence).found) {
 							core.logger("INFO", "Going to run the sub-module: " + item);
 							const res = [];
