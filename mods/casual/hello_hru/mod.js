@@ -2,11 +2,11 @@ module.exports = async (subject, message, socket, core, continuation) => {
 	const responses = ["hello", "hey", "G'day", "hi", "howdy", "aloha"];
 	const how_r_u = "how .? you .?"
 	const hru_response = ["I am good thankyou.", "I am doing awesome.", "Nothing could be better."]
-	const good_replys = [
+	const good_replies = [
 		"i am (good|great|excelent|ok) .?",
 		"I'm (good|great|excelent|ok) .?",
 	];
-	const bad_replys = [
+	const bad_replies = [
 		"i am not .? (good|great|excelent|ok) .?",
 		"I'm not .? (good|great|excelent|ok) .?",
 	];
@@ -20,16 +20,22 @@ module.exports = async (subject, message, socket, core, continuation) => {
 		"Thats not good!",
 		"Oh no, thats not what i was wanting to hear.",
 	];
+
 	if (continuation) {
 		core.logger("DEBUG", "we are continueing with this module...");
-		arrayHolder =
+		let arrayHolder = [];
+		/*arrayHolder =
 			good_replys +
 			"$$" +
 			bad_replys +
 			"$$" +
 			second_responses_good +
 			"$$" +
-			second_responses_bad;
+			second_responses_bad;*/
+			arrayHolder.push(good_replies)
+			arrayHolder.push(bad_replies)
+			arrayHolder.push(second_responses_good)
+			arrayHolder.push(second_responses_bad)
 		_result = await continueMod(nlp, arrayHolder, message, core, socket);
 	} else {
 		core.logger("DEBUG", "Reading throught the message to see what to do.");
@@ -62,42 +68,35 @@ module.exports = async (subject, message, socket, core, continuation) => {
 			+ " "
 			+ secondLine[Math.floor(Math.random()*secondLine.length)]
 
-
-
 		} else {
 			core.logger("DEBUG", "There was no 'how are you' in this...");
 			// we are now just going to assume they just said hello... otherwise, the
 			// memory isnt working, as they must have responded with an answer... :(
 			return responses[Math.floor(Math.random()*responses.length)]
 		}
-
-
-		/*
-		if (Math.random() >= 0.5) {
-			core.remember(socket.id, "casual/hello_hru");
-			return responses[Math.floor(Math.random() * responses.length)] + question;
-		} else {
-			core.forget(socket.id);
-			return responses[Math.floor(Math.random() * responses.length)];
-		}*/
 	}
 };
 
 async function continueMod(nlp, arrayHolder, message, core, socket) {
-	let holder = arrayHolder.split("$$");
+	let holder = arrayHolder;
+	//console.log(arrayHolder);
+	//console.log(holder)
 	let good_list = holder[0];
 	let bad_list = holder[1];
 	let good_res = holder[2];
 	let bad_res = holder[3];
-	core.logger("running the continuation module worker");
+
+	core.logger('INFO',"running the continuation module worker");
 	return new Promise((resolve) => {
-		core.logger("promise has been started");
+		core.logger('INFO', "promise has been started");
 		let _response = ""
+		console.log(good_res)
+		core.forget(socket.id)
 		core.addResponder(message, good_list, function(){
-			_response = (good_res[Math.floor(Math.randon() * good_res.length)]);
+			resolve(good_res[Math.floor(Math.random() * good_res.length)]);
 		})
 		core.addResponder(message, bad_list, function(){
-			_response = (bad_res[Math.floor(Math.random() * bad_res.length)]);
+			resolve(bad_res[Math.floor(Math.random() * bad_res.length)]);
 		})
 		resolve("Sorry, i dont know how to respond to that...");
 	});
