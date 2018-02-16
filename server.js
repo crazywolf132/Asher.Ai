@@ -93,6 +93,17 @@ module.exports.memeory = function(socketID) {
 
 module.exports.activeMemory = memory = {};
 
+module.exports.addActiveMemory = function(socketID, key, val) {
+	module.exports.logger("INFO", socketID + " added something to active memory");
+	if (socketID in module.exports.activeMemory) {
+		module.exports.activeMemory[socketID][key] = val;
+	} else {
+		module.exports.activeMemory[socketID] = {}
+		module.exports.activeMemory[socketID][key] = val;
+	}
+}
+
+
 module.exports.addResponder = (input, inArray, callback) => {
 	inArray.forEach((item) => {
 		if (nlp(input).match(item).found) {

@@ -1,0 +1,20 @@
+my name is .?
+your name is .?
+my phone number is .?
+my address is .?
+(i'm|i am) #Value years old
+(i'm|i am) a #Value year old
+(i'm|i am) #Value
+my girlfriend is .?
+my wife is .?
+my husband is .?
+my boyfriend is .?
+who is my girlfriend
+who is my boyfriend
+who is my husband
+who is my wife
+what is my name
+what is my address
+what is my phone number
+what is your name
+how old am i
