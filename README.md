@@ -37,42 +37,21 @@ We are going to make a mod called `funny`.
 We then need to create all 3 of those files inside that folder.
 
 We are going to start work on the `words.txt` file. We now need to decide different examples of triggering the mod. Seeing as our mod is going to be a joke mod. Here is what our words file is going to look like.
-```
-tell .? a joke
-do you have any jokes?
-(i|we) would love to hear some jokes!
-```
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/words.png">
+
 For more special characters to use inside of your words file. Feel free to head over to the wiki where we explain the different characters used in the words files.
 
 We now need to set the `type.txt` file. As we can see from our words file, our does not fit one of these categories...
-```
-- Who
-- What
-- When
-- Where
-- Why
-- How
-```
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/type.png">
+
 So, we need to set it as `other`. Thats it, our system will be able to do the rest.
 
 We just now need to work on the actual `mod.js` file!
 Every mod is composed of:
-```JS
-module.exports = (async (subject, message, socket, usedSocket) => {
-    return //Your message to go back to the user.
-});
-```
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/basicMod.png">
+
 We are going to take that template, and we are going to add our elements to it:
-```JS
-module.exports = (async (subject, message, socket, usedSocket) => {
-    jokes = [
-      'I wrote a song about a tortilla. Well actually, it’s more of a wrap.',
-      '“Um.” —First horse that got ridden',
-      'Some people just have a way with words, and other people … oh … not have way.'
-    ]
-    return (jokes[Math.floor(Math.random() * jokes.length)]);
-});
-```
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/ourMod.png">
 
 Thats it. Asher now knows our `Funny` module, Once he restarts... we will be able to say one of our trigger words from `words.txt` and he will run this mod.
 
