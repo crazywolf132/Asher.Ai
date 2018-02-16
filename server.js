@@ -91,6 +91,28 @@ module.exports.memeory = function(socketID) {
 	}
 };
 
+// I am doing this so the knowledge module doesnt have to make so many requests...
+module.exports.cacheMemory = cacheMem = {};
+// We can simply load the answe from here if we already have it...
+module.exports.addCacheMemory = function(type, key, val) {
+	if (type in module.exports.cacheMemory) {
+		if (key in module.exports.cacheMemory[type]) {
+			// Well, it is already there... so we are just going to return a result...
+			return 0
+			// We are returning 0, as it didnt work...
+		} else {
+			// The question hasnt been asked yet... YAY! learning!
+			module.exports.cacheMemory[type][key] = val;
+			return 1
+		}
+	} else {
+		// The type of questions eg. "what", doesnt exist in the mem yet...
+		module.exports.cacheMemory[type] = {}
+		module.exports.cacheMemory[type][key] = val;
+		return 1
+	}
+}
+
 module.exports.activeMemory = memory = {};
 
 module.exports.addActiveMemory = function(socketID, key, val) {
