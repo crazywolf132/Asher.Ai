@@ -4,8 +4,6 @@ module.exports = async (subject, message, socket, socketUsed) => {
     .out("text");
 
   return await counter(value, socket);
-  //tosend += value;
-  //return tosend
 }
 
 async function counter(to, socket) {

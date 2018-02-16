@@ -188,7 +188,7 @@ workItOut = (msg, usedSocket, socket) => {
 	if (toLoad === "") {
 		toLoad = getMod(mods, modTypes, "other", msg);
 		if (toLoad === "") {
-			return "I am horribly sorry, but i just dont know what to respond...";
+			return checkNegativity(msg);
 		} else if (socketMods.indexOf(toLoad) > -1 && !usedSocket) {
 			return "Sorry, to use this module. You need to connect to the server via socket.";
 		}
@@ -198,6 +198,28 @@ workItOut = (msg, usedSocket, socket) => {
 	let _mod_to_run = allMods[toLoad];
 	return _mod_to_run(sub, msg, socket, usedSocket);
 };
+
+checkNegativity = (msg) => {
+	var s_words = false;
+	swears.forEach(function(item){
+		if (msg.indexOf(item) > -1) {
+			s_words = true;
+		}
+	})
+	var neg_score = speak.sentiment.negativity(msg).score;
+	console.log(neg_score)
+	if (s_words && neg_score >= 2) {
+      // We now need to reply with "Now now, there is no need for that talk..."
+      return("Now now, there is no need for that kind of talk...");
+  } else if (!s_words && neg_score === 1) {
+			console.log("There was no swear words...")
+      // We now need to reply with "Your not being very nice."
+      return("Your not being very nice me...");
+  } else {
+			console.log("There was no swear words, and it was a good neg_score")
+      return("I am horribly sorry, but i just dont know what to respond...");
+  }
+}
 
 /*
 ███    ███  ██████  ██████  ███████
@@ -209,6 +231,8 @@ workItOut = (msg, usedSocket, socket) => {
 
 module.exports.logger("NORMAL", "Configuring mods...");
 loadAllMods(allMods, modTypes, true);
+fileToArray('swears.txt', swears);
+
 
 /*
 ██████   ██████  ██    ██ ████████ ███████ ███████
