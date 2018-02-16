@@ -51,7 +51,7 @@ Every mod is composed of:
 <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/basicMod.png">
 
 We are going to take that template, and we are going to add our elements to it:
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/ourMod.png">
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/ourMod.png" href='#'>
 
 Thats it. Asher now knows our `Funny` module, Once he restarts... we will be able to say one of our trigger words from `words.txt` and he will run this mod.
 
