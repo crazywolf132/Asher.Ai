@@ -9,4 +9,8 @@ whats new
 what are you up to
 whats up
 .? good (morning|day|afternoon|evening|night) .?
-.? (hello|hi|hey|hiya|gday) .?
+*? (hello|hi|hey|hiya|gday) *?
+.? are you married
+.? are we married
+^yeah it? is?
+^no sorry?
