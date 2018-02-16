@@ -3,6 +3,10 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	const query = input[input.length - 1];
 	return await ask(query);
 };
+//TODO: Check to see if the question has already been asked, and is
+// in the cache memory, to save the amount of requests we are making...
+//TODO: re-enable this module... but load the activeMemory module before this one...
+//TODO: re-add "what is .?" to the words.txt file of this module...
 ask = (query) => {
 	const request = require("request");
 	return new Promise((resolve) => {
