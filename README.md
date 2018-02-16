@@ -37,14 +37,14 @@ We are going to make a mod called `funny`.
 We then need to create all 3 of those files inside that folder.
 
 We are going to start work on the `words.txt` file. We now need to decide different examples of triggering the mod. Seeing as our mod is going to be a joke mod. Here is what our words file is going to look like.
-<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/jokes/words.txt'>
+<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/words.txt'>
 <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/words.png">
 </a>
 
 For more special characters to use inside of your words file. Feel free to head over to the wiki where we explain the different characters used in the words files.
 
 We now need to set the `type.txt` file. As we can see from our words file, our does not fit one of these categories...
-<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/jokes/type.txt'>
+<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/type.txt'>
 <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/types.png">
 </a>
 
@@ -55,7 +55,7 @@ Every mod is composed of:
 <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/basicMod.png">
 
 We are going to take that template, and we are going to add our elements to it:
-<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/jokes/mod.js'>
+<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/mod.js'>
 <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/ourMod.png">
 </a>
 
