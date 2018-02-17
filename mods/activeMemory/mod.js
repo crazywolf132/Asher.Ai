@@ -10,7 +10,7 @@ module.exports = async (subject, message, socket, socketUsed) => {
 
 head = (message, socket, nlp, brain, memory) => {
   return new Promise((resolve) => {
-    const whoList = ['girlfriend', 'boyfriend', 'husband', 'wife'];
+    const whoList = ['girlfriend', 'mom', 'dad', 'boyfriend', 'husband', 'wife'];
     const whatList = ['name', 'address', 'phone number', 'name'];
     const howList = ['old'];
 

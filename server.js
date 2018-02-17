@@ -265,6 +265,10 @@ checkNegativity = (msg) => {
 module.exports.logger("NORMAL", "Configuring mods...");
 loadAllMods(allMods, modTypes, true);
 fileToArray('swears.txt', swears);
+//Pushing the knowledge module to the back of the line, as it should be the last
+//to load. Eg. So it doesnt over-run the activeMemory...
+mods.push(mods.splice(mods.indexOf('knowledge'), 1)[0]);
+console.log(mods)
 
 
 /*

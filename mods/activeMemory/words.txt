@@ -1,4 +1,8 @@
 my name is .?
+my moms name is .?
+my mom is .?
+my dads name is .?
+my dad is .?
 your name is .?
 my phone number is .?
 my address is .?
@@ -13,6 +17,8 @@ who is my girlfriend
 who is my boyfriend
 who is my husband
 who is my wife
+who is my dad
+who is my mom
 what is my name
 what is my address
 what is my phone number
