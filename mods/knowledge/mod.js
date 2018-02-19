@@ -26,7 +26,6 @@ ask = (message, subject, query) => {
 				console.log(_tokes[0].text)
 				if (subject in brain[_tokes[0].text]) {
 					// The knowledge is already here... lets just send that again...
-					console.log("its already in the brain...")
 					resolve(brain[_tokes[0].text][subject])
 				} else {
 					request.get(

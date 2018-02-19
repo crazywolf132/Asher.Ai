@@ -21,7 +21,7 @@ const swears = [];
 const modTypes = {};
 const mods = modHandler.mods;
 var clients = [];
-const socketMods = ["timers"];
+const socketMods = ["timers", "shoppingList", "activeMemory"];
 let allMods = {};
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.

@@ -1,0 +1,17 @@
+add .? to my shopping list
+add .? to the list
+add .? to my list
+put .? on the list
+put .? on my list
+put .? on my shopping list
+remove .? from my list
+take .? off the list
+remove .? from the shopping list
+take .? off of the shopping list
+take .? off the shopping list
+make a new shopping list
+make a new list
+create a new shopping list
+create a new list
+make me a new shopping list
+make me a new list
