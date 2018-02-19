@@ -22,20 +22,14 @@ module.exports = async (subject, message, socket, core, continuation) => {
 	];
 
 	if (continuation) {
+
 		core.logger("DEBUG", "we are continueing with this module...");
 		let arrayHolder = [];
-		/*arrayHolder =
-			good_replys +
-			"$$" +
-			bad_replys +
-			"$$" +
-			second_responses_good +
-			"$$" +
-			second_responses_bad;*/
 			arrayHolder.push(good_replies)
 			arrayHolder.push(bad_replies)
 			arrayHolder.push(second_responses_good)
 			arrayHolder.push(second_responses_bad)
+		core.forget(socket.id);
 		_result = await continueMod(nlp, arrayHolder, message, core, socket);
 	} else {
 		core.logger("DEBUG", "Reading throught the message to see what to do.");
