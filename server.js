@@ -75,15 +75,15 @@ module.exports.addCacheMemory = function(type, key, val) {
 	if (type in module.exports.cacheMemory) {
 		if (key in module.exports.cacheMemory[type]) {
 			// Well, it is already there... so we are just going to return a result...
-			return 0
+			return 0;
 			// We are returning 0, as it didnt work...
 		} else {
 			// The question hasnt been asked yet... YAY! learning!
 			module.exports.cacheMemory[type][key] = val;
-			return 1
+			return 1;
 		}
 	}
-}
+};
 
 module.exports.activeMemory = memory = {};
 
@@ -92,19 +92,18 @@ module.exports.addActiveMemory = function(socketID, key, val) {
 	if (socketID in module.exports.activeMemory) {
 		module.exports.activeMemory[socketID][key] = val;
 	} else {
-		module.exports.activeMemory[socketID] = {}
+		module.exports.activeMemory[socketID] = {};
 		module.exports.activeMemory[socketID][key] = val;
 	}
-}
-
+};
 
 module.exports.addResponder = (input, inArray, callback) => {
 	inArray.forEach((item) => {
 		if (nlp(input).match(item).found) {
 			callback();
 		}
-	})
-}
+	});
+};
 
 module.exports.remember = function(socketID, mod) {
 	module.exports.activeMemory[socketID].savedStatus = true;
@@ -118,10 +117,9 @@ module.exports.forget = function(socketID) {
 
 module.exports.memeory = function(socketID) {
 	if (module.exports.activeMemory[socketID].savedStatus) {
-		return module.exports.activeMemory[socketID].currentMods;
-	} else {
-		return "false";
+		return module.exports.activeMemory[socketID].savedStatus;
 	}
+	return "false";
 };
 
 module.exports.logger = function(type, message) {
@@ -134,26 +132,13 @@ module.exports.logger = function(type, message) {
 };
 
 socketRegistration = (id) => {
-	module.exports.activeMemory[id] = {}
+	module.exports.activeMemory[id] = {};
 	module.exports.activeMemory[id].savedStatus = false;
 	module.exports.logger("NORMAL", "remembering: " + id);
 };
 
 workItOut = (msg, usedSocket, socket) => {
 	let toLoad = "";
-	/* SAVING THIS FOR LATER...
-
-    if (s_words && neg_score >= 2) {
-        // We now need to reply with "Now now, there is no need for that talk..."
-        return ("Now now, there is no need for that talk...");
-    } else if (!s_words && neg_score == 1) {
-        // We now need to reply with "Your not being very nice."
-        return ("Your not being very nice.");
-    } else {
-        return ("Sorry, I dont know how to help...");
-    }
-
-    */
 	let _got = nlp(msg).out("normal");
 	let _tokes = nlp(_got)
 		.terms()
@@ -218,25 +203,25 @@ workItOut = (msg, usedSocket, socket) => {
 
 checkNegativity = (msg) => {
 	var s_words = false;
-	swears.forEach(function(item){
+	swears.forEach(function(item) {
 		if (msg.indexOf(item) > -1) {
 			s_words = true;
 		}
-	})
+	});
 	var neg_score = speak.sentiment.negativity(msg).score;
-	console.log(neg_score)
+	console.log(neg_score);
 	if (s_words && neg_score >= 2) {
-      // We now need to reply with "Now now, there is no need for that talk..."
-      return("Now now, there is no need for that kind of talk...");
-  } else if (!s_words && neg_score === 1) {
-			console.log("There was no swear words...")
-      // We now need to reply with "Your not being very nice."
-      return("Your not being very nice me...");
-  } else {
-			console.log("There was no swear words, and it was a good neg_score")
-      return("I am horribly sorry, but i just dont know what to respond...");
-  }
-}
+		// We now need to reply with "Now now, there is no need for that talk..."
+		return "Now now, there is no need for that kind of talk...";
+	} else if (!s_words && neg_score === 1) {
+		console.log("There was no swear words...");
+		// We now need to reply with "Your not being very nice."
+		return "Your not being very nice me...";
+	} else {
+		console.log("There was no swear words, and it was a good neg_score");
+		return "I am horribly sorry, but i just dont know what to respond...";
+	}
+};
 
 /*
 ███████ ███████ ████████ ██    ██ ██████
@@ -248,14 +233,13 @@ checkNegativity = (msg) => {
 
 module.exports.logger("NORMAL", "Configuring mods...");
 loadAllMods(allMods, modTypes, true);
-fileToArray('swears.txt', swears);
+fileToArray("swears.txt", swears);
 //Pushing the knowledge module to the back of the line, as it should be the last
 //to load. Eg. So it doesnt over-run the activeMemory...
-mods.push(mods.splice(mods.indexOf('knowledge'), 1)[0]);
+mods.push(mods.splice(mods.indexOf("knowledge"), 1)[0]);
 normal.forEach((item) => {
 	module.exports.cacheMemory[item] = {};
-})
-
+});
 
 /*
 ██████   ██████  ██    ██ ████████ ███████ ███████
@@ -272,7 +256,7 @@ io.on("connection", (client) => {
 	module.exports.logger("NORMAL", "Client connected...");
 	socketRegistration(client.id);
 	client.on("message", (data) => {
-		console.log(clients)
+		console.log(clients);
 		Promise.resolve(workItOut(data, true, client)).then((response) => {
 			module.exports.logger("NORMAL", "responded with " + response);
 			if (response !== "undefined") {
