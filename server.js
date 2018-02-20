@@ -69,28 +69,6 @@ const router = express.Router();
 ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
 ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
 */
-module.exports.remember = function(socketID, mod) {
-	module.exports.logger("DEBUG", socketID + " is remembering " + mod);
-	savedStates[socketID] = "true";
-	currentMods[socketID] = mod;
-};
-
-module.exports.forget = function(socketID) {
-	module.exports.logger("DEBUG", socketID + " is forgetting their module");
-	savedStates[socketID] = "false";
-	currentMods[socketID] = "";
-};
-
-module.exports.memeory = function(socketID) {
-	module.exports.logger("DEBUG", "Loading memory for " + socketID);
-	if (savedStates[socketID] === "true") {
-		module.exports.logger("DEBUG", "There is a memory");
-		return currentMods[socketID];
-	} else {
-		module.exports.logger("DEBUG", "There was no memory found");
-		return "false";
-	}
-};
 
 // I am doing this so the knowledge module doesnt have to make so many requests...
 module.exports.cacheMemory = cacheMem = {};
@@ -130,6 +108,24 @@ module.exports.addResponder = (input, inArray, callback) => {
 	})
 }
 
+module.exports.remember = function(socketID, mod) {
+	module.exports.activeMemory[socketID].savedStatus = true;
+	module.exports.activeMemory[socketID].currentMods = mod;
+};
+
+module.exports.forget = function(socketID) {
+	module.exports.activeMemory[socketID].savedStatus = false;
+	module.exports.activeMemory[socketID].currentMods = "";
+};
+
+module.exports.memeory = function(socketID) {
+	if (module.exports.activeMemory[socketID].savedStatus) {
+		return module.exports.activeMemory[socketID].currentMods;
+	} else {
+		return "false";
+	}
+};
+
 module.exports.logger = function(type, message) {
 	if (type === "NORMAL" || type === "Normal" || type === "") {
 		type = "INFO";
@@ -139,15 +135,10 @@ module.exports.logger = function(type, message) {
 	console.log("[" + type + "]  " + message);
 };
 
-socketRegistration = (passcode) => {
-	savedStates[passcode] = "false";
-	clients.push(passcode);
-	module.exports.logger("NORMAL", "remembering: " + passcode);
-};
-
-socketRemovale = (passcode) => {
-	delete savedStates[passcode];
-	clients = clients.filter((clients) => clients !== passcode);
+socketRegistration = (id) => {
+	module.exports.activeMemory[id] = {}
+	module.exports.activeMemory[id].savedStatus = false;
+	module.exports.logger("NORMAL", "remembering: " + id);
 };
 
 workItOut = (msg, usedSocket, socket) => {
@@ -283,6 +274,7 @@ io.on("connection", (client) => {
 	module.exports.logger("NORMAL", "Client connected...");
 	socketRegistration(client.id);
 	client.on("message", (data) => {
+		console.log(clients)
 		Promise.resolve(workItOut(data, true, client)).then((response) => {
 			module.exports.logger("NORMAL", "responded with " + response);
 			if (response !== "undefined") {
@@ -293,7 +285,7 @@ io.on("connection", (client) => {
 	});
 	client.on("disconnect", function() {
 		module.exports.logger("NORMAL", "disconnected...");
-		socketRemovale(client.id);
+		//socketRemoval(client.id);
 	});
 });
 
