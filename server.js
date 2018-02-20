@@ -22,6 +22,7 @@ const modTypes = {};
 const mods = modHandler.mods;
 var clients = [];
 const socketMods = ["timers", "shoppingList", "activeMemory"];
+const normal = ["what", "who", "when", "where", "why", "how"];
 let allMods = {};
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.
@@ -105,11 +106,6 @@ module.exports.addCacheMemory = function(type, key, val) {
 			module.exports.cacheMemory[type][key] = val;
 			return 1
 		}
-	} else {
-		// The type of questions eg. "what", doesnt exist in the mem yet...
-		module.exports.cacheMemory[type] = {}
-		module.exports.cacheMemory[type][key] = val;
-		return 1
 	}
 }
 
@@ -177,7 +173,6 @@ workItOut = (msg, usedSocket, socket) => {
 	let _firstWord = _tokes[0];
 
 	const slang = ["whats", "whos", "whens", "wheres", "whys", "hows"];
-	const normal = ["what", "who", "when", "where", "why", "how"];
 	if (slang.indexOf(_firstWord.text) > -1) {
 		pos = slang.indexOf(_firstWord.text);
 		_firstWord = normal[pos];
@@ -255,11 +250,11 @@ checkNegativity = (msg) => {
 }
 
 /*
-███    ███  ██████  ██████  ███████
-████  ████ ██    ██ ██   ██ ██
-██ ████ ██ ██    ██ ██   ██ ███████
-██  ██  ██ ██    ██ ██   ██      ██
-██      ██  ██████  ██████  ███████
+███████ ███████ ████████ ██    ██ ██████
+██      ██         ██    ██    ██ ██   ██
+███████ █████      ██    ██    ██ ██████
+     ██ ██         ██    ██    ██ ██
+███████ ███████    ██     ██████  ██
 */
 
 module.exports.logger("NORMAL", "Configuring mods...");
@@ -268,7 +263,9 @@ fileToArray('swears.txt', swears);
 //Pushing the knowledge module to the back of the line, as it should be the last
 //to load. Eg. So it doesnt over-run the activeMemory...
 mods.push(mods.splice(mods.indexOf('knowledge'), 1)[0]);
-console.log(mods)
+normal.forEach((item) => {
+	module.exports.cacheMemory[item] = {};
+})
 
 
 /*

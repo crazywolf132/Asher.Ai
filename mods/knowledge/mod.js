@@ -46,27 +46,7 @@ ask = (message, subject, query) => {
 						}
 					);
 				}
-			} else {
-				brain[_tokes[0].text] = {};
-				request.get(
-					"http://api.duckduckgo.com/?q=Where+is+" +
-						query +
-						"&format=json&pretty=1",
-					(err, resp, body) => {
-						if (!err && resp.statusCode == 200) {
-							let bodie = JSON.parse(body);
-							if (bodie.Abstract) {
-								var response = bodie.Abstract;
-								brain[_tokes[0].text][subject] = (response.substring(0, response.indexOf(".") + 1));
-								resolve(response.substring(0, response.indexOf(".") + 1));
-							} else {
-								resolve("I'm sorry I couldn't find any information about " + query);
-							}
-						}
-					}
-				);
 			}
-
 		}
 	});
 };
