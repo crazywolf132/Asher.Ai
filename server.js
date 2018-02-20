@@ -26,8 +26,6 @@ const normal = ["what", "who", "when", "where", "why", "how"];
 let allMods = {};
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.
-var savedStates = {};
-var currentMods = {};
 const apiRouter = require("./routes/api");
 const homeRouter = require("./routes/home");
 
