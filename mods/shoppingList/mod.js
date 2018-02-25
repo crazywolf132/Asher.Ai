@@ -5,7 +5,10 @@ module.exports = async (subject, message, socket, socketUsed) => {
 
 	// We need to check to see if there is a memory of this module...
 	// If so, we shouldnt run head... we should run a different function...
-	return await head(core, message, socket, nlp, brain, memory);
+	if (core.memory(socket.id)) {
+	} else {
+		return await head(core, message, socket, nlp, brain, memory);
+	}
 };
 
 head = (core, message, socket, nlp, brain, memory) => {

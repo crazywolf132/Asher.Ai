@@ -117,7 +117,7 @@ module.exports.forget = function(socketID) {
 
 module.exports.memeory = function(socketID) {
 	if (module.exports.activeMemory[socketID].savedStatus) {
-		return module.exports.activeMemory[socketID].savedStatus;
+		return module.exports.activeMemory[socketID].currentMods;
 	}
 	return "false";
 };
@@ -186,7 +186,8 @@ workItOut = (msg, usedSocket, socket) => {
 	}
 
 	// This is the rest of the code that will be run if there is no running mods...
-	toLoad = getMod(mods, modTypes, _questionType, msg);
+	//toLoad = getMod(mods, modTypes, _questionType, msg);
+	toLoad = "chat";
 	if (toLoad === "") {
 		toLoad = getMod(mods, modTypes, "other", msg);
 		if (toLoad === "") {
@@ -267,7 +268,6 @@ io.on("connection", (client) => {
 	});
 	client.on("disconnect", function() {
 		module.exports.logger("NORMAL", "disconnected...");
-		//socketRemoval(client.id);
 	});
 });
 
