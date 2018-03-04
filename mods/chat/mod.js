@@ -32,10 +32,10 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	words = get_words(message);
 	holder = message.split(" ");
 	words_length = holder.length;
-  Object.keys(words).forEach((key) => {
-    let recordedWeight = Math.sqrt(words[key] / words_length);
-    temp_results.sentence_id = associations.
-  })
+	Object.keys(words).forEach((key) => {
+		let recordedWeight = Math.sqrt(words[key] / words_length);
+		//temp_results.sentence_id = associations.
+	});
 
 	// There was 3 ways of doing this. Dont use sockets... therefore, the brain
 	// cant learn. Use sockets, but then people requesting from the API cant use
