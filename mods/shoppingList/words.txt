@@ -1,5 +1,6 @@
 add .? to my shopping list
 add .? to the list
+add .? to the shopping list
 add .? to my list
 put .? on the list
 put .? on my list
@@ -15,3 +16,6 @@ create a new shopping list
 create a new list
 make me a new shopping list
 make me a new list
+send my list to #Person
+send the list to #Person
+send my shopping list to #Person

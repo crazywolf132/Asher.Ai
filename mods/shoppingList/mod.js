@@ -5,11 +5,37 @@ module.exports = async (subject, message, socket, socketUsed) => {
 
 	// We need to check to see if there is a memory of this module...
 	// If so, we shouldnt run head... we should run a different function...
-	if (core.memory(socket.id)) {
+	console.log(core)
+	if (core.memeory(socket.id)) {
+		console.log("oh no...")
+		return await sendOff("", "frank", socket, nlp, core, brain, memory)
 	} else {
-		return await head(core, message, socket, nlp, brain, memory);
+		//return await head(core, message, socket, nlp, brain, memory);
+		return await sendOff("", "frank", socket, nlp, core, brain, memory);
 	}
+
 };
+
+sendOff = (shoppingList, person, socket, nlp, core, brain, memory) => {
+	// This is where we will get the persons name and check if there was any
+	// associations between the person with the list and the reciever...
+	console.log("running send off.")
+	var result = core.checkAssociations(socket.id, person);
+	console.log("Result is: " + result)
+	if (!result) {
+		// we just need to get their email address so we can send it to them...
+		// or we can send it via sockets...
+		// for now, as i dont have time to implement an email sender... we will send the person
+		// the message via sockets.
+		return "I am so sorry, but I cant send the list to that person."
+	} else {
+		//TODO: need to learn to send the message to a sepecific socket id.
+		socket[result].emit('result', 'incomming message from ' + activeMemory[id].name);
+		return "Sending it now."
+		
+		
+	}
+}
 
 head = (core, message, socket, nlp, brain, memory) => {
 	return new Promise((resolve) => {
@@ -24,7 +50,7 @@ head = (core, message, socket, nlp, brain, memory) => {
 		//                            ^^^^
 		// That is the item we want, and it is after an item in the
 		// "named" list...
-		make.forEach((item) => {
+		/*make.forEach((item) => {
 			if (message.indexOf(item) > -1) {
 				// We are making a brand new list...
 				named.forEach((i) => {
@@ -52,6 +78,6 @@ head = (core, message, socket, nlp, brain, memory) => {
 				// We are taking an item off the list...
 				// We need to check to see if the list even exists...
 			}
-		});
+		});*/
 	});
 };

@@ -2,12 +2,13 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	const core = require(process.cwd() + "/server");
 	const memory = core.addActiveMemory;
 	const brain = core.activeMemory;
-
-	return await head(message, socket, nlp, brain, memory);
+	console.log("Got this far...")
+	return await MemoryHeader(message, socket, nlp, brain, memory, core);
 };
 
-head = (message, socket, nlp, brain, memory) => {
+MemoryHeader = (message, socket, nlp, brain, memory, core) => {
 	return new Promise((resolve) => {
+		console.log("To here...")
 		const whoList = [
 			"girlfriend",
 			"mom",
@@ -25,6 +26,7 @@ head = (message, socket, nlp, brain, memory) => {
 			.data();
 		const mem = ["who", "what", "how"];
 		if (mem.indexOf(_tokes[0].text) > -1) {
+			console.log("One of these...")
 			// This means we are looking back upon memory...
 			console.log(
 				"We are looking for a question begging with: " + _tokes[0].text
@@ -85,6 +87,8 @@ head = (message, socket, nlp, brain, memory) => {
 					break;
 			}
 		} else {
+
+			console.log("Should be running.")
 			whole_list = [];
 			whoList.forEach(function(entry) {
 				whole_list.push(entry);
@@ -95,9 +99,11 @@ head = (message, socket, nlp, brain, memory) => {
 			howList.forEach(function(entry) {
 				whole_list.push(entry);
 			});
+			console.log(nlp(message).match('* #Person').found)
 			whole_list.forEach(function(item) {
 				if (message.indexOf(item) > -1) {
 					// We are going to assume the last item is the value...
+					core.activeMemory[socket.id].associations.push(_tokes[_tokes.length - 1].text);
 					memory(socket.id, item, _tokes[_tokes.length - 1].text);
 					resolve("I have remembered that now...");
 				}

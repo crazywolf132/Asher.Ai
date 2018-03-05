@@ -15,14 +15,17 @@ const helper = require("./core/functions/helper");
 const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
 const getMod = modHandler.getMod;
+const mods = modHandler.mods;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
+const fileToDict = helper.fileToDict;
 const swears = [];
 const modTypes = {};
-const mods = modHandler.mods;
 var clients = [];
 const socketMods = ["timers", "shoppingList", "activeMemory"];
 const normal = ["what", "who", "when", "where", "why", "how"];
+const dontRun = ['chat'];
+var brainSaveTicker = 0;
 let allMods = {};
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.
@@ -83,6 +86,7 @@ module.exports.addCacheMemory = function(type, key, val) {
 			return 1;
 		}
 	}
+	backupBrain();
 };
 
 module.exports.activeMemory = memory = {};
@@ -95,6 +99,7 @@ module.exports.addActiveMemory = function(socketID, key, val) {
 		module.exports.activeMemory[socketID] = {};
 		module.exports.activeMemory[socketID][key] = val;
 	}
+	backupBrain();
 };
 
 module.exports.addResponder = (input, inArray, callback) => {
@@ -131,10 +136,135 @@ module.exports.logger = function(type, message) {
 	console.log("[" + type + "]  " + message);
 };
 
+module.exports.fileExists = (filename) => {
+	try {
+		fs.accessSync(filename);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+
+module.exports.checkAssociations = (id, otherPerson) => {
+	console.log(module.exports.activeMemory[id].associations)
+	if (id in module.exports.activeMemory) {
+		// Well, this is a good start. The user is in the Brain.
+		// We just need to check if the "otherPerson" is too.
+		// We will run a for Loop to go over every ID in the brain
+		// and see if there is someone with the name of "otherPerson".
+		Object.keys(module.exports.activeMemory).forEach((key) => {
+			if (module.exports.activeMemory[key].name === otherPerson) {
+				// WOOOO We found the person we were talking about...
+				// we just need to get this persons id. and check to see
+				// if the "id" of the other person is associated witht he person
+				// we just found. Then return the result.
+				var otherPersonID = key;
+				if (otherPersonID in module.exports.activeMemory[id].associations) {
+					console.log("I found them!!!")
+					// Wow, this person was write... they are associated to them.
+					// now  to return "true" so the module can continue its functions.
+					return true;
+				} else {
+					// Oh no... We are so sorry, but this person cant be contacted as they arent
+					// associated...
+					// We will return "false" to let them know.
+					return false;
+				}
+			}
+		})
+		// We will return "false" now as there was no-one under that name.
+		return false;
+	}
+}
+
+returningUserWithID = (oldID, newID) => {
+	// We are going to expect the id is already in the db. if not, we will
+	// return the client that their information might have been lost.
+	if (oldID in module.exports.activeMemory) {
+		if (newID in module.exports.activeMemory) {
+			return "We are sorry, but for some reason this id already has some memories..."
+		} else {
+			module.exports.activeMemory[newID] = module.exports.activeMemory[oldID];
+			return "Welcome back. " + module.exports.activeMemory[newID].name;
+		}
+	} else {
+		return "Sorry, but this ID never existed in memory, or never had any active memories..."
+	}
+
+}
+
+loadBrain = () => {
+	console.log("Loading the brain now...")
+	let FE = module.exports.fileExists;
+	console.log("cM = ");
+	console.log(module.exports.cacheMemory)
+	console.log("aM = ");
+	console.log(module.exports.activeMemory)
+	FE(process.cwd() + '/brain/cache.state') ? module.exports.cacheMemory = JSON.parse(fs.readFileSync(process.cwd() + '/brain/cache.state')) : module.exports.cacheMemory = {};
+	FE(process.cwd() + '/brain/memory.state') ? module.exports.activeMemory = JSON.parse(fs.readFileSync(process.cwd() + '/brain/memory.state')) : module.exports.activeMemory = {};
+	console.log("cM = ");
+	console.log(module.exports.cacheMemory)
+	console.log("aM = ");
+	console.log(module.exports.activeMemory)
+	console.log("Brain loaded...")
+}
+
+arraytoDict = (file, dictionary) => {
+	var holder;
+	holder = file.split('/')
+	holder.pop()
+	var dir = holder.join('/')
+	if (!fs.existsSync(dir)) {
+		fs.mkdirSync(dir);
+	}
+	holder = "";
+
+	console.log("Running the file maker...")
+	
+	Object.keys(dictionary).forEach((key) => {
+		holder += "BEGIN\n"
+		holder += key + "\n";
+		Object.keys(dictionary[key]).forEach((item) => {
+			var placeholder = "BLANK"
+			if (dictionary[key][item] === "") {
+				holder += item + " : " + placeholder + "\n";
+			} else {
+				holder += item + " : " + dictionary[key][item] + "\n";
+			}
+			
+		})
+		holder += "END\n"
+	})
+	fs.writeFileSync(file, holder);
+}
+
+
+testSaver = (file, item) => {
+	fs.writeFileSync(file, JSON.stringify(item))
+}
+
+backupBrain = () => {
+	let cM = module.exports.cacheMemory;
+	let aM = module.exports.activeMemory;
+	// First we need to go through the whole list of users... we need to see who
+	// concented to having their data saved... if they didnt... they will be forgotten.
+	//if (brainSaveTicker >= 1) {
+		// This means we need to trigger a save... if not.. we will just increment it.
+		// Seeing as there are 2 parts of the brain, the active memory... aswell as the cache memory. We
+		// need to run 2 different savers...
+		//helper.dictToFile(process.cwd() + '/brain/cache.state', cM);
+	testSaver(process.cwd() + '/brain/memory.state', module.exports.activeMemory);
+	testSaver(process.cwd() + '/brain/cache.state', module.exports.cacheMemory);
+	//} else {
+		brainSaveTicker += 1;
+	//}
+}
+
 socketRegistration = (id) => {
 	module.exports.activeMemory[id] = {};
 	module.exports.activeMemory[id].savedStatus = false;
 	module.exports.logger("NORMAL", "remembering: " + id);
+	module.exports.activeMemory[id].associations = [];
 };
 
 workItOut = (msg, usedSocket, socket) => {
@@ -186,13 +316,15 @@ workItOut = (msg, usedSocket, socket) => {
 	}
 
 	// This is the rest of the code that will be run if there is no running mods...
-	//toLoad = getMod(mods, modTypes, _questionType, msg);
-	toLoad = "chat";
+	toLoad = getMod(mods, modTypes, _questionType, msg);
+	//toLoad = "";
 	if (toLoad === "") {
 		toLoad = getMod(mods, modTypes, "other", msg);
 		if (toLoad === "") {
 			return checkNegativity(msg);
-		} else if (socketMods.indexOf(toLoad) > -1 && !usedSocket) {
+		} else if (dontRun.indexOf(toLoad) > -1) {
+			return "Sorry, this module is currently under maintance. Please check back latter!";
+		} else if (socketMods.indexOf(toLoad) < -1 && !userdSocket) {
 			return "Sorry, to use this module. You need to connect to the server via socket.";
 		}
 	}
@@ -232,6 +364,18 @@ checkNegativity = (msg) => {
 ███████ ███████    ██     ██████  ██
 */
 
+//TODO: Need to create a system to ask for the credentials of the person, and if they
+// accept the use of their information in the brain backup... as we dont want to have
+// them explain everything to the brain all over again. As that would be stupid.
+
+//TODO: We need to get the client side to send us the details the user has setup with...
+// weather that be with them making an account on the client side or not... that is totally
+// up to them. We just need the information some how. 
+
+//TODO: Ask the client side via a different request if there is a a returning user or not.
+// as we can now do a simple swap over to the new ID.
+
+loadBrain();
 module.exports.logger("NORMAL", "Configuring mods...");
 loadAllMods(allMods, modTypes, true);
 fileToArray("swears.txt", swears);
