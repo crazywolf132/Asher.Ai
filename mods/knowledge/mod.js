@@ -26,6 +26,7 @@ ask = (message, subject, query) => {
 				console.log(_tokes[0].text)
 				if (subject in brain[_tokes[0].text]) {
 					// The knowledge is already here... lets just send that again...
+					console.log(brain)
 					resolve(brain[_tokes[0].text][subject])
 				} else {
 					request.get(
@@ -37,11 +38,14 @@ ask = (message, subject, query) => {
 								let bodie = JSON.parse(body);
 								if (bodie.Abstract) {
 									var response = bodie.Abstract;
+									memory(_tokes[0].text, subject, response.substring(0, response.indexOf(".") + 1));
 									brain[_tokes[0].text][subject] = (response.substring(0, response.indexOf(".") + 1));
 									resolve(response.substring(0, response.indexOf(".") + 1));
 								} else {
 									resolve("I'm sorry I couldn't find any information about " + query);
 								}
+							} else if (err) {
+								console.log("couldnt get internet...")
 							}
 						}
 					);

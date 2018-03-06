@@ -75,18 +75,21 @@ const router = express.Router();
 module.exports.cacheMemory = cacheMem = {};
 // We can simply load the answe from here if we already have it...
 module.exports.addCacheMemory = function(type, key, val) {
+	console.log("cache being added too...")
 	if (type in module.exports.cacheMemory) {
 		if (key in module.exports.cacheMemory[type]) {
 			// Well, it is already there... so we are just going to return a result...
+			backupBrain();
 			return 0;
 			// We are returning 0, as it didnt work...
 		} else {
 			// The question hasnt been asked yet... YAY! learning!
 			module.exports.cacheMemory[type][key] = val;
+			backupBrain();
 			return 1;
 		}
 	}
-	backupBrain();
+	
 };
 
 module.exports.activeMemory = memory = {};
@@ -196,17 +199,18 @@ returningUserWithID = (oldID, newID) => {
 loadBrain = () => {
 	console.log("Loading the brain now...")
 	let FE = module.exports.fileExists;
-	console.log("cM = ");
+	/*console.log("cM = ");
 	console.log(module.exports.cacheMemory)
 	console.log("aM = ");
-	console.log(module.exports.activeMemory)
+	console.log(module.exports.activeMemory)*/
 	FE(process.cwd() + '/brain/cache.state') ? module.exports.cacheMemory = JSON.parse(fs.readFileSync(process.cwd() + '/brain/cache.state')) : module.exports.cacheMemory = {};
-	FE(process.cwd() + '/brain/memory.state') ? module.exports.activeMemory = JSON.parse(fs.readFileSync(process.cwd() + '/brain/memory.state')) : module.exports.activeMemory = {};
-	console.log("cM = ");
+	//FE(process.cwd() + '/brain/memory.state') ? module.exports.activeMemory = JSON.parse(fs.readFileSync(process.cwd() + '/brain/memory.state')) : module.exports.activeMemory = {};
+	/*console.log("cM = ");
 	console.log(module.exports.cacheMemory)
 	console.log("aM = ");
 	console.log(module.exports.activeMemory)
-	console.log("Brain loaded...")
+	console.log("Brain loaded...")*/
+	console.log(module.exports.cacheMemory)
 }
 
 arraytoDict = (file, dictionary) => {
@@ -240,7 +244,24 @@ arraytoDict = (file, dictionary) => {
 
 
 testSaver = (file, item) => {
-	fs.writeFileSync(file, JSON.stringify(item))
+	const FE = module.exports.fileExists;
+	var holder = file.split('/')
+	holder.pop()
+	var dir = holder.join('/')
+	if (!fs.existsSync(dir)) {
+		fs.mkdirSync(dir);
+	}
+	// we need to run a check to see if both are the exact same... as we dont want to keep adding garbage...
+	if (FE(file)){
+		var current = JSON.parse(fs.readFileSync(file));
+		if (current === item) {
+			console.log("They are the exact same... we will not update the brain...")
+		} else {
+			fs.writeFileSync(file, JSON.stringify(item))
+		}
+	} else {
+		fs.writeFileSync(file, JSON.stringify(item))
+	}
 }
 
 backupBrain = () => {
@@ -253,7 +274,11 @@ backupBrain = () => {
 		// Seeing as there are 2 parts of the brain, the active memory... aswell as the cache memory. We
 		// need to run 2 different savers...
 		//helper.dictToFile(process.cwd() + '/brain/cache.state', cM);
-	testSaver(process.cwd() + '/brain/memory.state', module.exports.activeMemory);
+		console.log("\n\n\nThis is the brain right before the backup...\n")
+		console.log(cM);
+		console.log(aM);
+		console.log("\n\n\n")
+	//testSaver(process.cwd() + '/brain/memory.state', module.exports.activeMemory);
 	testSaver(process.cwd() + '/brain/cache.state', module.exports.cacheMemory);
 	//} else {
 		brainSaveTicker += 1;

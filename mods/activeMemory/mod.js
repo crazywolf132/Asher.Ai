@@ -103,7 +103,8 @@ MemoryHeader = (message, socket, nlp, brain, memory, core) => {
 			whole_list.forEach(function(item) {
 				if (message.indexOf(item) > -1) {
 					// We are going to assume the last item is the value...
-					core.activeMemory[socket.id].associations.push(_tokes[_tokes.length - 1].text);
+					//core.activeMemory[socket.id].associations.push(_tokes[_tokes.length - 1].text);
+					//TODO: Fix the above code. it is useless... hahaha
 					memory(socket.id, item, _tokes[_tokes.length - 1].text);
 					resolve("I have remembered that now...");
 				}
