@@ -61,6 +61,11 @@ We are going to take that template, and we are going to add our elements to it:
 
 Thats it. Asher now knows our `Funny` module, Once he restarts... we will be able to say one of our trigger words from `words.txt` and he will run this mod.
 
+
+## Explenation of Asher's current brain.
+At this point in time, asher remembers things much like a 4 year old.
+The 4 year old remembers eating the last cookie, but when questioned about it, he doesnt remember a thing... though the memory is truely still there.
+
 ## Special thanks to...
 - [Brayden Moon](https://github.com/crazywolf132)
 - [Jamie](https://github.com/jsProj)
