@@ -213,37 +213,7 @@ loadBrain = () => {
 	console.log(module.exports.cacheMemory)
 }
 
-arraytoDict = (file, dictionary) => {
-	var holder;
-	holder = file.split('/')
-	holder.pop()
-	var dir = holder.join('/')
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir);
-	}
-	holder = "";
-
-	console.log("Running the file maker...")
-	
-	Object.keys(dictionary).forEach((key) => {
-		holder += "BEGIN\n"
-		holder += key + "\n";
-		Object.keys(dictionary[key]).forEach((item) => {
-			var placeholder = "BLANK"
-			if (dictionary[key][item] === "") {
-				holder += item + " : " + placeholder + "\n";
-			} else {
-				holder += item + " : " + dictionary[key][item] + "\n";
-			}
-			
-		})
-		holder += "END\n"
-	})
-	fs.writeFileSync(file, holder);
-}
-
-
-testSaver = (file, item) => {
+arrayToFile = (file, item) => {
 	const FE = module.exports.fileExists;
 	var holder = file.split('/')
 	holder.pop()
@@ -274,14 +244,10 @@ backupBrain = () => {
 		// Seeing as there are 2 parts of the brain, the active memory... aswell as the cache memory. We
 		// need to run 2 different savers...
 		//helper.dictToFile(process.cwd() + '/brain/cache.state', cM);
-		console.log("\n\n\nThis is the brain right before the backup...\n")
-		console.log(cM);
-		console.log(aM);
-		console.log("\n\n\n")
 	//testSaver(process.cwd() + '/brain/memory.state', module.exports.activeMemory);
-	testSaver(process.cwd() + '/brain/cache.state', module.exports.cacheMemory);
+	arrayToFile(process.cwd() + '/brain/cache.state', module.exports.cacheMemory);
 	//} else {
-		brainSaveTicker += 1;
+	brainSaveTicker += 1;
 	//}
 }
 
