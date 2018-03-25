@@ -7,9 +7,19 @@ exports.fileToArray = (file, list) => {
 		.toString()
 		.split("\n");
 	for (let i = 0; i < array.length; i++) {
-		list.push(array[i]);
+		if (array[i] !== ""){
+			list.push(array[i]);
+		}
 	}
 };
+
+exports.getFileLine = (file, line) => {
+	const array = fs
+		.readFileSync(file)
+		.toString()
+		.split("\n");
+	return array[(line-1)];
+}
 
 exports.arrayToFile = (file, array) => {
 	var holder = "";

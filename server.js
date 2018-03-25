@@ -16,6 +16,7 @@ const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
 const getMod = modHandler.getMod;
 const mods = modHandler.mods;
+const loadMods = modHandler.loadMods;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
 const fileToDict = helper.fileToDict;
@@ -369,6 +370,18 @@ checkNegativity = (msg) => {
 loadBrain();
 module.exports.logger("NORMAL", "Configuring mods...");
 loadAllMods(allMods, modTypes, true);
+var modDB = {
+	who: {},
+	what: {},
+	when: {},
+	where: {},
+	why: {},
+	how: {},
+	other: {},
+}
+loadMods(allMods, modDB, true);
+console.log(modDB)
+console.log(allMods)
 fileToArray("swears.txt", swears);
 //Pushing the knowledge module to the back of the line, as it should be the last
 //to load. Eg. So it doesnt over-run the activeMemory...
