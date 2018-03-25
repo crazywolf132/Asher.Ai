@@ -19,20 +19,22 @@ exports.loadMods = (_all_Mods, mD, loadType) => {
 		// anything else, we dont care about...
 		try {
 			var _type = getFileLine(tempPath + "info.mod", 3);
-			if (mod in mD._type){
+			if (item in mD[_type]){
 				// The mod is already here...
 			} else {
 				// The mod is not here so we need to add it.
-				mD._type[item] = {}
+				mD[_type][item] = {}
 				var _regex = [];
 				fileToArray(tempPath + "words.txt", _regex);
-				mD._type[item].regex = _regex
-				mD._type[item].import = require(process.cwd() + "/mods/" + item + "/mod.js")
-				mD._type[item].author = getFileLine(tempPath + "info.mod", 2);
+				mD[_type][item].regex = _regex
+				mD[_type][item].import = require(process.cwd() + "/mods/" + item + "/mod.js")
+				mD[_type][item].author = getFileLine(tempPath + "info.mod", 2);
+				mD[_type][item].enabled = getFileLine(tempPath + "info.mod", 4);
 			}
 			
 
 		} catch (error) {
+			console.log(error)
 			// This is just incase someone was stupid and forgot a file... at that point...
 			// we can do 1 of 2 things... If the brain is set to developer mode, we will keep the
 			// mod, if it isnt set to developer mode... it will delete it and push a git update... as
