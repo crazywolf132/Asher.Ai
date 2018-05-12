@@ -4,9 +4,40 @@ const fs = require("fs");
 const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const fileToArray = require("./helper").fileToArray;
 const getFileLine = require("./helper").getFileLine;
-const logger = require(process.cwd() + "/server").logger;
+const logger = require(process.cwd() + "/server_new").logger;
 
 exports.mods = mods = [];
+
+exports.newLoadMods = (modsDB) => {
+
+	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
+	mods.forEach((item) => {
+		if (!(item in Object.keys(modsDB))) {
+			var holder = [];
+			var regex = [];
+			var tempPath = process.cwd() + `/mods/${item}/`;
+			try {
+				modsDB[item] = [];
+				fileToArray(`${tempPath}words.txt`, regex);
+				modsDB[item].regex = regex;
+				modsDB[item].import = require(process.cwd() + `/mods/${item}/mod.js`);
+				getFileLine(tempPath + "info.mod", 4) == 'true' ? modsDB[item].enabled = true : modsDB[item].enabled = false;
+				modsDB[item].isTheOne = (inputPhrase) => {
+					var found = false;
+					modsDB[item].regex.forEach((phrase) => {
+						if (nlp(inputPhrase).match(phrase).found) {
+							found = true;
+						}
+					})
+					return found;
+				}
+			} catch (error) {
+				//console.log(error)
+			}
+		}
+	})
+
+}
 
 exports.loadMods = (_all_Mods, mD, loadType) => {
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
@@ -29,7 +60,8 @@ exports.loadMods = (_all_Mods, mD, loadType) => {
 				mD[_type][item].regex = _regex
 				mD[_type][item].import = require(process.cwd() + "/mods/" + item + "/mod.js")
 				mD[_type][item].author = getFileLine(tempPath + "info.mod", 2);
-				mD[_type][item].enabled = getFileLine(tempPath + "info.mod", 4);
+				// Converting the string to a boolean... to make it easier to code with...
+				getFileLine(tempPath + "info.mod", 4) === 'true' ? mD[_type][item].enabled = true : mD[_type][item].enabled = false;
 			}
 			
 
@@ -98,7 +130,30 @@ exports.loadAllMods = (_all_Mods, _dict, loadType) => {
 	});
 };
 
-exports.getMod = (_mods, _modTypes, _questionType, _msg) => {
+exports.getMod = (DB, type, message) => {
+	var theMod = "";
+	Object.keys(DB[type]).forEach((mod) => {
+		DB[type][mod].regex.forEach((sentance) => {
+			var sentence = _sentence.replace(/\r?\n?/gm, "");
+			sentence.trim();
+			var result = nlp(message).match(sentence).found;
+			if (result){
+				theMod = mod;
+			}
+		});
+	});
+	if ( theMod === "" && type !== "other" ) {
+		//This means that we still for some reason have not found the mod...
+		exports.getMod(DB, "other", message);
+	} else if ( theMod === "" && type === "other" ) {
+		// We are going to return "none", so then we can work out what to do latter.
+		return "other"
+	} else {
+		return theMod;
+	}
+}
+
+/*exports.getMod = (_mods, _modTypes, _questionType, _msg) => {
 	let holdme = "";
 	let _sentence;
 
@@ -118,3 +173,4 @@ exports.getMod = (_mods, _modTypes, _questionType, _msg) => {
 	});
 	return holdme;
 };
+*/

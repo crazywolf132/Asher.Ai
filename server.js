@@ -378,10 +378,8 @@ modDB.where = {}
 modDB.why = {}
 modDB.how = {}
 modDB.other = {}
-
 loadMods(allMods, modDB, true);
 console.log(modDB)
-//console.log(allMods)
 fileToArray("swears.txt", swears);
 //Pushing the knowledge module to the back of the line, as it should be the last
 //to load. Eg. So it doesnt over-run the activeMemory...

@@ -12,13 +12,29 @@ const nlp = require("compromise");
 const sentiment = require("sentiment");
 const modHandler = require("./core/functions/mod_handler");
 const helper = require("./core/functions/helper");
+const brain = require("./core/functions/brain");
+const loadBrain = brain.loadBrain;
+const generateBackLinkBrain = brain.generateBackLinkBrain;
 const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
+const newLoadMods = modHandler.newLoadMods;
 const getMod = modHandler.getMod;
 const mods = modHandler.mods;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
 const fileToDict = helper.fileToDict;
+
+// These are going to be the normal variables... that get
+// used by asher to store information.
+var internet = false;
+var modDB = {}
+modDB.who = {}
+modDB.what = {}
+modDB.when = {}
+modDB.where = {}
+modDB.why = {}
+modDB.how = {}
+modDB.other = {}
 
 
 
@@ -87,8 +103,6 @@ module.exports.addCacheMemory = function (type, key, val) {
 
 module.exports.activeMemory = memory = {};
 
-module.exports
-
 module.exports.addActiveMemory = function (socketID, key, val) {
     module.exports.logger("INFO", socketID + " added something to active memory");
     if (socketID in module.exports.activeMemory) {
@@ -156,7 +170,7 @@ module.exports.respond = function(person, message) {
     socket.broadcast.to(person).emit('result', message)
 }
 
-module.exports.logger = function (type, message) {
+module.exports.logger = (type, message) => {
     if (type === "NORMAL" || type === "Normal" || type === "") {
         type = "INFO";
     } else if (type === "DEBUG" || type === "Debug") {
@@ -217,6 +231,7 @@ var runInput = (input, userID) => {
     var toRun, sub;
     // We are just workingout the subject of the message...
     sub = speak.classify(input).subject;
+    sub === undefined ? sub = msg : sub = sub;
     // We are now going to set this users last message to the memory. So then if anything goes wrong
     // with the developers module, they can always check the last message in memory if so needed.
     module.exports.activeMemory[userID].lastMessage = input;
@@ -250,9 +265,12 @@ var runInput = (input, userID) => {
         // This means that there is no active memory with asher, continue.
         // We now need to check what kind of module we are going to be running.
         const slang = ["whats", "whos", "whens", "wheres", "whys", "hows"];
-        if (slang.indexOf(_tokes[0].text) > -1) {
-            
-        }
+        slang.indexOf(_tokes[0].text) > -1 ? type = _tokes[0].text.slice(0, -1) : type = "what";
+        // Now that we have worked out what kind of module we are running...
+        // we can now find which mod it is.
+
+        toRun = getMod(modDB, type, message);
+        console.log(toRun)
     }
 }
 
@@ -270,15 +288,13 @@ io.on("connection", (client) => {
     client.on("message", (data) => {
 
         //TODO: Need to re-do this part... it is clunky and shit.
-
-
-        Promise.resolve(workItOut(data, true, client)).then((response) => {
+        /*Promise.resolve(workItOut(data, true, client)).then((response) => {
             module.exports.logger("NORMAL", "responded with " + response);
             if (response !== "undefined") {
                 client.emit("result", String(response));
             }
-        });
-
+        });*/
+        runInput(data, client.id);
         // I dont think we need to return anything as we are running it all through sockets...
         // We should be able to have a function that allows the module to respond.
     });
@@ -286,6 +302,40 @@ io.on("connection", (client) => {
         module.exports.logger("NORMAL", "disconnected...");
     });
 });
+
+/*
+███████ ███████ ████████ ██    ██ ██████
+██      ██         ██    ██    ██ ██   ██
+███████ █████      ██    ██    ██ ██████
+     ██ ██         ██    ██    ██ ██
+███████ ███████    ██     ██████  ██
+*/
+
+//loadBrain();
+loadBrain();
+generateBackLinkBrain();
+var brainResponse = brain.getResponse("When will you die");
+console.log(brainResponse)
+brain.synapseLinks("How are you");
+brain.getInfo();
+brain.saveBrain();
+
+module.exports.logger("NORMAL", "Configuring mods...");
+//loadMods(allMods, modDB, true);
+newLoadMods(modDB);
+//console.log(modDB);
+console.log(modDB['math'].isTheOne('flip a coin'))
+/*Object.keys(modDB).forEach((mod) => {
+    if (modDB[mod].isTheOne('Flip a coin')) {
+        console.log(`The mod is ${mod}`)
+    }
+})
+//fileToArray("swears.txt", swears);
+// We are just going to a quick and dirty internet check...
+require('dns').lookup('google.com', (err) => {
+    err ? internet = false : internet = true;
+})
+
 
 /*
 ██      ██ ███████ ████████ ███████ ███    ██ ███████ ██████
@@ -297,5 +347,5 @@ io.on("connection", (client) => {
 
 setTimeout(() => {
     app.listen(port);
-    module.exports.logger("NORMAL", "Magic happens on port " + port + "\n\n");
+    module.exports.logger("NORMAL", `Magic happens on port ${port}\n\n`);
 }, 1000);

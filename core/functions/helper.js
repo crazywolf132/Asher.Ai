@@ -13,6 +13,12 @@ exports.fileToArray = (file, list) => {
 	}
 };
 
+exports.fileExists = (file) => {
+
+	return (fs.existsSync(file) ? true : false);
+
+}
+
 exports.getFileLine = (file, line) => {
 	const array = fs
 		.readFileSync(file)
