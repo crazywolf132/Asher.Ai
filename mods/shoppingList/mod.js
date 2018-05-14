@@ -1,4 +1,4 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
 	const core = require(process.cwd() + "/server");
 	const memory = core.addActiveMemory;
 	const brain = core.activeMemory;
@@ -8,10 +8,10 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	console.log(core)
 	if (core.memeory(socket.id)) {
 		console.log("oh no...")
-		return await sendOff("", "frank", socket, nlp, core, brain, memory)
+		respond(userID, await sendOff("", "frank", socket, nlp, core, brain, memory));
 	} else {
 		//return await head(core, message, socket, nlp, brain, memory);
-		return await sendOff("", "frank", socket, nlp, core, brain, memory);
+		respond(userID, await sendOff("", "frank", socket, nlp, core, brain, memory));
 	}
 
 };

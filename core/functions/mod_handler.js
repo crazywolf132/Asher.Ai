@@ -4,6 +4,7 @@ const fs = require("fs");
 const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const fileToArray = require("./helper").fileToArray;
 const getFileLine = require("./helper").getFileLine;
+const updateMod = require("./helper").changeModEnabled;
 const logger = require(process.cwd() + "/server_new").logger;
 
 exports.mods = mods = [];
@@ -32,41 +33,7 @@ exports.newLoadMods = (modsDB) => {
 					return found;
 				}
 			} catch (error) {
-				//console.log(error)
-			}
-		}
-	})
-
-}
-
-exports.loadMods = (_all_Mods, mD, loadType) => {
-	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
-	mods.forEach((item) => {
-		var holder = []
-		var modType = ""
-		var tempPath = process.cwd() + "/mods/" + item + "/";
-		// We are going to assume that the following files are in the folder... as they are required when making a mod...
-		// ['info.mod', 'words.txt', 'mod.js']
-		// anything else, we dont care about...
-		try {
-			var _type = getFileLine(tempPath + "info.mod", 3);
-			if (item in mD[_type]){
-				// The mod is already here...
-			} else {
-				// The mod is not here so we need to add it.
-				mD[_type][item] = {}
-				var _regex = [];
-				fileToArray(tempPath + "words.txt", _regex);
-				mD[_type][item].regex = _regex
-				mD[_type][item].import = require(process.cwd() + "/mods/" + item + "/mod.js")
-				mD[_type][item].author = getFileLine(tempPath + "info.mod", 2);
-				// Converting the string to a boolean... to make it easier to code with...
-				getFileLine(tempPath + "info.mod", 4) === 'true' ? mD[_type][item].enabled = true : mD[_type][item].enabled = false;
-			}
-			
-
-		} catch (error) {
-			console.log(error)
+				updateMod(tempPath + "info.mod");
 			// This is just incase someone was stupid and forgot a file... at that point...
 			// we can do 1 of 2 things... If the brain is set to developer mode, we will keep the
 			// mod, if it isnt set to developer mode... it will delete it and push a git update... as
@@ -79,10 +46,11 @@ exports.loadMods = (_all_Mods, mD, loadType) => {
 			// as to what path to take.
 
 			// Personally, i think we should delete it. - Crazywolf132.
+			}
 		}
 	})
-}
 
+}
 
 exports.trainAllMods = () => {
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
@@ -104,31 +72,20 @@ exports.trainAllMods = () => {
 	logger("Normal", "Only found" + mods.length + "mods");
 };
 
-exports.loadAllMods = (_all_Mods, _dict, loadType) => {
-	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
-	mods.forEach((mod) => {
-		let holder = [];
-		findFilesAndFolders(
-			process.cwd() + "/mods/" + mod + "/",
-			holder,
-			false,
-			false,
-			true
-		);
-		holder.forEach((file) => {
-			if (file === process.cwd() + "/mods/" + mod + "/mod.js") {
-				_all_Mods[mod] = require(process.cwd() + "/mods/" + mod + "/mod.js");
+exports.latestGetMod = (DB, message) => {
+	var theMod = "";
+	Object.keys(DB).forEach((mod) => {
+		if (DB[mod].enabled){
+			var result = DB[mod].isTheOne(message);
+			if (result) {
+				theMod = mod;
 			}
-			if (loadType) {
-				if (file === process.cwd() + "/mods/" + mod + "/type.txt") {
-					_gotType = [];
-					fileToArray(file, _gotType);
-					_dict[mod] = _gotType[0];
-				}
-			}
-		});
+		}
 	});
-};
+
+	return theMod;
+}
+
 
 exports.getMod = (DB, type, message) => {
 	var theMod = "";

@@ -19,6 +19,7 @@ const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
 const newLoadMods = modHandler.newLoadMods;
 const getMod = modHandler.getMod;
+const latestGetMod = modHandler.latestGetMod;
 const mods = modHandler.mods;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
@@ -28,13 +29,13 @@ const fileToDict = helper.fileToDict;
 // used by asher to store information.
 var internet = false;
 var modDB = {}
-modDB.who = {}
+/*modDB.who = {}
 modDB.what = {}
 modDB.when = {}
 modDB.where = {}
 modDB.why = {}
 modDB.how = {}
-modDB.other = {}
+modDB.other = {}*/
 
 
 
@@ -67,6 +68,8 @@ app.use((req, res, next) => {
     );
     next();
 });
+
+app.use("/", homeRouter);
 
 const port = process.env.PORT || 80;
 
@@ -132,7 +135,7 @@ module.exports.forget = function (socketID) {
     module.exports.activeMemory[socketID].currentMods = "";
 };
 
-module.exports.memeory = function (socketID) {
+module.exports.memory = function (socketID) {
     if (module.exports.activeMemory[socketID].savedStatus) {
         return module.exports.activeMemory[socketID].currentMods;
     }
@@ -144,6 +147,18 @@ module.exports.checkInput = (input, regex, callback) => {
         callback();
     }
 };
+
+module.exports.responder = (userID, message) => {
+    // Get the userID address....
+    // ... right after we resolve the promise from the module.
+    console.log(message)
+    //message.then((response) => {
+    socket = module.exports.activeMemory[userID].address;
+    socket.emit("result", message);
+    //})
+    
+    //socket.sockets(userID)
+}
 
 module.exports.asher = (person, mod) => {
     this.person = person;
@@ -219,19 +234,20 @@ module.exports.checkAssociations = (id, otherPerson) => {
     }
 }
 
-socketRegistration = (id) => {
+socketRegistration = (id, socket) => {
     module.exports.activeMemory[id] = {};
     module.exports.activeMemory[id].savedStatus = false;
     module.exports.logger("NORMAL", "remembering: " + id);
     module.exports.activeMemory[id].associations = [];
     module.exports.activeMemory[id].lastMessage = "";
+    module.exports.activeMemory[id].address = socket;
 };
 
-var runInput = (input, userID) => {
+var runInput = (input, userID, socket) => {
     var toRun, sub;
     // We are just workingout the subject of the message...
     sub = speak.classify(input).subject;
-    sub === undefined ? sub = msg : sub = sub;
+    sub === undefined ? sub = input : sub = sub;
     // We are now going to set this users last message to the memory. So then if anything goes wrong
     // with the developers module, they can always check the last message in memory if so needed.
     module.exports.activeMemory[userID].lastMessage = input;
@@ -250,14 +266,15 @@ var runInput = (input, userID) => {
             mem = holder[0];
         }
         // We are now going to "require" the mod...
-        toRun = modDB[toRun].import;
+        toRun = modDB[mem].import;
         // We are now starting the mod...
         toRun(sub, input, userID);
         // It should be runnning now, so that is it for us. All the memory disposal is up to the developer.
         // If you are developing a module with the memory system, take a look at the wiki for more info...
         // As we dont want developers to break the system by accident.
     } else {
-        let _got = nlp(msg).out("normal");
+        console.log("No memeroy")
+        let _got = nlp(input).out("normal");
         let _tokes = nlp(_got)
             .terms()
             .data();
@@ -269,8 +286,9 @@ var runInput = (input, userID) => {
         // Now that we have worked out what kind of module we are running...
         // we can now find which mod it is.
 
-        toRun = getMod(modDB, type, message);
-        console.log(toRun)
+        toRun = modDB[latestGetMod(modDB, input)].import;
+        toRun(sub, input, userID, module.exports.responder);
+        
     }
 }
 
@@ -284,7 +302,7 @@ var runInput = (input, userID) => {
 
 io.on("connection", (client) => {
     module.exports.logger("NORMAL", "Client connected...");
-    socketRegistration(client.id);
+    socketRegistration(client.id, client);
     client.on("message", (data) => {
 
         //TODO: Need to re-do this part... it is clunky and shit.
@@ -294,7 +312,14 @@ io.on("connection", (client) => {
                 client.emit("result", String(response));
             }
         });*/
-        runInput(data, client.id);
+        //Promise.resolve(runInput(data, client.id)).then((respond) => {
+            //if (response !== "undefinded") {
+            //    client.emit("result", String(response));
+          //  }
+        //})
+        console.log("New request")
+        runInput(data, client.id, client);
+        
         // I dont think we need to return anything as we are running it all through sockets...
         // We should be able to have a function that allows the module to respond.
     });

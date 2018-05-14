@@ -1,3 +1,3 @@
-module.exports = async (subject, message, socket, socketUsed) => {
-    return "time to get a fucking watch.";
+module.exports = async (subject, message, userID, respond) => {
+    respond(userID, "time to get a fucking watch.");
 };

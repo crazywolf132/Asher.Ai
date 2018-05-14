@@ -1,4 +1,4 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async(subject, message, userID, respond) => {
 	const msg = nlp(message)
 		.match("#Value .")
 		.out("text");
@@ -19,16 +19,16 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	const unit = holder[2];
 	// This is here so people can set certain reminders...
 	if (reminder.found) {
-		setTimer(time, unit, () => socket.emit("result", "remember to "))
+		setTimer(time, unit, () => respond(userID, "remember to "))
 	} else {
-		setTimer(time, unit, () => socket.emit("result", "timer is going off now!"));
+		setTimer(time, unit, () => respond(userID, "timer is going off now!"));
 	}
 	// This little 3 line part is to work out what to return to the user...
 	var returner = "";
 	// If it is reminder mode... we will return a message about setting a reminder.
 	// otherwise, we will just return a message saying that the timer is set.
 	reminder ? (returner = "reminder is set") : (returner = "timer is set");
-	return returner;
+	respond(userID, returner);
 };
 
 function unitMultiplier(unit) {

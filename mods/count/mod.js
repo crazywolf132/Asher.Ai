@@ -1,12 +1,12 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
   let value = nlp(message)
     .match("#Value")
     .out("text");
 
-  return await counter(value, socket);
+  respond(userID, await counter(value));
 }
 
-async function counter(to, socket) {
+async function counter(to) {
   return new Promise((resolve) => {
     let message = ""
     for (i = 0; i < to; i++) {

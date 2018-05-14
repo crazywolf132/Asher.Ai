@@ -35,6 +35,14 @@ exports.arrayToFile = (file, array) => {
 	fs.writeFileSync(file, holder);
 }
 
+exports.changeModEnabled = (mod) => {
+	console.log("Changing mod")
+	var holder = [];
+	exports.fileToArray(mod, holder);
+	holder[holder.length - 1] = 'false';
+	exports.arrayToFile(mod, holder);
+}
+
 exports.arraytoDict = (file, dictionary) => {
 	console.log("Running the file maker...")
 	var holder = "";

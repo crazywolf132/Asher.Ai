@@ -1,4 +1,4 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
 	// We are going to convert the word to a symbol...
 	let msg = nlp(message)
 		.match("#Value . #Value")
@@ -18,33 +18,33 @@ module.exports = async (subject, message, socket, socketUsed) => {
 	}
 	switch (word) {
 		case "plus":
-			return parseInt(num1) + parseInt(num2);
+			respond(userID, parseInt(num1) + parseInt(num2));
 			break;
 		case "minus":
-			return parseInt(num1) - parseInt(num2);
+			respond(userID, parseInt(num1) - parseInt(num2));
 			break;
 		case "devide":
-			return parseInt(num1) / parseInt(num2);
+			respond(userID, parseInt(num1) / parseInt(num2));
 			break;
 		case "times":
-			return parseInt(num1) * parseInt(num2);
+			respond(userID, parseInt(num1) * parseInt(num2));
 			break;
 		case "+":
-			return parseInt(num1) + parseInt(num2);
+			respond(userID, parseInt(num1) + parseInt(num2));
 			break;
 		case "-":
-			return parseInt(num1) - parseInt(num2);
+			respond(userID, parseInt(num1) - parseInt(num2));
 			break;
 		case "/":
-			return parseInt(num1) / parseInt(num2);
+			respond(userID, parseInt(num1) / parseInt(num2));
 			break;
 		case "*":
-			return parseInt(num1) * parseInt(num2);
+			respond(userID, parseInt(num1) * parseInt(num2));
 			break;
 		case "x":
-			return parseInt(num1) * parseInt(num2);
+			respond(userID, parseInt(num1) * parseInt(num2));
 			break;
 		default:
-			return "Please try again.";
+			respond(userID, "Please try again.");
 	}
 };

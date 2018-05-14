@@ -1,9 +1,9 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
 	const input = message.split(" ");
 	const query = input[input.length - 1];
 
 
-	return await ask(message, subject, query);
+	respond(userID, await ask(message, subject, query));
 };
 //TODO: Check to see if the question has already been asked, and is
 // in the cache memory, to save the amount of requests we are making...

@@ -1,9 +1,10 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
 	const core = require(process.cwd() + "/server");
 	const memory = core.addActiveMemory;
 	const brain = core.activeMemory;
 	console.log("Got this far...")
-	return await MemoryHeader(message, socket, nlp, brain, memory, core);
+	//return await MemoryHeader(message, socket, nlp, brain, memory, core);
+	respond(userID, await MemoryHeader(message, socket, nlp, breain, memory, core));
 };
 
 MemoryHeader = (message, socket, nlp, brain, memory, core) => {
