@@ -89,8 +89,7 @@ module.exports.addCacheMemory = function(type, key, val) {
 			backupBrain();
 			return 1;
 		}
-	}
-	
+	}	
 };
 
 module.exports.activeMemory = memory = {};

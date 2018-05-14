@@ -29,13 +29,8 @@ const fileToDict = helper.fileToDict;
 // used by asher to store information.
 var internet = false;
 var modDB = {}
-/*modDB.who = {}
-modDB.what = {}
-modDB.when = {}
-modDB.where = {}
-modDB.why = {}
-modDB.how = {}
-modDB.other = {}*/
+
+//modDB.other = {}
 
 
 
@@ -85,19 +80,25 @@ const router = express.Router();
 
 // I am doing this so the knowledge module doesnt have to make so many requests...
 module.exports.cacheMemory = cacheMem = {};
+cacheMem.who = {}
+cacheMem.what = {}
+cacheMem.when = {}
+cacheMem.where = {}
+cacheMem.why = {}
+cacheMem.how = {}
 // We can simply load the answe from here if we already have it...
 module.exports.addCacheMemory = function (type, key, val) {
     console.log("cache being added too...")
     if (type in module.exports.cacheMemory) {
         if (key in module.exports.cacheMemory[type]) {
             // Well, it is already there... so we are just going to return a result...
-            backupBrain();
+            //backupBrain();
             return 0;
             // We are returning 0, as it didnt work...
         } else {
             // The question hasnt been asked yet... YAY! learning!
             module.exports.cacheMemory[type][key] = val;
-            backupBrain();
+            //backupBrain();
             return 1;
         }
     }

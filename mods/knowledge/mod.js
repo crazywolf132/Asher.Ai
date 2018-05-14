@@ -1,8 +1,7 @@
 module.exports = async (subject, message, userID, respond) => {
 	const input = message.split(" ");
 	const query = input[input.length - 1];
-
-
+	
 	respond(userID, await ask(message, subject, query));
 };
 //TODO: Check to see if the question has already been asked, and is
@@ -11,7 +10,7 @@ module.exports = async (subject, message, userID, respond) => {
 //TODO: re-add "what is .?" to the words.txt file of this module...
 ask = (message, subject, query) => {
 	const request = require("request");
-	const core = require(process.cwd() + "/server");
+	const core = require(process.cwd() + "/server_new");
 	const brain = core.cacheMemory;
 	const memory = core.addCacheMemory;
 	return new Promise((resolve) => {
