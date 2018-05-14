@@ -10,7 +10,7 @@ module.exports = async (subject, message, userID, respond) => {
 //TODO: re-add "what is .?" to the words.txt file of this module...
 ask = (message, subject, query) => {
 	const request = require("request");
-	const core = require(process.cwd() + "/server_new");
+	const core = require(process.cwd() + "/server");
 	const brain = core.cacheMemory;
 	const memory = core.addCacheMemory;
 	return new Promise((resolve) => {

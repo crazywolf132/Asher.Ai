@@ -1,5 +1,5 @@
 module.exports = async (subject, message, userID, respond) => {
-	const core = require(process.cwd() + "/server_new");
+	const core = require(process.cwd() + "/server");
 	const memory = core.addActiveMemory;
 	const brain = core.activeMemory;
 

@@ -5,7 +5,7 @@ const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const fileToArray = require("./helper").fileToArray;
 const getFileLine = require("./helper").getFileLine;
 const updateMod = require("./helper").changeModEnabled;
-const logger = require(process.cwd() + "/server_new").logger;
+const logger = require(process.cwd() + "/server").logger;
 
 exports.mods = mods = [];
 
