@@ -20,9 +20,12 @@ This is the Node.js API for the Asher personal assistant. Asher is a personal as
 Asher is modular allowing for the community to add their part to his ever increasing module base.
 
 ## How do I connect?
+
+`- Currently taken down the IP addresses as we are transfering to another server...`
+
 There are 2 ways to connect to Asher.
-1. Via REST API requests. Simply post a `post` request to `http://165.227.116.53/api/talk`, with the argument `command` and your message.
-2. Via sockets. Port `4416` is open at `http://165.227.116.53/`, send a `message` through the socket with the raw text.
+1. Via REST API requests. Simply post a `post` request to `http://***.***.***.**/api/talk`, with the argument `command` and your message.
+2. Via sockets. Port `4416` is open at `http://***.***.***.**/`, send a `message` through the socket with the raw text.
 
 Asher allows for any language that can either use sockets or send get requests to interact with him. We just need the raw text input, and we will do the rest.
 
