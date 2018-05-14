@@ -1,13 +1,12 @@
 module.exports = async (subject, message, userID, respond) => {
-	const core = require(process.cwd() + "/server");
+	const core = require(process.cwd() + "/server_new");
 	const memory = core.addActiveMemory;
 	const brain = core.activeMemory;
 	console.log("Got this far...")
-	//return await MemoryHeader(message, socket, nlp, brain, memory, core);
-	respond(userID, await MemoryHeader(message, socket, nlp, breain, memory, core));
+	respond(userID, await MemoryHeader(message, userID, nlp, brain, memory, core));
 };
 
-MemoryHeader = (message, socket, nlp, brain, memory, core) => {
+MemoryHeader = (message, userID, nlp, brain, memory, core) => {
 	return new Promise((resolve) => {
 		console.log("To here...")
 		const whoList = [
@@ -36,10 +35,10 @@ MemoryHeader = (message, socket, nlp, brain, memory, core) => {
 				case "who":
 					whoList.forEach(function(item) {
 						if (message.indexOf(item) > -1) {
-							if (item in brain[socket.id]) {
+							if (item in brain[userID]) {
 								// We have found that the item was remembered...
 								// going to return it now...
-								resolve("Your " + item + " is " + brain[socket.id][item]);
+								resolve("Your " + item + " is " + brain[userID][item]);
 							} else {
 								resolve(
 									"Sorry, you havent told me yet, or i have simply forgotten."
@@ -52,10 +51,10 @@ MemoryHeader = (message, socket, nlp, brain, memory, core) => {
 				case "what":
 					whatList.forEach(function(item) {
 						if (message.indexOf(item) > -1) {
-							if (item in brain[socket.id]) {
+							if (item in brain[userID]) {
 								// We have found that the item was remembered...
 								// going to return it now...
-								resolve("Your " + item + " is " + brain[socket.id][item]);
+								resolve("Your " + item + " is " + brain[userID][item]);
 							} else {
 								resolve(
 									"Sorry, you havent told me yet, or i have simply forgotten."
@@ -68,10 +67,10 @@ MemoryHeader = (message, socket, nlp, brain, memory, core) => {
 				case "how":
 					howList.forEach(function(item) {
 						if (message.indexOf(item) > -1) {
-							if (item in brain[socket.id]) {
+							if (item in brain[userID]) {
 								// We have found that the item was remembered...
 								// going to return it now...
-								resolve(brain[socket.id][item]);
+								resolve(brain[userID][item]);
 							} else {
 								resolve(
 									"Sorry, you havent told me yet, or i have simply forgotten."
@@ -106,7 +105,7 @@ MemoryHeader = (message, socket, nlp, brain, memory, core) => {
 					// We are going to assume the last item is the value...
 					//core.activeMemory[socket.id].associations.push(_tokes[_tokes.length - 1].text);
 					//TODO: Fix the above code. it is useless... hahaha
-					memory(socket.id, item, _tokes[_tokes.length - 1].text);
+					memory(userID, item, _tokes[_tokes.length - 1].text);
 					resolve("I have remembered that now...");
 				}
 			});
