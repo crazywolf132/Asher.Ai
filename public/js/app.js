@@ -129,8 +129,10 @@ window.onload = function() {
 		document.getElementById("message_box").value = "";
 	});
 	$("#message_box").keyup(function(e) {
-		if (e.keyCode === 13) {
-			$(this).trigger("enterKey");
+		if (document.getElementById("message_box").value != ""){
+			if (e.keyCode === 13) {
+				$(this).trigger("enterKey");
+			}
 		}
 	});
 };

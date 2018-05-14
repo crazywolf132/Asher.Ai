@@ -20,9 +20,12 @@ This is the Node.js API for the Asher personal assistant. Asher is a personal as
 Asher is modular allowing for the community to add their part to his ever increasing module base.
 
 ## How do I connect?
+
+`- Currently taken down the IP addresses as we are transfering to another server...`
+
 There are 2 ways to connect to Asher.
-1. Via REST API requests. Simply post a `post` request to `http://165.227.116.53/api/talk`, with the argument `command` and your message.
-2. Via sockets. Port `4416` is open at `http://165.227.116.53/`, send a `message` through the socket with the raw text.
+1. Via REST API requests. Simply post a `post` request to `http://***.***.***.**/api/talk`, with the argument `command` and your message.
+2. Via sockets. Port `4416` is open at `http://***.***.***.**/`, send a `message` through the socket with the raw text.
 
 Asher allows for any language that can either use sockets or send get requests to interact with him. We just need the raw text input, and we will do the rest.
 
@@ -30,7 +33,7 @@ Asher allows for any language that can either use sockets or send get requests t
 Mods are constructed of 3 parts.
 - The Actual mod file `mod.js`
 - The words file `words.txt`, which contains examples of triggers
-- The type file `type.txt`. This is used to tell the system what kind of mod this is.
+- The type file `info.mod`. This is used to tell the system the infomation about the mod, such as the Author, name, and weather to actiavate the module or not.
 
 To start off, we need to create a folder in the `mods` directory for our new Mod.
 We are going to make a mod called `funny`.
@@ -43,16 +46,22 @@ We are going to start work on the `words.txt` file. We now need to decide differ
 
 For more special characters to use inside of your words file. Feel free to head over to the wiki where we explain the different characters used in the words files.
 
-We now need to set the `type.txt` file. As we can see from our words file, our does not fit one of these categories...
-<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/type.txt'>
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/types.png">
+We now need to set the `info.mod` file. This file will tell the system weather or not to run our file, and what it is called so then the brain can execute it.
+<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/info.mod'>
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/Dev/img/basicInfo.png" />
 </a>
 
-So, we need to set it as `other`. Thats it, our system will be able to do the rest.
+So, this is what we set ours too.
+<a href="https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/info.mod">
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/Dev/img/ourInfo.png" />
+</a>
+Thats it, our system will be able to do the rest.
 
 We just now need to work on the actual `mod.js` file!
 Every mod is composed of:
+<a href="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/mods/basicMods/mod.js">
 <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/basicMod.png">
+</a>
 
 We are going to take that template, and we are going to add our elements to it:
 <a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/mod.js'>

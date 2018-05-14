@@ -7,9 +7,25 @@ exports.fileToArray = (file, list) => {
 		.toString()
 		.split("\n");
 	for (let i = 0; i < array.length; i++) {
-		list.push(array[i]);
+		if (array[i] !== ""){
+			list.push(array[i]);
+		}
 	}
 };
+
+exports.fileExists = (file) => {
+
+	return (fs.existsSync(file) ? true : false);
+
+}
+
+exports.getFileLine = (file, line) => {
+	const array = fs
+		.readFileSync(file)
+		.toString()
+		.split("\n");
+	return array[(line-1)];
+}
 
 exports.arrayToFile = (file, array) => {
 	var holder = "";
@@ -17,6 +33,14 @@ exports.arrayToFile = (file, array) => {
 		holder += item + "\n";
 	})
 	fs.writeFileSync(file, holder);
+}
+
+exports.changeModEnabled = (mod) => {
+	console.log("Changing mod")
+	var holder = [];
+	exports.fileToArray(mod, holder);
+	holder[holder.length - 1] = 'false';
+	exports.arrayToFile(mod, holder);
 }
 
 exports.arraytoDict = (file, dictionary) => {

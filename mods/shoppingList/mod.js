@@ -1,26 +1,24 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
 	const core = require(process.cwd() + "/server");
 	const memory = core.addActiveMemory;
 	const brain = core.activeMemory;
 
 	// We need to check to see if there is a memory of this module...
 	// If so, we shouldnt run head... we should run a different function...
-	console.log(core)
-	if (core.memeory(socket.id)) {
-		console.log("oh no...")
-		return await sendOff("", "frank", socket, nlp, core, brain, memory)
+	if (core.memory(userID)) {
+		respond(userID, await sendOff("", "frank", respond, userID, nlp, core, brain, memory));
 	} else {
 		//return await head(core, message, socket, nlp, brain, memory);
-		return await sendOff("", "frank", socket, nlp, core, brain, memory);
+		respond(userID, await sendOff("", "frank", respond, userID, nlp, core, brain, memory));
 	}
 
 };
 
-sendOff = (shoppingList, person, socket, nlp, core, brain, memory) => {
+sendOff = (shoppingList, person, respond, userID, nlp, core, brain, memory) => {
 	// This is where we will get the persons name and check if there was any
 	// associations between the person with the list and the reciever...
 	console.log("running send off.")
-	var result = core.checkAssociations(socket.id, person);
+	var result = core.checkAssociations(userID, person);
 	console.log("Result is: " + result)
 	if (!result) {
 		// we just need to get their email address so we can send it to them...
@@ -30,7 +28,8 @@ sendOff = (shoppingList, person, socket, nlp, core, brain, memory) => {
 		return "I am so sorry, but I cant send the list to that person."
 	} else {
 		//TODO: need to learn to send the message to a sepecific socket id.
-		socket[result].emit('result', 'incomming message from ' + activeMemory[id].name);
+		respond(userID, `incoming message from ${activeMemory[id].name}`);
+		//socket[result].emit('result', 'incomming message from ' + activeMemory[id].name);
 		return "Sending it now."
 		
 		

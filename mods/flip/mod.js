@@ -1,4 +1,4 @@
-module.exports = async (subject, message, socket, socketUsed) => {
+module.exports = async (subject, message, userID, respond) => {
 	choices = ["heads", "tales"];
-	return choices[Math.floor(Math.random() * choices.length)];
+	respond(userID, choices[Math.floor(Math.random() * choices.length)]);
 };
