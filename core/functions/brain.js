@@ -18,6 +18,8 @@
 const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const arrayToFile = require("./helper").arrayToFile;
 const fileExists = require("./helper").fileExists;
+const core = require(process.cwd() + "/server");
+
 const speak = require("speakeasy-nlp");
 const fs = require("fs");
 
@@ -26,23 +28,27 @@ var exports = (module.exports = {});
 exports.__wordsDB = __wordsDB = [];
 exports.__responsesDB = __responsesDB = [];
 exports.__unknown_phrases = __unknown_phrases = [];
+exports.__thankyou_phrases = __thankyou_phrases = [ 'Thankyou for your help! I now know how to respond to that.',
+                                                    'Thankyou for that. I can now respond like that in the future.',
+                                                    'Thankyou for teaching me.',
+                                                    'I commend you for helping expand my ever expanding brain.'];
 exports.__associationsDB = __associationsDB = {};
 exports.__reverse_associationsDB = __reverse_associationsDB = {};
 
 exports.loadBrain = () => {
-
+    var counter = 0;
     var allFileNames = [];
     findFilesAndFolders(process.cwd() + "/training_data/", allFileNames, false, false, true);
     var currentFile = "";
 
-    __exists = fileExists(process.cwd() + "/ashersBrain.save");
+    __exists = fileExists(process.cwd() + "/brain/ashersBrain.save");
     /*
         To save some computational energy, we will load the saved brain
         if it exists, if not, we will load from teh normal db.
     */
     if (__exists) {
         allFileNames = []
-        allFileNames.push(process.cwd() + "/ashersBrain.save");
+        allFileNames.push(process.cwd() + "/brain/ashersBrain.save");
     }
     allFileNames.forEach((file) => {
         console.log("Loading : " + file);
@@ -96,13 +102,21 @@ exports.loadBrain = () => {
                     __associationsDB[lastHeader].push(__responsesDB.indexOf(holder));
                 }
             }
+            if (counter % 10000 == 0) {
+              console.log(`Loaded ${counter} iterations...`);
+            }
+            counter += 1;
         })
 
     })
+    console.log(`All ${counter} iterations finished...`)
+    exports.saveBrain();
 }
 
 
 exports.generateBackLinkBrain = () => {
+    var counter = 0
+    console.log("Creating backlinks...")
     Object.keys(__associationsDB).forEach((header) => {
         __associationsDB[header].forEach((item) => {
             if (item in __reverse_associationsDB) {
@@ -119,8 +133,13 @@ exports.generateBackLinkBrain = () => {
                 __reverse_associationsDB[item].push(__wordsDB.indexOf(header));
                 //__reverse_associationsDB[item].push(header);
             }
+            if (counter % 10000 == 0){
+                console.log(`Created ${counter} backlinks...`)
+            }
+            counter += 1;
         })
     })
+    console.log(`All ${counter} backlinks created...`)
 }
 
 
@@ -147,7 +166,7 @@ exports.saveBrain = () => {
             __ashersBrain.push("  - " + __responsesDB[__position])
         })
     } )
-    arrayToFile(process.cwd() + "/ashersBrain.save", __ashersBrain);
+    arrayToFile(process.cwd() + "/brain/ashersBrain.save", __ashersBrain);
 }
 
 exports.duplicateCheck = () => {
@@ -235,6 +254,49 @@ exports.synapseLinks = (__input) => {
     console.log("\n\n\n")
 }
 
+
+exports.worker = (UID, message) => {
+    var activememory = core.activeMemory;
+    // We are going to take advantage of the activeMemory system in this function.
+    // We are going to use it to force the running of this module again, when we ask a question.
+    const memeory = core.memeory;
+    const remember = core.remember;
+    const forget = core.forget;
+    // Going to check what mode the voice is in...
+    // 1 is learning mode, 0 is normal.
+    var mem_mode = activememory[UID]['brain'].mem_mode;
+    var last_message = activememory[UID]['brain'].last_message;
+    if (mem_mode == 0) {
+        // It is in here we will force the running the of this module again.
+        remember(UID, "talking");
+        // We are just in normal mode, so we need to decided what to say...
+        // as we cant just say "-1" to the user.
+        let asking = ""
+        activememory[UID]['brain'].mem_mode = 1;
+        if (__unknown_phrases.length >= 1) {
+            asking = __unknown_phrases[Math.floor(Math.random() * __unknown_phrases.length)];
+        } else {
+            asking = `Sorry, i don't know how to respond to that. Could you please tell me a suitable response?`
+        }
+        activememory[UID]['brain'].last_message = asking;
+        return asking;
+        
+    } else {
+        // We are going to remove a memory if it exists...
+        forget(UID);
+        // This means we are in training mode...
+        // so whatever message we have here... is going to be a response
+        // to the last message from us.
+        // Going to set mem_mode to 0 whilst i remember...
+        console.log("LEARNING MODE!")
+        activememory[UID]['brain'].mem_mode = 0;
+        // We arent going to ask another question, we are just going to save the response...
+        exports.updateAssociations(last_message, message);     
+        // Thank the client now, as we have now learned something... and we are going to  save the brain.
+        exports.saveBrain();
+        return __thankyou_phrases[Math.floor(Math.random() * __thankyou_phrases.length)]
+    }
+}
 
 exports.updateAssociations = (__question, __answer) => {
     var __pos_ans, __pos_word;

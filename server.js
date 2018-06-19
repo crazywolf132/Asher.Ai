@@ -13,13 +13,14 @@ const sentiment = require("sentiment");
 const modHandler = require("./core/functions/mod_handler");
 const helper = require("./core/functions/helper");
 const brain = require("./core/functions/brain");
+const voice = brain.getRespons;
 const loadBrain = brain.loadBrain;
 const generateBackLinkBrain = brain.generateBackLinkBrain;
 const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
 const newLoadMods = modHandler.newLoadMods;
 const getMod = modHandler.getMod;
-const latestGetMod = modHandler.latestGetMod;
+const latestGetMod = modHandler.getMod;
 const mods = modHandler.mods;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
@@ -29,12 +30,12 @@ const fileToDict = helper.fileToDict;
 // used by asher to store information.
 var internet = false;
 var modDB = {}
-
 //modDB.other = {}
 
 
 
 const homeRouter = require("./routes/home");
+const webHook = require("./routes/webhook");
 
 /*
  ██████  ██████  ██████  ███████
@@ -65,6 +66,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", homeRouter);
+app.use("/webhook", webHook);
 
 const port = process.env.PORT || 80;
 
@@ -152,10 +154,34 @@ module.exports.checkInput = (input, regex, callback) => {
 module.exports.responder = (userID, message) => {
     // Get the userID address....
     // ... right after we resolve the promise from the module.
-    console.log(message)
+    //console.log(message)
     //message.then((response) => {
-    socket = module.exports.activeMemory[userID].address;
-    socket.emit("result", message);
+    if (module.exports.activeMemory[userID].usingFB){
+        // Need to send it to the fb responder function...
+        let messageData = { text: message };
+        const token = "";
+        request(
+          {
+            url: "https://graph.facebook.com/v2.6/me/messages",
+            qs: { access_token: token },
+            method: "POST",
+            json: {
+              recipient: { id: userID },
+              message: messageData
+            }
+          },
+          function(error, response, body) {
+            if (error) {
+              console.log("Error sending messages: ", error);
+            } else if (response.body.error) {
+              console.log("Error: ", response.body.error);
+            }
+          }
+        );
+    } else {
+        socket = module.exports.activeMemory[userID].address;
+        socket.emit("result", message);
+    }
     //})
     
     //socket.sockets(userID)
@@ -204,6 +230,7 @@ module.exports.fileExists = (filename) => {
     }
 };
 
+
 module.exports.checkAssociations = (id, otherPerson) => {
     console.log(module.exports.activeMemory[id].associations)
     if (id in module.exports.activeMemory) {
@@ -235,16 +262,21 @@ module.exports.checkAssociations = (id, otherPerson) => {
     }
 }
 
-socketRegistration = (id, socket) => {
-    module.exports.activeMemory[id] = {};
-    module.exports.activeMemory[id].savedStatus = false;
-    module.exports.logger("NORMAL", "remembering: " + id);
-    module.exports.activeMemory[id].associations = [];
-    module.exports.activeMemory[id].lastMessage = "";
-    module.exports.activeMemory[id].address = socket;
+module.exports.socketRegistration = socketRegistration = (id, socket, fb) => {
+  module.exports.activeMemory[id] = {};
+  module.exports.activeMemory[id].savedStatus = false;
+  module.exports.logger("NORMAL", "remembering: " + id);
+  module.exports.activeMemory[id].associations = [];
+  module.exports.activeMemory[id].usingFB = true;
+  module.exports.activeMemory[id].lastMessage = "";
+  module.exports.activeMemory[id].address = socket;
+  module.exports.activeMemory[id].brain = [];
+  module.exports.activeMemory[id].brain.mem_mode = 0;
+  module.exports.activeMemory[id].brain.last_message = "";
+  //console.log(module.exports.activeMemory);
 };
 
-var runInput = (input, userID, socket) => {
+module.exports.runInput = runInput = (input, userID) => {
     var toRun, sub;
     // We are just workingout the subject of the message...
     sub = speak.classify(input).subject;
@@ -269,7 +301,7 @@ var runInput = (input, userID, socket) => {
         // We are now going to "require" the mod...
         toRun = modDB[mem].import;
         // We are now starting the mod...
-        toRun(sub, input, userID);
+        toRun(sub, input, userID, module.exports.responder);
         // It should be runnning now, so that is it for us. All the memory disposal is up to the developer.
         // If you are developing a module with the memory system, take a look at the wiki for more info...
         // As we dont want developers to break the system by accident.
@@ -303,7 +335,7 @@ var runInput = (input, userID, socket) => {
 
 io.on("connection", (client) => {
     module.exports.logger("NORMAL", "Client connected...");
-    socketRegistration(client.id, client);
+    socketRegistration(client.id, client, false);
     client.on("message", (data) => {
 
         //TODO: Need to re-do this part... it is clunky and shit.
@@ -319,7 +351,7 @@ io.on("connection", (client) => {
           //  }
         //})
         console.log("New request")
-        runInput(data, client.id, client);
+        runInput(data, client.id);
         
         // I dont think we need to return anything as we are running it all through sockets...
         // We should be able to have a function that allows the module to respond.
@@ -350,7 +382,7 @@ module.exports.logger("NORMAL", "Configuring mods...");
 //loadMods(allMods, modDB, true);
 newLoadMods(modDB);
 //console.log(modDB);
-console.log(modDB['math'].isTheOne('flip a coin'))
+//console.log(modDB['math'].isTheOne('flip a coin'))
 /*Object.keys(modDB).forEach((mod) => {
     if (modDB[mod].isTheOne('Flip a coin')) {
         console.log(`The mod is ${mod}`)

@@ -1,0 +1,32 @@
+var express = require("express");
+var router = express.Router();
+const core = require(process.cwd() + "/server");
+
+router.route("/").post((req, res, next) => {
+
+    let messaging_events = req.body.entry[0].messaging;
+    for (let i = 0; i < messaging_events.length; i++) {
+      let event = req.body.entry[0].messaging[i];
+      let sender = event.sender.id;
+      if (event.message && event.message.text) {
+        let text = event.message.text;
+        getRequest(text, sender);
+        //sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
+      }
+    }
+    res.sendStatus(200);
+})
+
+function getRequest(message, sender) {
+    // check to see if sender is recorded in db...
+    // if it is... then send the request to answer the question.
+    // else, add them... then send the request.
+    if (sender in core.activeMemory) {
+        core.runInput(message, sender);
+    } else {
+        core.socketRegistration(sender, sender, true);
+        core.runInput(message, sender);
+    }
+}
+
+module.exports = router;
