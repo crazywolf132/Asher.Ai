@@ -13,7 +13,7 @@ const sentiment = require("sentiment");
 const modHandler = require("./core/functions/mod_handler");
 const helper = require("./core/functions/helper");
 const brain = require("./core/functions/brain");
-const voice = brain.getRespons;
+const messenger = require("./core/functions/messenger_handler");
 const loadBrain = brain.loadBrain;
 const generateBackLinkBrain = brain.generateBackLinkBrain;
 const trainAllMods = modHandler.trainAllMods;
@@ -25,6 +25,8 @@ const mods = modHandler.mods;
 const fileToArray = helper.fileToArray;
 const findFilesAndFolders = helper.findFilesAndFolders;
 const fileToDict = helper.fileToDict;
+const messageProcess = messenger.messageProcess;
+const messengerRespond = messenger.respond;
 
 // These are going to be the normal variables... that get
 // used by asher to store information.
@@ -151,6 +153,10 @@ module.exports.checkInput = (input, regex, callback) => {
     }
 };
 
+module.exports.capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 module.exports.responder = (userID, message) => {
     // Get the userID address....
     // ... right after we resolve the promise from the module.
@@ -158,26 +164,8 @@ module.exports.responder = (userID, message) => {
     //message.then((response) => {
     if (module.exports.activeMemory[userID].usingFB){
         // Need to send it to the fb responder function...
-        let messageData = { text: message };
-        const token = "";
-        request(
-          {
-            url: "https://graph.facebook.com/v2.6/me/messages",
-            qs: { access_token: token },
-            method: "POST",
-            json: {
-              recipient: { id: userID },
-              message: messageData
-            }
-          },
-          function(error, response, body) {
-            if (error) {
-              console.log("Error sending messages: ", error);
-            } else if (response.body.error) {
-              console.log("Error: ", response.body.error);
-            }
-          }
-        );
+        messengerRespond(userID, message, {typing: true});
+        //messageProcess(userID, message);
     } else {
         socket = module.exports.activeMemory[userID].address;
         socket.emit("result", message);
@@ -277,6 +265,7 @@ module.exports.socketRegistration = socketRegistration = (id, socket, fb) => {
 };
 
 module.exports.runInput = runInput = (input, userID) => {
+    input = module.exports.capitalizeFirstLetter(input);
     var toRun, sub;
     // We are just workingout the subject of the message...
     sub = speak.classify(input).subject;
@@ -371,7 +360,8 @@ io.on("connection", (client) => {
 
 //loadBrain();
 loadBrain();
-generateBackLinkBrain();
+//generateBackLinkBrain();
+//TODO: Fix this backlink...
 var brainResponse = brain.getResponse("When will you die");
 console.log(brainResponse)
 brain.synapseLinks("How are you");

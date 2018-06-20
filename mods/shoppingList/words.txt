@@ -19,3 +19,6 @@ make me a new list
 send my list to #Person
 send the list to #Person
 send my shopping list to #Person
+whats on my shopping list
+whats on my list
+(whats|what is| what's) is? on my shopping list
