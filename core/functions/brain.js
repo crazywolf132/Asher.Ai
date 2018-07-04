@@ -18,6 +18,7 @@
 const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const arrayToFile = require("./helper").arrayToFile;
 const fileExists = require("./helper").fileExists;
+const dictToFile = require("./helper").dictToFile;
 const core = require(process.cwd() + "/server");
 
 const speak = require("speakeasy-nlp");
@@ -49,6 +50,8 @@ exports.loadBrain = () => {
     if (__exists) {
         allFileNames = []
         allFileNames.push(process.cwd() + "/brain/ashersBrain.save");
+        //exports.loadBrainFromSave();
+        //__reverse_associationsDB = exports.loadFromFile(process.cwd() + "/brain/raw-backlink.brain");
     }
     allFileNames.forEach((file) => {
         console.log("Loading : " + file);
@@ -68,7 +71,7 @@ exports.loadBrain = () => {
             }
         }
 
-        for (i = 0; i < 4; i++){
+        for (i = 0; i < 4; i++) {
             fileContents.splice(0, 1);
         }
 
@@ -84,7 +87,7 @@ exports.loadBrain = () => {
             } else if (item.includes("- ")) {
                 // This means its the response to the last header.
                 var holder = item.replace("- ", "");
-                if (!(holder in __responsesDB)){
+                if (!(holder in __responsesDB)) {
                     __responsesDB.push(holder);
                 }
                 //Going to associate last header with this...
@@ -103,16 +106,29 @@ exports.loadBrain = () => {
                 }
             }
             if (counter % 10000 == 0) {
-              console.log(`Loaded ${counter} iterations...`);
+                console.log(`Loaded ${counter} iterations...`);
             }
             counter += 1;
         })
 
     })
+    
     console.log(`All ${counter} iterations finished...`)
     exports.saveBrain();
 }
 
+exports.loadBrainFromSave = (_path) => {
+    let FE = fileExists;
+    FE(process.cwd() + "/brain/raw-brain.brain")
+        ? (__associationsDB = JSON.parse(
+            fs.readFileSync(process.cwd() + "/brain/raw-brain.brain")
+        ))
+        : (__associationsDB = {});
+    Object.keys(__associationsDB).forEach((key) => {
+        __wordsDB.push(key);
+
+    })
+}
 
 exports.generateBackLinkBrain = () => {
     var counter = 0
@@ -142,6 +158,11 @@ exports.generateBackLinkBrain = () => {
     console.log(`All ${counter} backlinks created...`)
 }
 
+exports.saveRawBrain = () => {
+    dictToFile(process.cwd() + "/brain/raw-brain.brain", __associationsDB);
+    dictToFile(process.cwd() + "/brain/raw-backlink.brain", __reverse_associationsDB);
+}
+
 
 /*
     The purpose of this function is to make sure both the backLink and
@@ -167,6 +188,7 @@ exports.saveBrain = () => {
         })
     } )
     arrayToFile(process.cwd() + "/brain/ashersBrain.save", __ashersBrain);
+    //exports.saveRawBrain();
 }
 
 exports.duplicateCheck = () => {
@@ -194,11 +216,11 @@ exports.getInfo = () => {
     console.log(res);
     //console.log("Is 'How are you doing' in array? " + "How are you doing" in __associationsDB)
 
-    __wordsDB.forEach( (item) => {
+    /*__wordsDB.forEach( (item) => {
         if (!(item in __associationsDB)) {
             console.log(" -- '" + item + "' is not in the associations DB");
         }
-    })
+    })*/
 }
 
 
@@ -254,7 +276,12 @@ exports.synapseLinks = (__input) => {
     console.log("\n\n\n")
 }
 
-
+/**
+ * This part of the brain is used to try and work out wtf is going on. We only ever run this part
+ * If the getResponse Module returned a -1. Meaning it doesnt know how to respond.
+ * @param {String} UID 
+ * @param {String} message 
+ */
 exports.worker = (UID, message) => {
     var activememory = core.activeMemory;
     // We are going to take advantage of the activeMemory system in this function.

@@ -2,40 +2,8 @@ const request = require("request");
 const EventEmitter = require('eventemitter3');
 const fetch = require('node-fetch');
 var share = (module.exports = {});
-const token =
-  "";
-
-share.messageProcess = (userID, message) => {
-    /**
-     * This is the process of responding...
-     * 1. We view the message. Make it feel more human. (1.2 seconds...)
-     * 2. We show typing bubbles. (1.2 seconds...)
-     * 3. We hide typing bubbles... (0 seconds...)
-     * 4. We send message. (0 seconds...)
-     */
-
-    let messageData = { text: message };
-    request(
-      {
-        url: "https://graph.facebook.com/v2.6/me/messages",
-        qs: { access_token: token },
-        method: "POST",
-        json: {
-          recipient: { id: userID },
-          message: messageData
-        }
-      },
-      function(error, response, body) {
-        if (error) {
-          console.log("Error sending messages: ", error);
-        } else if (response.body.error) {
-          console.log("Error: ", response.body.error);
-        }
-      }
-    );
-     
-}
-
+token =
+  "EAACF5A8gUDgBAB3zUPI7krswwWRnpRXl5Jqhd2pZAmIy07HZBvsYpK6ySFrAJkB6RNZCXZARsw3NPvWvwUmiESvbP4g8UxUyw0kGLRO1tvW11I9kY5Ev9j7HUDBZAKj0nVgH6e2xKsoNDz24y9F2p03tXaw8ZAOqlZApdZAGGwjLfgZDZD";
 /**
  * Sends a message back to the user, with the provided format.
  * @param {String} userID 
@@ -44,6 +12,7 @@ share.messageProcess = (userID, message) => {
  * @returns {Promise}
  */
 share.respond = (recipientId, message, options) => {
+  console.log("Sent message to: " + recipientId);
   if (typeof message === 'string') {
     return sendTextMessage(recipientId, message, [], options);
   } else if (message && message.text) {
@@ -63,46 +32,17 @@ share.respond = (recipientId, message, options) => {
       return promise.then(() => say(recipientId, msg, options));
     }, Promise.resolve());
   }
-  console.error('Invalid format for .say() message.');
+  console.error('Invalid format for .respond() message.');
 }
 
+
 sendTextMessage = (userID, text, quickReplies, options) => {
-  console.log("Running this badass")
   const message = { text };
   const formattedQuickReplies = _formatQuickReplies(quickReplies);
   if (formattedQuickReplies && formattedQuickReplies.length > 0) {
     message.quick_replies = formattedQuickReplies;
   }
   return sendMessage(userID, message, options);
-}
-
-sendButtonTemplate = (userID, message, buttons, options) => {
-
-}
-
-
-share.seenMaker = (userID) => {
-    request({
-      url: "https://graph.facebook.com/v2.6/me/messages",
-      qs: { access_token: token },
-      method: "POST",
-      json: {
-        recipient: { id: userID },
-        sender_action: "mark_seen"
-      }
-    });
-}
-
-share.typingMarker = (userID) => {
-    request({
-      url: "https://graph.facebook.com/v2.6/me/messages",
-      qs: { access_token: token },
-      method: "POST",
-      json: {
-        recipient: { id: userID },
-        sender_action: "typing_on"
-      }
-    });
 }
 
 
@@ -131,6 +71,14 @@ share.setGetStartedButton = (action)  => {
     }
   });
 }
+
+share.seenMessage = userID => {
+  const recipient = _createRecipient(userID);
+  return sendRequest({
+    recipient,
+    sender_action: "mark_seen"
+  });
+};
 
 /**
  * All the hidden functions that allow shit to work..
@@ -195,6 +143,10 @@ sendTypingIndicator = (recipientId, milliseconds) => {
   });
 }
 
+sendButtonTemplate = (userID, message, buttons, options) => {
+  //TODO: Finish this...
+};
+
 sendAction = (recipientId, action, options) => {
   const recipient = _createRecipient(recipientId);
   return sendRequest({
@@ -215,10 +167,6 @@ sendRequest = (body, endpoint, method) => {
   })
     .then(res => res.json())
     .then(res => {
-      if (res.error) {
-        console.log('Messenger Error received. For more information about error codes, see: https://goo.gl/d76uvB');
-        console.log(res.error);
-      }
       return res;
     })
     .catch(err => console.log(`Error sending message: ${err}`));

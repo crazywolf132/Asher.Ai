@@ -16,6 +16,7 @@ const brain = require("./core/functions/brain");
 const messenger = require("./core/functions/messenger_handler");
 const loadBrain = brain.loadBrain;
 const generateBackLinkBrain = brain.generateBackLinkBrain;
+const saveRawBrain = brain.saveRawBrain;
 const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
 const newLoadMods = modHandler.newLoadMods;
@@ -163,7 +164,7 @@ module.exports.responder = (userID, message) => {
     //console.log(message)
     //message.then((response) => {
     if (module.exports.activeMemory[userID].usingFB){
-        // Need to send it to the fb responder function...
+        // Need to send it to the fb responder function... 
         messengerRespond(userID, message, {typing: true});
         //messageProcess(userID, message);
     } else {
@@ -357,16 +358,23 @@ io.on("connection", (client) => {
      ██ ██         ██    ██    ██ ██
 ███████ ███████    ██     ██████  ██
 */
-
+console.log(module.exports.cacheMemory);
 //loadBrain();
+console.time("loading Brain");
 loadBrain();
+console.timeEnd("loading Brain");
 //generateBackLinkBrain();
+console.log("Saving brain");
+//saveRawBrain();
+//console.log(brain.__associationsDB);
+//console.log("Backlinks brain: ")
+//console.log(brain.__reverse_associationsDB);
 //TODO: Fix this backlink...
 var brainResponse = brain.getResponse("When will you die");
 console.log(brainResponse)
 brain.synapseLinks("How are you");
 brain.getInfo();
-brain.saveBrain();
+//brain.saveBrain();
 
 module.exports.logger("NORMAL", "Configuring mods...");
 //loadMods(allMods, modDB, true);

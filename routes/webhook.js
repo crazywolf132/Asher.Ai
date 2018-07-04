@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const core = require(process.cwd() + "/server");
 const messenger = require(process.cwd() + "/core/functions/messenger_handler");
-const seenMessage = messenger.seenMaker;
+const seenMessage = messenger.seenMessage;
 const greetingMessage = messenger.setGreetingText;
 const startedMessage = messenger.setGetStartedButton;
 
