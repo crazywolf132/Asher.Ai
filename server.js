@@ -363,7 +363,7 @@ console.log(module.exports.cacheMemory);
 console.time("loading Brain");
 loadBrain();
 console.timeEnd("loading Brain");
-//generateBackLinkBrain();
+generateBackLinkBrain();
 console.log("Saving brain");
 //saveRawBrain();
 //console.log(brain.__associationsDB);

@@ -71,9 +71,9 @@ exports.loadBrain = () => {
             }
         }
 
-        for (i = 0; i < 4; i++) {
+        /*for (i = 0; i < 4; i++) {
             fileContents.splice(0, 1);
-        }
+        }*/
 
         fileContents.forEach((item) => {
             if (item.includes("- - ")) {
