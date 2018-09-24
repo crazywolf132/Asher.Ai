@@ -13,7 +13,14 @@ module.exports.core = (payload, chat) => {
 }
 
 module.exports.preRun = () => {
-    brain.loadBrain();
-    brain.generateBackLinkBrain();
-    brain.getInfo();
+    const B = require(`${process.cwd()}/core/functions/latestBrain`);
+    const newBrain = new B();
+    //console.time("brain1");
+    //brain.loadBrain();
+    //brain.generateBackLinkBrain();
+    //brain.getInfo();
+    //console.timeEnd("brain1");
+    console.time("brain2");
+    newBrain.start();
+    console.timeEnd("brain2");
 }

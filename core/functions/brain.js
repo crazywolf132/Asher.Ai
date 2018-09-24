@@ -283,6 +283,15 @@ exports.synapseLinks = (__input) => {
  * @param {String} message 
  */
 
+exports.wipe = () => {
+    exports.__wordsDB = __wordsDB = null;
+    exports.__responsesDB = __responsesDB = null;
+    exports.__unknown_phrases = __unknown_phrases = null;
+    exports.__thankyou_phrases = __thankyou_phrases = null;
+    exports.__associationsDB = __associationsDB = null;
+    exports.__reverse_associationsDB = __reverse_associationsDB = null;
+}
+
  //TODO: NEED TO REDO THIS PART AS WE CANT USE THE MEMORY MODULE ANYMORE...
 exports.worker = (UID, message) => {
     var activeMemory = object;
