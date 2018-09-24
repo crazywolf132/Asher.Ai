@@ -3,7 +3,7 @@ const speak = require("speakeasy-nlp");
 
 class Brain {
     constructor() {
-        this.brainFile = "/asher.brain";
+        this.brainFile = "asher.brain";
         this.previous_log_status = "";
         this.__unknown_phrases = [];
         this.__associationsDB = {};
@@ -150,7 +150,7 @@ class Brain {
         array.forEach((item) => {
             holder += item + "\n";
         })
-        fs.writeFileSync(file, holder);
+        fs.writeFileSync(file, holder, { flag: "w" });
     }
 
     checkFileExists(filename) {
