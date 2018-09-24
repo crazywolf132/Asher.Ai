@@ -6,3 +6,11 @@ module.exports = async (subject, message, userID, respond) => {
 	}
 	respond(userID, Math.floor(Math.random() * subject + 1));
 };
+
+
+module.exports.core = (core) => {
+	let words = [`roll a .?`, `roll a #Value .?`, `.? a (dice|die)`, `roll a dice`, `throw a dice`];
+	core.Asher.hear(words, (payload, chat) => {
+		chat.say(Math.floor(Math.random() * 6 + 1));
+	});
+}

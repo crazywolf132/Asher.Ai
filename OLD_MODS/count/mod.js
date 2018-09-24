@@ -1,9 +1,8 @@
-module.exports = async (subject, message, userID, respond) => {
-  let value = nlp(message)
-    .match("#Value")
-    .out("text");
-
-  respond(userID, await counter(value));
+module.exports.core = (core) => {
+  core.Asher.hear([`count to #Value`, `*? count to #Value *?`], (payload, chat) => {
+    let value = core.nlp(payload).match("#Value").out("text");
+    chat.say(await counter(value));
+  })
 }
 
 async function counter(to) {
