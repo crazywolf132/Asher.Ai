@@ -6,16 +6,13 @@ module.exports.core = (core) => {
         `.? remind me to do .? in #Value (second|minute|hour|seconds|minutes|hours) .?`
     ];
     core.Asher.hear(words, (payload, chat, data) => {
-        console.log(data);
-        console.log(core.nlp)
         const msg = core
           .nlp(data.found)
           .match("#Value .")
           .out("text");
-        console.log(msg);
         var holder;
         var reminder = core
-          .nlp(payload.keyword)
+          .nlp(data.found)
           .match("remind me to do? .?");
         var toRemind = "";
         // Here we are trying to split the message if there is the "remind me" text.
@@ -31,17 +28,17 @@ module.exports.core = (core) => {
         holder = msg.split(" ");
         const time = holder[1];
         const unit = holder[2];
-        console.log(unit);
-        console.log(time);
         // This is here so people can set certain reminders...
+        var details;
         if (reminder.found) {
-            setTimer(time, unit, () => chat.say("remember to "))
-        } else {
-            console.log("Setting a timer");
-            setTimer(time, unit, () => chat.say("timer is going off now!"));
+            details = core.nlp(data.found).match("to . in").out("text");
+            details = details.split(" ");
+            details = details[2];
         }
 
-        chat.say(reminder ? "reminder is set" : "timer is set");
+        setTimer(time, unit, () => chat.say(reminder.found ? `Remember to ${details}` : "Timer is going off now!"));
+        
+        chat.say(reminder.found ? "reminder is set" : "timer is set");
     });
 }
 
