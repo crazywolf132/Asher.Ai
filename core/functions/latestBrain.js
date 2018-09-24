@@ -20,11 +20,15 @@ class Brain {
     }
 
     loadNeurons() {
-        if (this.checkFileExists(process.cwd() + this.brainFile)) {
+        this.logger("Now loading Neurons...", "warning");
+        if (this.checkFileExists(process.cwd() + `/brain/` + this.brainFile)) {
             // Going to run the code to load the brain, otherwise we need to generate a brain....
             var fileContents = [];
             var counter = 0;
-            var array = fs.readFileSync(process.cwd() + this.brainFile).toString().split("\n");
+            var array = fs
+              .readFileSync(process.cwd() + `/brain/` + this.brainFile)
+              .toString()
+              .split("\n");
             for (let i = 0; i < array.length; i++) {
                 if (array[i] !== "") {
                     var holder = array[i].replace("  ", "");
@@ -94,7 +98,7 @@ class Brain {
 
     loadAxons() {
         var counter = 0;
-        this.logger("warning", "Now loading Axons...");
+        this.logger("Now loading Axons...", "warning");
         Object.keys(this.__associationsDB).forEach(key => {
             this.__associationsDB[key].forEach(val => {
                 if (!(val in this.__reverse_associationsDB)) {
@@ -138,7 +142,7 @@ class Brain {
                 }
             });
         });
-        this.arrayToFile(process.cwd() + this.brainFile, lines);
+        this.arrayToFile(process.cwd() + `/brain/` + this.brainFile, lines);
     }
 
     arrayToFile(file, array) {
