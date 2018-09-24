@@ -36,7 +36,7 @@ class Server {
         //this.app.use("/", this.homeRouter);
         //this.router = express.router();
         this.Asher.loadHandlers("discord", "discord");
-
+        this.Asher.loadOverloadModule("brain");
         this.Asher.start();
         this.loadAllMods();
         //let wow = require(process.cwd() + "/mods/funny/mod.js");

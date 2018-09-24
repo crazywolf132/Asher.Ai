@@ -62,6 +62,13 @@ class Asher extends EventEmitter {
     }
   }
 
+  loadOverloadModule(mod) {
+    if (fs.existsSync(process.cwd() + `/overLoader/${mod}.js`)) {
+      this.handlers['overLoader'] = require(process.cwd() + `/overLoader/${mod}.js`);
+      this.handlers.overLoader.preRun();
+    }
+  }
+
   loadMiddleWear(middle) {
     if (this.middleWear.loaded) {
       return "Sorry, you can only load 1 middlewear at a time.";
@@ -136,6 +143,15 @@ class Asher extends EventEmitter {
         return res;
       }
     });
+    // We are here because we couldnt find a message that we know...
+    // So now we will check to see if there are any overLoaders present.
+    // If there is, we will run that.
+    if (this.handlers.overLoader && !alreadyFound) {
+      alreadyFound = true;
+      let loader = this.handlers.overLoader;
+      loader.core([{found : text}, new Chat(this, socket)]);
+      return loader;
+    }
   }
 
   say(userID, message) {

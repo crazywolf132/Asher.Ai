@@ -19,7 +19,7 @@ const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const arrayToFile = require("./helper").arrayToFile;
 const fileExists = require("./helper").fileExists;
 const dictToFile = require("./helper").dictToFile;
-const core = require(process.cwd() + "/server");
+//const core = require(process.cwd() + "/server");
 
 const speak = require("speakeasy-nlp");
 const fs = require("fs");
@@ -282,13 +282,19 @@ exports.synapseLinks = (__input) => {
  * @param {String} UID 
  * @param {String} message 
  */
+
+ //TODO: NEED TO REDO THIS PART AS WE CANT USE THE MEMORY MODULE ANYMORE...
 exports.worker = (UID, message) => {
-    var activememory = core.activeMemory;
+    var activeMemory = object;
+    //var activememory = core.activeMemory;
     // We are going to take advantage of the activeMemory system in this function.
     // We are going to use it to force the running of this module again, when we ask a question.
-    const memeory = core.memeory;
-    const remember = core.remember;
-    const forget = core.forget;
+    const memory = object;
+    //const memeory = core.memeory;
+    const remember = object;
+    //const remember = core.remember;
+    //const forget = core.forget;
+    const forget = object;
     // Going to check what mode the voice is in...
     // 1 is learning mode, 0 is normal.
     var mem_mode = activememory[UID]['brain'].mem_mode;
