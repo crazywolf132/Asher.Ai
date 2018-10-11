@@ -1,6 +1,0 @@
-.? a coin .?
-flip a .?
-toss a .?
-flip .?
-toss .?
-flip a coin

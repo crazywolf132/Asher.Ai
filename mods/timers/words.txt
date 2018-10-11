@@ -1,4 +1,0 @@
-.? set timer for #Value (second|minute|hour|seconds|minutes|hours) .?
-.? set .? timer for #Value (second|minute|hour|seconds|minutes|hours) .?
-.? remind me to .? in #Value (second|minute|hour|seconds|minutes|hours) .?
-.? remind me to do .? in #Value (second|minute|hour|seconds|minutes|hours) .?

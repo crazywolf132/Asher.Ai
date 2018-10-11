@@ -61,3 +61,7 @@ typings/
 .env
 
 \.DS_Store
+
+brain/ashersBrain\.save
+
+brain/asher\.brain
