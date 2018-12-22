@@ -149,7 +149,7 @@ class Asher extends EventEmitter {
     if (this.handlers.overLoader && !alreadyFound) {
       alreadyFound = true;
       let loader = this.handlers.overLoader;
-      loader.core([{found : text}, new Chat(this, socket)]);
+      loader.core({ found: text }, new Chat(this, socket));
       return loader;
     }
   }

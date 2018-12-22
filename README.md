@@ -2,11 +2,11 @@
   <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/bg.png">
 </p>
 <h2 align="center">
-    <a href="https://circleci.com/gh/crazywolf132/AsherAPI"><img src="https://circleci.com/gh/manekinekko/google-actions-server.svg?style=svg"/></a>
-    <a href="https://codeclimate.com/github/crazywolf132/AsherAPI/maintainability"><img src="https://api.codeclimate.com/v1/badges/e66235017865b51adbf2/maintainability" /></a>
-    <a class="badge-align" href="https://www.codacy.com/app/crazywolf132/AsherAPI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=crazywolf132/AsherAPI&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/e0375f94ce4c4ac4b32a8b74df8b0bf7"/></a>
+    <a href="https://circleci.com/gh/crazywolf132/AsherAPI"><img src="https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg"/></a>
+    <a href="#"><img src="https://forthebadge.com/images/badges/built-with-love.svg" /></a>
+    <a class="badge-align" href="https://www.codacy.com/app/crazywolf132/AsherAPI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=crazywolf132/AsherAPI&amp;utm_campaign=Badge_Grade"><img src="https://forthebadge.com/images/badges/for-you.svg"/></a>
     <a href=""./LICENSE">
-    <img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg"/>
+    <img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg"/>
     </a>
 </h2>
 <br />

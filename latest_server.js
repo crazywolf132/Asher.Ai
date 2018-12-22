@@ -11,13 +11,69 @@ const fs = require("fs");
 * THE CORE OF THE SYSTEM...
 */
 
-class Server {
+class Helper {
     constructor() {
+        this.timeOfDay = Object.freeze({"Morning" : 1, "Midday" : 2, "Afternoon" : 3, "Evening" : 4, "Night" : 5, "MidNight" : 6});
+        this.currentTime = this.getTime();
+    }
+
+    /*
+     * This function should be able to be used by any of the modules to make re-active responses.
+     */
+    getTime() {
+        var d = new Date();
+        var hours = d.getHours();
+
+        if (hours >= 1 && hours <= 11) {
+            return this.timeOfDay.Morning;
+        } else if (hours == 12) {
+            return this.timeOfDay.Midday;
+        } else if (hours >= 13 && hours <= 15) {
+            return this.timeOfDay.Afternoon;
+        } else if (hours >= 16 && hours <= 23) {
+            return this.timeOfDay.Night;
+        } else {
+            return this.timeOfDay.MidNight;
+        }
+    }
+
+
+}
+
+class Monitor {
+    constructor(helper) {
+        this.counter = 0;
+        this.helper = helper;
+        this.port = 4496;
+        this.notifications = {};
+    }
+
+    startServer() {
+        const io = require("socket.io").listen(this.port);
+        io.sockets.on("connection", socket => {
+            socket.on("notification", notif => {
+                if (!(notif[0] in Object.keys(this.notifications))) {
+                    this.notifications[notif[0]] = [];
+                }
+                this.notifications[notif[0]].push(notif[1]);
+            });
+        });
+    }
+
+    timeWatcher() {
+    }
+}
+
+class Server {
+    constructor(monitor) {
         this.Asher = new core(false, nlp);
         this.Asher.start();
         this.app = express();
         this.port = process.env.PORT || 80;
         this.nlp = nlp;
+        this.monitor = monitor;
+        this.helper = this.monitor.helper;
+        this.homeRouter = require(process.cwd() + "/routes/home");
     }
 
     start() {
@@ -33,7 +89,7 @@ class Server {
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         });
-        //this.app.use("/", this.homeRouter);
+        this.app.use("/", this.homeRouter);
         //this.router = express.router();
         this.Asher.loadHandlers("discord", "discord");
         this.Asher.loadOverloadModule("brain");
@@ -87,6 +143,7 @@ class Server {
     }
 };
 
-
-Asher = new Server();
+helper = new Helper();
+mon = new Monitor(helper);
+Asher = new Server(mon);
 Asher.start();

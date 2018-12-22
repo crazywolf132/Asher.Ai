@@ -38,7 +38,7 @@ class Brain {
 
             fileContents.forEach(item => {
                 var line_part = item.split(" : ");
-                var header = line_part[0];
+                var header = line_part[0].replace(".", "").toLowerCase();
                 var response = line_part[1];
                 if (header in this.__associationsDB) {
                     if (!this.__associationsDB[header].indexOf(response) > -1) {
@@ -74,7 +74,7 @@ class Brain {
                         var holder = item.replace("- - ", "");
                         holder = holder.replace("?", "");
 
-                        lastHeader = holder;
+                        lastHeader = holder.toLowerCase().replace(".", "");
                     } else if (item.includes("- ")) {
                         var holder = item.replace("- ", "");
                         if (lastHeader in this.__associationsDB) {
@@ -141,8 +141,40 @@ class Brain {
                     lines.push(line);
                 }
             });
+            if (lines.length % 10000 == 0) {
+                this.logger(`Saved ${lines.length} neurons...`);
+            }
         });
         this.arrayToFile(process.cwd() + `/brain/` + this.brainFile, lines);
+    }
+
+    getResponse(input) {
+        try {
+            var outputNum = this.__associationsDB[input][Math.floor(Math.random() * Object.keys(this.__associationsDB[input]).length)]
+            return outputNum;
+        } catch (error) {
+            console.log(error);
+            if (!input in this.__associationsDB || input in this.__reverse_associationsDB) {
+                if (!(input in this.__unknown_phrases)) {
+                    this.__unknown_phrases.push(input);
+                }
+            }
+            return "-1";
+        }
+    }
+
+    show() {
+        //for (int i = 0; )
+    }
+
+    memories() {
+        
+    }
+
+    wipe() {
+        this.__unknown_phrases = null;
+        this.__associationsDB = null;
+        this.__reverse_associationsDB = null;
     }
 
     arrayToFile(file, array) {
@@ -150,7 +182,7 @@ class Brain {
         array.forEach((item) => {
             holder += item + "\n";
         })
-        fs.writeFileSync(file, holder, { flag: "w" });
+        fs.writeFile(file, holder, { flag: "w" }, () => {});
     }
 
     checkFileExists(filename) {
