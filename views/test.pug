@@ -34,7 +34,7 @@ html(lang='en')
             <div id="text-input">
 
                 <div class="new">
-                    <input v-model="msg" class="input">
+                    <input v-model="msg" class="input" style="width: 100%">
                 </div><button class="send" @click="addMsg">Send</button>
 
             </div>
@@ -69,6 +69,7 @@ html(lang='en')
                         this.messages[this.messages.length - 1].msgs.push(this.msg)
 
                         this.socket.emit('command', this.msg);
+                        this.msg = ''
                     },
                     addAsherMsg (message) {
                         if (this.messages[this.messages.length - 1].mode != 'receiver') {
