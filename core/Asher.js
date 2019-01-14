@@ -21,6 +21,7 @@ class Asher extends EventEmitter {
     this.port = 4416;
     this.handlers = { loaded: false };
     this.middleWear = { loaded: false };
+    this.serverRunning = false;
   }
 
   start() {
@@ -28,16 +29,19 @@ class Asher extends EventEmitter {
       let runMe = this.handlers.listener;
       new runMe(this);
     } else {
-      const io = require("socket.io").listen(this.port);
-      // io.listen((!port) ? this.port : port);
-      io.sockets.on("connection", socket => {
-        socket.on("command", mess => {
-          this.getMessage(mess, socket);
+      if (!this.serverRunning) {
+        const io = require("socket.io").listen(this.port);
+        // io.listen((!port) ? this.port : port);
+        io.sockets.on("connection", socket => {
+          socket.on("command", mess => {
+            this.getMessage(mess, socket);
+          });
+          socket.on("verify", pass => {
+            socket.emit("verify_status", true);
+          });
         });
-        socket.on("verify", pass => {
-          socket.emit("verify_status", true);
-        });
-      });
+        this.serverRunning = true;
+      }
     }
   }
 
@@ -112,6 +116,9 @@ class Asher extends EventEmitter {
   }
 
   convo_response(ID, data) {
+    if (!this.handlers.atts) {
+       return false
+    }
     if (this.handlers.atts.message) ID = this.handlers.atts.message.author;
     const userID = ID;
     let captured = false;
@@ -125,7 +132,9 @@ class Asher extends EventEmitter {
   }
 
   getMessage(text, socket) {
+
     if (this.convo_response(socket, text)) {
+      console.log("oh no")
       return;
     }
     let alreadyFound = false;
@@ -160,11 +169,12 @@ class Asher extends EventEmitter {
             let runMe = this.handlers.responder;
             new runMe(this, userID, message);
         } else {
+            console.log('lol')
             userID.emit("response", message);
         }
         resolve("done");
     });
-    
+
   }
 }
 

@@ -6,6 +6,7 @@ const stylus = require("stylus");
 const path = require("path");
 const nlp = require("compromise");
 const fs = require("fs");
+//const io = require('socket.io').listen(4416);
 
 /**
 * THE CORE OF THE SYSTEM...
@@ -44,20 +45,25 @@ class Monitor {
     constructor(helper) {
         this.counter = 0;
         this.helper = helper;
-        this.port = 4496;
+        //this.port = 4416;
         this.notifications = {};
     }
 
     startServer() {
-        const io = require("socket.io").listen(this.port);
+        /*const io = require("socket.io").listen(this.port);
+        console.log('socket server is made....')
         io.sockets.on("connection", socket => {
+          console.log('connection is made...')
+            socket.on('command', data => {
+              console.log(data)
+            })
             socket.on("notification", notif => {
                 if (!(notif[0] in Object.keys(this.notifications))) {
                     this.notifications[notif[0]] = [];
                 }
                 this.notifications[notif[0]].push(notif[1]);
             });
-        });
+        });*/
     }
 
     timeWatcher() {
@@ -65,14 +71,14 @@ class Monitor {
 }
 
 class Server {
-    constructor(monitor) {
+    constructor() {
         this.Asher = new core(false, nlp);
         this.Asher.start();
         this.app = express();
         this.port = process.env.PORT || 80;
         this.nlp = nlp;
-        this.monitor = monitor;
-        this.helper = this.monitor.helper;
+        //this.monitor = monitor;
+        //this.helper = this.monitor.helper;
         this.homeRouter = require(process.cwd() + "/routes/home");
     }
 
@@ -91,13 +97,13 @@ class Server {
         });
         this.app.use("/", this.homeRouter);
         //this.router = express.router();
-        this.Asher.loadHandlers("discord", "discord");
+        //this.Asher.loadHandlers("discord", "discord");
         this.Asher.loadOverloadModule("brain");
         this.Asher.start();
         this.loadAllMods();
         //let wow = require(process.cwd() + "/mods/funny/mod.js");
         //wow.core(this);
-        
+        //this.monitor.startServer();
         this.startServer();
     }
 
@@ -143,7 +149,7 @@ class Server {
     }
 };
 
-helper = new Helper();
-mon = new Monitor(helper);
-Asher = new Server(mon);
+//helper = new Helper();
+//mon = new Monitor(helper);
+Asher = new Server();
 Asher.start();

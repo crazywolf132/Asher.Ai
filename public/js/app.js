@@ -23,7 +23,7 @@ function connect(host) {
 		console.log("Connected!");
 	});
 
-	socket.on("result", function(message) {
+	socket.on("response", function(message) {
 		readOutLoud(message);
 		addMaleMessage(message);
 	});
@@ -121,11 +121,12 @@ function startDictation() {
 
 window.onload = function() {
 	var host = window.location.host + ":" + 4416;
+	//var host = "http://raspberrypi.local:4416"
 	connect(host);
 	setupWebSpeechAPI();
 	$("#message_box").bind("enterKey", function(e) {
 		addFemaleMessage(document.getElementById("message_box").value);
-		socket.emit("message", document.getElementById("message_box").value);
+		socket.emit("command", document.getElementById("message_box").value);
 		document.getElementById("message_box").value = "";
 	});
 	$("#message_box").keyup(function(e) {

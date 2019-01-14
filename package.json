@@ -19,7 +19,7 @@
     "node-fetch": "^2.1.2",
     "nodemon": "^1.18.4",
     "pug": "^2.0.3",
-    "socket.io": "^2.0.4",
+    "socket.io": "^2.1.1",
     "speakeasy-nlp": "^0.2.12",
     "stylus": "^0.54.5",
     "timer.js": "^1.0.4"
