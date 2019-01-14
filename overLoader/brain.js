@@ -6,9 +6,6 @@ const newBrain = new B();
 
 module.exports.core = (payload, chat) => {
     let response = "";
-    //console.log(payload[0].found);
-    console.log("======================");
-    console.log(payload);
     response = newBrain.getResponse(
         payload.found.includes("?") ?
         payload.found.replace("?", "").toLowerCase() :
@@ -24,7 +21,4 @@ module.exports.core = (payload, chat) => {
 
 module.exports.preRun = () => {
     newBrain.start();
-    //newBrain.testBrain();
-    //console.log(newBrain.getResponse("How are you"));
-   // newBrain.saveBrain();
 }

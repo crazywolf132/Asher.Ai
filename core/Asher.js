@@ -169,7 +169,6 @@ class Asher extends EventEmitter {
             let runMe = this.handlers.responder;
             new runMe(this, userID, message);
         } else {
-            console.log('lol')
             userID.emit("response", message);
         }
         resolve("done");

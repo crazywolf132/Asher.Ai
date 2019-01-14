@@ -20,8 +20,11 @@
     "nodemon": "^1.18.4",
     "pug": "^2.0.3",
     "socket.io": "^2.1.1",
+    "socket.io-client": "^2.2.0",
     "speakeasy-nlp": "^0.2.12",
     "stylus": "^0.54.5",
-    "timer.js": "^1.0.4"
+    "timer.js": "^1.0.4",
+    "vue-scrollto": "^2.13.0",
+    "vue-socket.io": "^3.0.4"
   }
 }

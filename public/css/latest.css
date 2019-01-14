@@ -1,0 +1,186 @@
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  outline: none;
+  border: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: transparent;
+}
+html {
+    height: 100%;
+}
+
+body {
+  color: #696565;
+  font-size: 1em;
+  height: 100%;
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: #dee8f4;
+}
+
+#container {
+  height: 100%;
+  position: relative;
+  background-color: #f8f8f8;
+}
+
+#messages {
+  padding: 10px;
+  height: 98%;
+  overflow-x: scroll;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 10px;
+  border-radius: 50px;
+  background-color: #dee8f4;
+  background-size: 200%;
+  background-image: url("http://i.imgur.com/uEcpKAG.png");
+}
+
+.liz {
+  background-position: bottom right;
+}
+
+.sanchez {
+  background-position: bottom left;
+}
+
+.dean {
+  background-position: top right;
+}
+
+.message {
+  width: 80%;
+}
+
+.avatar,
+.message {
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.blob {
+  width: 100%;
+}
+
+.blob-content {
+  margin-bottom: 10px;
+  padding: 7px 12px 8px 12px;
+  display: inline-block;
+  position: relative;
+  border-radius: 1rem;
+}
+
+.blob-connector {
+  bottom: -10px;
+  width: 40px;
+  height: 10px;
+  position: absolute;
+  overflow: hidden;
+}
+.blob-connector:before, .blob-connector:after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  top: 0;
+  position: absolute;
+  background: transparent;
+}
+.blob-connector:before {
+  left: 0;
+  border-radius: 0 50em 50em 0;
+}
+.blob-connector:after {
+  right: 0;
+  border-radius: 50em 0 0 50em;
+}
+
+.receiver .blob-content,
+.sender .blob-content {
+  width: auto;
+  max-width: 90%;
+}
+
+.receiver .blob-content {
+  color: #fff;
+  background-color: #add3f7;
+}
+.receiver .blob-connector {
+  left: calc(30% - 20px);
+}
+.receiver .blob-connector:before, .receiver .blob-connector:after {
+  box-shadow: 0 0 0 16px #add3f7;
+}
+
+.sender {
+  text-align: right;
+}
+.sender .blob-content {
+  text-align: left;
+  color: #fff;
+  background-color: #f6c4c4;
+}
+.sender .blob-connector {
+  right: calc(30% - 20px);
+}
+.sender .blob-connector:before, .sender .blob-connector:after {
+  box-shadow: 0 0 0 16px #f6c4c4;
+}
+
+#text-input {
+  width: 100%;
+  padding: 10px 10px 10px 10px;
+  margin: 0;
+  bottom: 0;
+  position: absolute;
+  background-color: #f3f3f3;
+}
+#text-input .new, #text-input .send {
+  display: inline-block;
+  vertical-align: middle;
+}
+#text-input .new {
+  width: 83%;
+}
+#text-input .send {
+  width: 14%;
+  margin-left: 10px;
+  padding: 5px 0;
+  cursor: pointer;
+  font-size: 1em;
+  text-align: center;
+  color: #7891ff;
+}
+#text-input .input {
+  padding: 5px 10px;
+  line-height: 1.2em;
+  font-size: 1em;
+  color: #696565;
+  border: 1px solid #d3d1d1;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+#text-input .input:focus {
+  border: 1px solid #7891ff;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 575px) {
+  #messages {
+    height: 95%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) { 
+  #messages {
+    height: 90%;
+  }
+}
+
