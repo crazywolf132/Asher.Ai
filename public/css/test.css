@@ -28,47 +28,6 @@ body {
   background-color: #f8f8f8;
 }
 
-#top {
-  border: 0;
-  border-bottom-width: 4px;
-  -o-border-image: linear-gradient(to right, #ffcbcb, #92aef7);
-     border-image: linear-gradient(to right, #ffcbcb, #92aef7);
-  border-image-slice: 1;
-  padding: 20px 10px 10px 10px;
-  background-color: #fff;
-  position: relative;
-  text-align: center;
-}
-#top a.back {
-  position: absolute;
-  left: 15px;
-  bottom: calc(50% - .7em);
-  font-size: 1.8em;
-  line-height: 1em;
-  color: #92aef7;
-  text-decoration: none;
-}
-#top .chat-icon {
-  width: 50px;
-  height: 50px;
-  right: 10px;
-  bottom: 5px;
-  position: absolute;
-  border-radius: 60px;
-  background-color: #dee8f4;
-  background-image: url("https://i.imgur.com/YFMRIyJ.png");
-  background-size: 150%;
-  background-position: left center;
-}
-#top h3 {
-  font-size: 1.1em;
-  margin-bottom: 2px;
-}
-#top p {
-  font-size: 0.85em;
-  color: #888383;
-}
-
 #messages {
   padding: 10px;
 }

@@ -13,7 +13,7 @@ html(lang='en')
 
             <div id="messages">
                 <div v-for="item in messages" v-bind:class="item.mode">
-                    <div v-if="item.mode == 'receiver'" class="avatar liz"></div>
+                    <div v-if="item.mode == 'receiver'" class="avatar dean"></div>
                     <div class="message">
                         <div class="blob" v-for="(msg, index) of item.msgs">
                             <span class="blob-content">
