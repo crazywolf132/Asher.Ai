@@ -22,6 +22,14 @@ body {
   background-color: #dee8f4;
 }
 
+.darkMode {
+  background-color: #13262F!important;
+}
+
+.darkModeText {
+  color: #13262F!important;
+}
+
 #container {
   height: 100%;
   position: relative;

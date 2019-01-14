@@ -12,33 +12,27 @@ html(lang='en')
         script(src='https://rawgit.com/theomessin/vue-chat-scroll/master/dist/vue-chat-scroll.js')
 
     body.
-        <div id="container">
-            <!-- ends #top -->
-
+        <div id="container" v-bind:class="{darkMode : darkMode}">
+            <!-- starts #messages -->
             <div id="messages" style="overflow-x: scroll" v-chat-scroll>
                 <div v-for="item in messages" v-bind:class="item.mode" v-bind:id="item.id">
                     <div v-if="item.mode == 'receiver'" class="avatar dean"></div>
                     <div class="message">
                         <div class="blob" v-for="(msg, index) of item.msgs">
                             <span class="blob-content">
-                                <p>{{msg}}</p>
-                                <span v-if="index != Object.keys(item.msgs).length - 1 && msg.length >= 7" class="blob-connector"></span>
+                                <p v-bind:class="{darkModeText : darkMode}">{{msg}}</p>
+                                <span v-if="index != Object.keys(item.msgs).length - 1 && msg.length >= 7 && item.msgs[index + 1].length >= 7" class="blob-connector"></span>
                             </span>
                         </div>
                     </div>
                 </div>
-                <!-- ends received message -->
-                <!-- ends sent message -->
-
-                
-
             </div>
             <!-- ends #messages -->
 
             <div id="text-input">
 
                 <div class="new">
-                    <input v-model="msg" class="input" style="width: 100%">
+                    <input v-model="msg" class="input" style="width: 100%" @keyup.enter="addMsg">
                 </div><button class="send" @click="addMsg">Send</button>
 
             </div>
@@ -53,6 +47,7 @@ html(lang='en')
                     msg: '',
                     canUsePush: true,
                     lastPerson: 99,
+                    darkMode: false,
                     socket: io(window.location.host + ':4416'),
                     messages: [
                         {id: 0, mode: 'receiver', msgs: ['Hi, im asher', 'how can i help you?']},
@@ -109,6 +104,13 @@ html(lang='en')
                     });
 
                     this.socket.on('response', (data) => {
+                        if (data == '{darkmode: true}') {
+                            data = this.darkMode ? 'Already enabled...' : 'Sure'
+                            this.darkMode = true
+                        } else if (data == '{darkmode: false}') {
+                            data = this.darkMode ? 'Sure' : 'Already disabled...'
+                            this.darkMode = false
+                        }
                         this.addAsherMsg(data)
                     });
                 }
