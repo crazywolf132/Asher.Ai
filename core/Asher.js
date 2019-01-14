@@ -21,6 +21,7 @@ class Asher extends EventEmitter {
     this.port = 4416;
     this.handlers = { loaded: false };
     this.middleWear = { loaded: false };
+    this.serverStarted = false;
   }
 
   start() {
@@ -28,16 +29,23 @@ class Asher extends EventEmitter {
       let runMe = this.handlers.listener;
       new runMe(this);
     } else {
-      const io = require("socket.io").listen(this.port);
-      // io.listen((!port) ? this.port : port);
-      io.sockets.on("connection", socket => {
-        socket.on("command", mess => {
-          this.getMessage(mess, socket);
+      if (!this.serverStarted){
+        console.log('SERVER IS RUNNING!')
+        const io = require("socket.io").listen(this.port);
+        // io.listen((!port) ? this.port : port);
+        io.sockets.on("connection", socket => {
+          socket.on("command", mess => {
+            console.log("\nRUNNING COMMAND!\n\n\n")
+            console.log(mess)
+            this.getMessage(mess, socket);
+          });
+          socket.on("verify", pass => {
+            socket.emit("verify_status", true);
+          });
         });
-        socket.on("verify", pass => {
-          socket.emit("verify_status", true);
-        });
-      });
+
+        this.serverStarted = true;
+      }
     }
   }
 

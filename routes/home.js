@@ -7,6 +7,10 @@ router.route("/").get(function(req, res, next) {
 
 router.route("/chat").get((req, res, next) => {
 	res.render("chat");
-})
+});
+
+router.route("/test").get((req, res, next) => {
+	res.render("test");
+});
 
 module.exports = router;

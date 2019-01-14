@@ -1,0 +1,81 @@
+doctype html.
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Daily UI #013 - Direct Messaging
+        link(rel='stylesheet', href='/css/test.css')
+        script(type='text/javascript', src='/js/socket.io.js')
+        script(src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js')
+
+    body.
+        <div id="container">
+            <!-- ends #top -->
+
+            <div id="messages">
+                <div v-for="item in messages" v-bind:class="item.mode">
+                    <div v-if="item.mode == 'receiver'" class="avatar liz"></div>
+                    <div class="message">
+                        <div class="blob" v-for="(msg, index) of item.msgs">
+                            <span class="blob-content">
+                                <p>{{msg}}</p>
+                                <span v-if="index != Object.keys(item.msgs).length - 1 && msg.length >= 7" class="blob-connector"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- ends received message -->
+                <!-- ends sent message -->
+
+                
+
+            </div>
+            <!-- ends #messages -->
+
+            <div id="text-input">
+
+                <div class="new">
+                    <input v-model="msg" class="input">
+                </div><button class="send" @click="addMsg">Send</button>
+
+            </div>
+            <!-- ends #text-input -->
+
+        </div>
+        <!-- ends #container -->
+        <script>
+            var app = new Vue({
+                el: '#container',
+                data: {
+                    msg: '',
+                    lastPerson: 99,
+                    socket: io('localhost:4416'),
+                    messages: [
+                        {mode: 'receiver', msgs: ['Hi, im asher', 'how can i help you?']},
+                        {mode: 'sender', msgs: ['What is the current weather?']},
+                        {mode: 'receiver', msgs: ['It is currently 37 degrees', 'So... F***ing hot!']},
+                        ]
+                },
+                mounted() {
+                    this.socket.on('result', (data) => {
+                        this.addAsherMsg(data)
+                    });
+                },
+                methods: {
+                    addMsg () {
+                        console.log("running")
+                        if (this.messages[this.messages.length - 1].mode != 'sender') {
+                            this.messages.push({mode: 'sender', msgs: []})
+                        }
+                        this.messages[this.messages.length - 1].msgs.push(this.msg)
+
+                        this.socket.emit('command', this.msg);
+                    },
+                    addAsherMsg (message) {
+                        if (this.messages[this.messages.length - 1].mode != 'receiver') {
+                            this.messsages.push({mode: 'sender', msgs: []})
+                        }
+                        this.messages[this.messages.length - 1].msgs.push(message)
+                    }
+                }
+            })
+        </script>
