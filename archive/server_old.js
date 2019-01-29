@@ -10,8 +10,8 @@ const io = require("socket.io")(4416);
 const speak = require("speakeasy-nlp");
 const nlp = require("compromise");
 const sentiment = require("sentiment");
-const modHandler = require("./core/functions/mod_handler");
-const helper = require("./core/functions/helper");
+const modHandler = require("../core/functions/mod_handler");
+const helper = require("../core/functions/helper");
 const trainAllMods = modHandler.trainAllMods;
 const loadAllMods = modHandler.loadAllMods;
 const getMod = modHandler.getMod;
@@ -30,8 +30,8 @@ var brainSaveTicker = 0;
 let allMods = {};
 // These next two arrays are for the users... For when saving state
 // and allowing the continuation of a mod.
-const apiRouter = require("./routes/api");
-const homeRouter = require("./routes/home");
+const apiRouter = require("../routes/api");
+const homeRouter = require("../routes/home");
 
 /*
  ██████  ██████  ██████  ███████

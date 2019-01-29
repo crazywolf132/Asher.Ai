@@ -38,15 +38,26 @@ module.exports.core = (core) => {
     });
 
     core.Asher.hear('(cast|broadcast) *? to *?', (payload, chat, found) => {
-        let res = found.found.replace("to", ":");
+        let res = found.found.replace("to ", ":");
         res = res.replace('broadcast', '')
         res = res.replace('cast', '')
         res = res.split(":")
 
-        const myHome = new GoogleHome(res[1]);
+        const myHome = new GoogleHome(`${res[1]}`);
 
         myHome.speak(res[0]);
 
         chat.say("done");
+    });
+
+    core.Asher.hear('play *? on *?', (payload, chat, found) => {
+        let res = found.found.replace('on ', '-$-$-')
+        res = res.replace('play', '')
+        res = res.split('-$-$-');
+
+        const myHome = new GoogleHome(`${res[1]}`);
+        myHome.push(res[0]);
+
+        chat.say('Sure thing')
     })
 }
