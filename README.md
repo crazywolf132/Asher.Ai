@@ -8,6 +8,9 @@
     <a href=""./LICENSE">
     <img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg"/>
     </a>
+    <a href="https://discord.gg/DUk9yCa">
+    <img src="https://img.shields.io/discord/102860784329052160.svg" />
+    </a>
 </h2>
 <br />
 <br />

@@ -63,5 +63,5 @@ typings/
 \.DS_Store
 
 brain/ashersBrain\.save
-
 brain/asher\.brain
+package-lock\.json
