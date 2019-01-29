@@ -1,7 +1,0 @@
-whats #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?
-what's #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?
-what is the value of #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?
-what is the sum of whats #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?
-solve #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?
-what is #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?
-show me #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?

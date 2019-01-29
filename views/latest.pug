@@ -1,0 +1,119 @@
+doctype html.
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Asher
+        meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+        meta(name='mobile-web-app-capable', content='yes')
+        meta#browser-color(name='theme-color', content='#ffffff')
+        link(rel='stylesheet', href='/css/latest.css')
+        script(type='text/javascript', src='/js/socket.io.js')
+        script(src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js')
+        script(src='https://rawgit.com/theomessin/vue-chat-scroll/master/dist/vue-chat-scroll.js')
+
+    body.
+        <div id="container" v-bind:class="{darkMode : darkMode}">
+            <!-- starts #messages -->
+            <div id="messages" style="overflow-x: scroll" v-chat-scroll>
+                <div v-for="item in messages" v-bind:class="item.mode" v-bind:id="item.id">
+                    <div v-if="item.mode == 'receiver'" class="avatar dean"></div>
+                    <div class="message">
+                        <div class="blob" v-for="(msg, index) of item.msgs">
+                            <span class="blob-content">
+                                <p v-bind:class="{darkModeText : darkMode}">{{msg}}</p>
+                                <span v-if="index != Object.keys(item.msgs).length - 1 && msg.length >= 7 && item.msgs[index + 1].length >= 7" class="blob-connector"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ends #messages -->
+
+            <div id="text-input">
+
+                <div class="new">
+                    <input v-model="msg" class="input" style="width: 100%" @keyup.enter="addMsg">
+                </div><button class="send" @click="addMsg">Send</button>
+
+            </div>
+            <!-- ends #text-input -->
+
+        </div>
+        <!-- ends #container -->
+        <script>
+            var app = new Vue({
+                el: '#container',
+                data: {
+                    msg: '',
+                    canUsePush: true,
+                    lastPerson: 99,
+                    darkMode: false,
+                    socket: io(window.location.host + ':4416'),
+                    messages: [
+                        {id: 0, mode: 'receiver', msgs: ['Hi, im asher', 'how can i help you?']},
+                        {id: 1, mode: 'sender', msgs: ['What is the current weather?']},
+                        {id: 2, mode: 'receiver', msgs: ['It is currently 37 degrees', 'So... F***ing hot!']},
+                        ]
+                },
+                methods: {
+                    addMsg () {
+                        if (this.messages[this.messages.length - 1].mode != 'sender') {
+                            this.messages.push({id: this.messages.length - 1, mode: 'sender', msgs: []})
+                        }
+                        this.messages[this.messages.length - 1].msgs.push(this.msg)
+
+                        this.socket.emit('command', this.msg);
+                        this.msg = ''
+                    },
+                    addAsherMsg (message) {
+                        this.pushNotif(message)
+                        if (this.messages[this.messages.length - 1].mode != 'receiver') {
+                            this.messages.push({id: this.messages.length - 1, mode: 'receiver', msgs: []})
+                        }
+                        this.messages[this.messages.length - 1].msgs.push(message)
+                    },
+                    pushNotif (message) {
+                        if (Notification.permission === 'granted') {
+                            var options = {
+                                body: message
+                            }
+                            var notification = new Notification('Asher', options)
+                        } else if (Notification.permission !== 'denied') {
+                            Notification.requestPermission(permission => {
+                                if (!('permission' in Notification)) {
+                                    Notification.permission = permission;
+                                }
+
+                                if (permission === 'granted') {
+                                    var options = {
+                                        body: message
+                                    }
+                                    var notification = new Notification('Asher', options)
+                                }
+                            })
+                        }
+                    }
+                },
+                mounted() {
+                    if (!("Notification" in window)) {
+                        this.canUsePush = false
+                        alert("This browser does not support desktop notification");
+                    }
+                    this.socket.on("connect", function () {
+                        console.log("Connected!");
+                    });
+
+                    this.socket.on('response', (data) => {
+                        if (data == '{darkmode: true}') {
+                            data = this.darkMode ? 'Already enabled...' : 'Sure'
+                            this.darkMode = true
+                        } else if (data == '{darkmode: false}') {
+                            data = this.darkMode ? 'Sure' : 'Already disabled...'
+                            this.darkMode = false
+                        }
+                        this.addAsherMsg(data)
+                    });
+                }
+            })
+            
+        </script>

@@ -63,7 +63,8 @@
   padding: 20px;
   text-align: center;
   font-weight: 900;
-  color: #00bfb6;
+  /*color: #00bfb6;*/
+  color: darkgray;
   font-family: arial, sans-serif;
   position: relative;
 }
@@ -84,7 +85,7 @@
   height: 0;
   position: absolute;
   border-left: 10px solid transparent;
-  border-right: 10px solid #efdbcb;
+  /*border-right: 10px solid #efdbcb;*/
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   left: -17px;
@@ -98,10 +99,16 @@
   right: -23px;
 }
 .message--user2 .message__speechbubble:after {
-  border-left: 10px solid #efdbcb;
+  /*border-left: 10px solid #efdbcb;*/
   border-right: 10px solid transparent;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   left: auto;
   right: -17px;
+}
+
+@media screen and (max-width: 600px) {
+  .message__user {
+      display: none;
+  }
 }

@@ -1,4 +1,10 @@
 /*
+    THIS VERSION IS NO LONGER IN USE... IT IS HERE
+    TO SALVAGE PARTS FROM WHILST THE NEW VERSION IS
+    BEING MADE...
+*/
+
+/*
     THIS 'BRAIN' IS THE CONVERSATION MODEL
     FOR THE WHOLE OF ASHER. IF THE USER IS
     HAVING A GENERAL CONVERSATION WITH HIM
@@ -18,6 +24,9 @@
 const findFilesAndFolders = require("./helper").findFilesAndFolders;
 const arrayToFile = require("./helper").arrayToFile;
 const fileExists = require("./helper").fileExists;
+const dictToFile = require("./helper").dictToFile;
+//const core = require(process.cwd() + "/server");
+
 const speak = require("speakeasy-nlp");
 const fs = require("fs");
 
@@ -26,23 +35,29 @@ var exports = (module.exports = {});
 exports.__wordsDB = __wordsDB = [];
 exports.__responsesDB = __responsesDB = [];
 exports.__unknown_phrases = __unknown_phrases = [];
+exports.__thankyou_phrases = __thankyou_phrases = [ 'Thankyou for your help! I now know how to respond to that.',
+                                                    'Thankyou for that. I can now respond like that in the future.',
+                                                    'Thankyou for teaching me.',
+                                                    'I commend you for helping expand my ever expanding brain.'];
 exports.__associationsDB = __associationsDB = {};
 exports.__reverse_associationsDB = __reverse_associationsDB = {};
 
 exports.loadBrain = () => {
-
+    var counter = 0;
     var allFileNames = [];
     findFilesAndFolders(process.cwd() + "/training_data/", allFileNames, false, false, true);
     var currentFile = "";
 
-    __exists = fileExists(process.cwd() + "/ashersBrain.save");
+    __exists = fileExists(process.cwd() + "/brain/ashersBrain.save");
     /*
         To save some computational energy, we will load the saved brain
         if it exists, if not, we will load from teh normal db.
     */
     if (__exists) {
         allFileNames = []
-        allFileNames.push(process.cwd() + "/ashersBrain.save");
+        allFileNames.push(process.cwd() + "/brain/ashersBrain.save");
+        //exports.loadBrainFromSave();
+        //__reverse_associationsDB = exports.loadFromFile(process.cwd() + "/brain/raw-backlink.brain");
     }
     allFileNames.forEach((file) => {
         console.log("Loading : " + file);
@@ -62,9 +77,9 @@ exports.loadBrain = () => {
             }
         }
 
-        for (i = 0; i < 4; i++){
+        /*for (i = 0; i < 4; i++) {
             fileContents.splice(0, 1);
-        }
+        }*/
 
         fileContents.forEach((item) => {
             if (item.includes("- - ")) {
@@ -78,7 +93,7 @@ exports.loadBrain = () => {
             } else if (item.includes("- ")) {
                 // This means its the response to the last header.
                 var holder = item.replace("- ", "");
-                if (!(holder in __responsesDB)){
+                if (!(holder in __responsesDB)) {
                     __responsesDB.push(holder);
                 }
                 //Going to associate last header with this...
@@ -96,13 +111,34 @@ exports.loadBrain = () => {
                     __associationsDB[lastHeader].push(__responsesDB.indexOf(holder));
                 }
             }
+            if (counter % 10000 == 0) {
+                console.log(`Loaded ${counter} iterations...`);
+            }
+            counter += 1;
         })
+
+    })
+    
+    console.log(`All ${counter} iterations finished...`)
+    exports.saveBrain();
+}
+
+exports.loadBrainFromSave = (_path) => {
+    let FE = fileExists;
+    FE(process.cwd() + "/brain/raw-brain.brain")
+        ? (__associationsDB = JSON.parse(
+            fs.readFileSync(process.cwd() + "/brain/raw-brain.brain")
+        ))
+        : (__associationsDB = {});
+    Object.keys(__associationsDB).forEach((key) => {
+        __wordsDB.push(key);
 
     })
 }
 
-
 exports.generateBackLinkBrain = () => {
+    var counter = 0
+    console.log("Creating backlinks...")
     Object.keys(__associationsDB).forEach((header) => {
         __associationsDB[header].forEach((item) => {
             if (item in __reverse_associationsDB) {
@@ -119,8 +155,18 @@ exports.generateBackLinkBrain = () => {
                 __reverse_associationsDB[item].push(__wordsDB.indexOf(header));
                 //__reverse_associationsDB[item].push(header);
             }
+            if (counter % 10000 == 0){
+                console.log(`Created ${counter} backlinks...`)
+            }
+            counter += 1;
         })
     })
+    console.log(`All ${counter} backlinks created...`)
+}
+
+exports.saveRawBrain = () => {
+    dictToFile(process.cwd() + "/brain/raw-brain.brain", __associationsDB);
+    dictToFile(process.cwd() + "/brain/raw-backlink.brain", __reverse_associationsDB);
 }
 
 
@@ -147,7 +193,8 @@ exports.saveBrain = () => {
             __ashersBrain.push("  - " + __responsesDB[__position])
         })
     } )
-    arrayToFile(process.cwd() + "/ashersBrain.save", __ashersBrain);
+    arrayToFile(process.cwd() + "/brain/ashersBrain.save", __ashersBrain);
+    //exports.saveRawBrain();
 }
 
 exports.duplicateCheck = () => {
@@ -175,11 +222,11 @@ exports.getInfo = () => {
     console.log(res);
     //console.log("Is 'How are you doing' in array? " + "How are you doing" in __associationsDB)
 
-    __wordsDB.forEach( (item) => {
+    /*__wordsDB.forEach( (item) => {
         if (!(item in __associationsDB)) {
             console.log(" -- '" + item + "' is not in the associations DB");
         }
-    })
+    })*/
 }
 
 
@@ -235,6 +282,69 @@ exports.synapseLinks = (__input) => {
     console.log("\n\n\n")
 }
 
+/**
+ * This part of the brain is used to try and work out wtf is going on. We only ever run this part
+ * If the getResponse Module returned a -1. Meaning it doesnt know how to respond.
+ * @param {String} UID 
+ * @param {String} message 
+ */
+
+exports.wipe = () => {
+    exports.__wordsDB = __wordsDB = null;
+    exports.__responsesDB = __responsesDB = null;
+    exports.__unknown_phrases = __unknown_phrases = null;
+    exports.__thankyou_phrases = __thankyou_phrases = null;
+    exports.__associationsDB = __associationsDB = null;
+    exports.__reverse_associationsDB = __reverse_associationsDB = null;
+}
+
+ //TODO: NEED TO REDO THIS PART AS WE CANT USE THE MEMORY MODULE ANYMORE...
+exports.worker = (UID, message) => {
+    var activeMemory = object;
+    //var activememory = core.activeMemory;
+    // We are going to take advantage of the activeMemory system in this function.
+    // We are going to use it to force the running of this module again, when we ask a question.
+    const memory = object;
+    //const memeory = core.memeory;
+    const remember = object;
+    //const remember = core.remember;
+    //const forget = core.forget;
+    const forget = object;
+    // Going to check what mode the voice is in...
+    // 1 is learning mode, 0 is normal.
+    var mem_mode = activememory[UID]['brain'].mem_mode;
+    var last_message = activememory[UID]['brain'].last_message;
+    if (mem_mode == 0) {
+        // It is in here we will force the running the of this module again.
+        remember(UID, "talking");
+        // We are just in normal mode, so we need to decided what to say...
+        // as we cant just say "-1" to the user.
+        let asking = ""
+        activememory[UID]['brain'].mem_mode = 1;
+        if (__unknown_phrases.length >= 1) {
+            asking = __unknown_phrases[Math.floor(Math.random() * __unknown_phrases.length)];
+        } else {
+            asking = `Sorry, i don't know how to respond to that. Could you please tell me a suitable response?`
+        }
+        activememory[UID]['brain'].last_message = asking;
+        return asking;
+        
+    } else {
+        // We are going to remove a memory if it exists...
+        forget(UID);
+        // This means we are in training mode...
+        // so whatever message we have here... is going to be a response
+        // to the last message from us.
+        // Going to set mem_mode to 0 whilst i remember...
+        console.log("LEARNING MODE!")
+        activememory[UID]['brain'].mem_mode = 0;
+        // We arent going to ask another question, we are just going to save the response...
+        exports.updateAssociations(last_message, message);     
+        // Thank the client now, as we have now learned something... and we are going to  save the brain.
+        exports.saveBrain();
+        return __thankyou_phrases[Math.floor(Math.random() * __thankyou_phrases.length)]
+    }
+}
 
 exports.updateAssociations = (__question, __answer) => {
     var __pos_ans, __pos_word;

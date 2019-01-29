@@ -18,21 +18,27 @@ exports.newLoadMods = (modsDB) => {
 			var regex = [];
 			var tempPath = process.cwd() + `/mods/${item}/`;
 			try {
+
 				modsDB[item] = [];
-				fileToArray(`${tempPath}words.txt`, regex);
-				modsDB[item].regex = regex;
+				if (!(item == "talking")) {
+					fileToArray(`${tempPath}words.txt`, regex);
+					modsDB[item].regex = regex;
+					
+					modsDB[item].isTheOne = (inputPhrase) => {
+						var found = false;
+						modsDB[item].regex.forEach((phrase) => {
+							if (nlp(inputPhrase).match(phrase).found) {
+								found = true;
+							}
+						})
+						return found;
+					}
+				}
 				modsDB[item].import = require(process.cwd() + `/mods/${item}/mod.js`);
 				getFileLine(tempPath + "info.mod", 4) == 'true' ? modsDB[item].enabled = true : modsDB[item].enabled = false;
-				modsDB[item].isTheOne = (inputPhrase) => {
-					var found = false;
-					modsDB[item].regex.forEach((phrase) => {
-						if (nlp(inputPhrase).match(phrase).found) {
-							found = true;
-						}
-					})
-					return found;
-				}
+				
 			} catch (error) {
+				console.log(error);
 				updateMod(tempPath + "info.mod");
 			// This is just incase someone was stupid and forgot a file... at that point...
 			// we can do 1 of 2 things... If the brain is set to developer mode, we will keep the
@@ -72,6 +78,28 @@ exports.trainAllMods = () => {
 	logger("Normal", "Only found" + mods.length + "mods");
 };
 
+exports.getMod = (DB, message) => {
+	var theMod = "";
+	Object.keys(DB).forEach((mod) => {
+		if (DB[mod].enabled) {
+			var result = DB[mod].isTheOne(message);
+			if (result) {
+				theMod = mod;
+			}
+		}
+	});
+
+	if (theMod == "" || theMod == "knowledge") {
+		// First we are going to see this exists in the active memory. (if it contains a who, what, when, where, or why) question.
+		// We are now going to run the chat module... if we dont have a response in that...
+		// we are going to then run the knowledge module...
+		theMod = "talking";
+		console.log("Ran here...")
+	}
+
+	return theMod;
+}
+
 exports.latestGetMod = (DB, message) => {
 	var theMod = "";
 	Object.keys(DB).forEach((mod) => {
@@ -85,49 +113,3 @@ exports.latestGetMod = (DB, message) => {
 
 	return theMod;
 }
-
-
-exports.getMod = (DB, type, message) => {
-	var theMod = "";
-	Object.keys(DB[type]).forEach((mod) => {
-		DB[type][mod].regex.forEach((sentance) => {
-			var sentence = _sentence.replace(/\r?\n?/gm, "");
-			sentence.trim();
-			var result = nlp(message).match(sentence).found;
-			if (result){
-				theMod = mod;
-			}
-		});
-	});
-	if ( theMod === "" && type !== "other" ) {
-		//This means that we still for some reason have not found the mod...
-		exports.getMod(DB, "other", message);
-	} else if ( theMod === "" && type === "other" ) {
-		// We are going to return "none", so then we can work out what to do latter.
-		return "other"
-	} else {
-		return theMod;
-	}
-}
-
-/*exports.getMod = (_mods, _modTypes, _questionType, _msg) => {
-	let holdme = "";
-	let _sentence;
-
-	_mods.forEach((mod) => {
-		if (_modTypes[mod] === _questionType) {
-			_ins = [];
-			fileToArray(process.cwd() + "/mods/" + mod + "/words.txt", _ins);
-			_ins.forEach((_sentence) => {
-				_sentence = _sentence.replace(/\r?\n?/gm, "");
-				_sentence.trim();
-				let result = nlp(_msg).match(_sentence).found;
-				if (result) {
-					holdme = mod;
-				}
-			});
-		}
-	});
-	return holdme;
-};
-*/

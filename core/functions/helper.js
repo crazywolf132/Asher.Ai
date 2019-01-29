@@ -57,6 +57,10 @@ exports.arraytoDict = (file, dictionary) => {
 	fs.writeFileSync(file, holder);
 }
 
+exports.dictToFile = (file, dictionary) => {
+	fs.writeFileSync(file, JSON.stringify(dictionary, null, 2));
+}
+
 exports.fileToDict = (file, dictionary) => {
 	const array = fs.readFileSync(file).toString().split("\n")
 	var beginStatus = false;

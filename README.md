@@ -2,11 +2,11 @@
   <img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/bg.png">
 </p>
 <h2 align="center">
-    <a href="https://circleci.com/gh/crazywolf132/AsherAPI"><img src="https://circleci.com/gh/manekinekko/google-actions-server.svg?style=svg"/></a>
-    <a href="https://codeclimate.com/github/crazywolf132/AsherAPI/maintainability"><img src="https://api.codeclimate.com/v1/badges/e66235017865b51adbf2/maintainability" /></a>
-    <a class="badge-align" href="https://www.codacy.com/app/crazywolf132/AsherAPI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=crazywolf132/AsherAPI&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/e0375f94ce4c4ac4b32a8b74df8b0bf7"/></a>
+    <a href="https://circleci.com/gh/crazywolf132/AsherAPI"><img src="https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg"/></a>
+    <a href="#"><img src="https://forthebadge.com/images/badges/built-with-love.svg" /></a>
+    <a class="badge-align" href="https://www.codacy.com/app/crazywolf132/AsherAPI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=crazywolf132/AsherAPI&amp;utm_campaign=Badge_Grade"><img src="https://forthebadge.com/images/badges/for-you.svg"/></a>
     <a href=""./LICENSE">
-    <img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg"/>
+    <img src="https://forthebadge.com/images/badges/certified-cousin-terio.svg"/>
     </a>
     <a href="https://discord.gg/DUk9yCa">
     <img src="https://img.shields.io/discord/102860784329052160.svg" />
@@ -26,52 +26,75 @@ Asher is modular allowing for the community to add their part to his ever increa
 
 `- Currently taken down the IP addresses as we are transfering to another server...`
 
-There are 2 ways to connect to Asher.
+There are 4 ways to connect to Asher.
 1. Via REST API requests. Simply post a `post` request to `http://***.***.***.**/api/talk`, with the argument `command` and your message.
 2. Via sockets. Port `4416` is open at `http://***.***.***.**/`, send a `message` through the socket with the raw text.
+3. Via the WebApp. Open the ip of the machine in your browser, and use the messaging app. Eg. `http://0.0.0.0/`
+4. Connect to one of the apps that you have made, or downloaded a listener and responder for.
 
 Asher allows for any language that can either use sockets or send get requests to interact with him. We just need the raw text input, and we will do the rest.
 
 ## Lets build a mod!
-Mods are constructed of 3 parts.
-- The Actual mod file `mod.js`
-- The words file `words.txt`, which contains examples of triggers
-- The type file `info.mod`. This is used to tell the system the infomation about the mod, such as the Author, name, and weather to actiavate the module or not.
+Mods are constructed of a single file.
+- `mod.js` This is automatically imported and run by the system. This mod file can have many sub-modules inside. All will be run.
 
 To start off, we need to create a folder in the `mods` directory for our new Mod.
 We are going to make a mod called `funny`.
-We then need to create all 3 of those files inside that folder.
-
-We are going to start work on the `words.txt` file. We now need to decide different examples of triggering the mod. Seeing as our mod is going to be a joke mod. Here is what our words file is going to look like.
-<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/words.txt'>
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/words.png">
-</a>
+We need to create the main `mod.js` file.
 
 For more special characters to use inside of your words file. Feel free to head over to the wiki where we explain the different characters used in the words files.
 
-We now need to set the `info.mod` file. This file will tell the system weather or not to run our file, and what it is called so then the brain can execute it.
-<a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/info.mod'>
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/Dev/img/basicInfo.png" />
-</a>
-
-So, this is what we set ours too.
-<a href="https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/info.mod">
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/Dev/img/ourInfo.png" />
-</a>
-Thats it, our system will be able to do the rest.
-
-We just now need to work on the actual `mod.js` file!
 Every mod is composed of:
 <a href="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/mods/basicMods/mod.js">
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/basicMod.png">
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/mod_skeleton.png">
 </a>
 
 We are going to take that template, and we are going to add our elements to it:
 <a href='https://github.com/crazywolf132/AsherAPI/blob/master/mods/funny/mod.js'>
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/ourMod.png">
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/our_mod.png">
 </a>
 
-Thats it. Asher now knows our `Funny` module, Once he restarts... we will be able to say one of our trigger words from `words.txt` and he will run this mod.
+Thats it. Asher now knows our `Funny` module, Once he restarts... we will be able to say one of our trigger words from the `words` array and he will run this mod.
+
+## What is an overloader?
+An overloader is kind of like a mod. Just... it will get run when Asher has no clue what to do.
+The overloader that is used by default is his conversational Brain. He will assume what you have inputed
+is part of a conversation, and will respond to it in whatever way he feels suits best.
+
+## What is a Listener?
+Listeners are similar to modules, but their only purpose is to connect to a service i.e. Discord, and wait for an incomming message before passing it on to the rest of the system to then process. There are 2 Listeners added to Asher by default. FB and Discord. You can easily setup both of these by following the Wiki Tutorial.
+To enable a Listener (none are enabled by default), add the following just above the `this.Asher.loadOverloadModule('brain');` line in server.js
+
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/handlers.png" />
+
+By default, the socket listener will always start and be on... This is so the Chat App can work, but also any other 3rd party apps.
+
+> Only one Listener can be used at a time. (Excluding the socket listener)
+
+> Generally we surgest using the same Listener and Responder pair. Eg, Both discord or Both FB etc.
+
+## What is a Responder?
+Responders are almost the same as Listeners... just in reverse. When a responder is loaded... any responses will be sent through to that responder. So, inside the responder `.js` file. There will need to be a method to send the resulting response back to the person the first message came from. Much in the way that the Listener needs to have a way of providing the user the message came from.
+
+To enable a responder, follow the same instructions as a Listener. Afterall, its all in the same function.
+
+> Only one Responder can be used at a time.
+
+> Generally we surgest using the same Listener and Responder pair. Eg, Both discord or Both FB etc.
+
+## How do i create a Responder or Listener?
+There is no real easy way to say how to make a Responder or Listener. It truely depends on the platform you are making one for, and the chosen API you are using for that.
+
+One handy feature Asher has, to help you on this journy is this. `this.core.handlers.atts`. This is an object where you can store information that might be handy for the Responder. Eg, take a look at the discord listener, and see how it stores information for the discord responder. The reason this is done, is because of the discord API that is used, and simply how much data is returned from each message.
+
+Although we cant really teach you how to make a responder here is a basic Responder template though.
+> This is the template you must use... otherwise you wont recieve any information from Asher to the Responder.
+
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/responder_template.png" />
+
+Here is one for a listener too.
+
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/listener_template.png" />
 
 
 ## Explenation of Asher's current brain.
