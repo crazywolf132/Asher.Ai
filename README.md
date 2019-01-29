@@ -65,7 +65,7 @@ is part of a conversation, and will respond to it in whatever way he feels suits
 Listeners are similar to modules, but their only purpose is to connect to a service i.e. Discord, and wait for an incomming message before passing it on to the rest of the system to then process. There are 2 Listeners added to Asher by default. FB and Discord. You can easily setup both of these by following the Wiki Tutorial.
 To enable a Listener (none are enabled by default), add the following just above the `this.Asher.loadOverloadModule('brain');` line in server.js
 
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/handlers.png" />
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/handlers.png" />
 
 By default, the socket listener will always start and be on... This is so the Chat App can work, but also any other 3rd party apps.
 
@@ -90,11 +90,11 @@ One handy feature Asher has, to help you on this journy is this. `this.core.hand
 Although we cant really teach you how to make a responder here is a basic Responder template though.
 > This is the template you must use... otherwise you wont recieve any information from Asher to the Responder.
 
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/responder_template.png" />
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/responder_template.png" />
 
 Here is one for a listener too.
 
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/listener_template.png" />
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/listener_template.png" />
 
 
 ## Explenation of Asher's current brain.
