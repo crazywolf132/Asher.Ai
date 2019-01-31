@@ -40,6 +40,15 @@ There are 4 ways to connect to Asher.
 
 Asher allows for any language that can either use sockets or send get requests to interact with him. We just need the raw text input, and we will do the rest.
 
+## Installing.
+To install Asher on your local system, it is generally as simple as `npm i`.
+Some systems may need to install some dependencies to install `node-gyp`.
+
+For linux `sudo apt install libavahi-compat-libdnssd-dev` seemed to work.
+For other systems, a quick google search should have the required libraries.
+
+Sorry, We only have so many systems we can test on.
+
 ## Lets build a mod!
 Mods are constructed of a single file.
 - `mod.js` This is automatically imported and run by the system. This mod file can have many sub-modules inside. All will be run.
