@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon --exec babel-node server.js"
   },
   "author": "Brayden Moon",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "body-parser": "^1.18.2",
     "compromise": "^11.1.0",
     "discord.js": "^11.4.2",
