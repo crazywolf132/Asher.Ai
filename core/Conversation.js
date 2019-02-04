@@ -1,5 +1,5 @@
 "use strict";
-const Chat = require(`./Chat`);
+import Chat from `./Chat`;
 
 class Conversation extends Chat {
     constructor(core, userID) {
@@ -86,4 +86,4 @@ class Conversation extends Chat {
     }
 }
 
-module.exports = Conversation;
+export default Conversation;
