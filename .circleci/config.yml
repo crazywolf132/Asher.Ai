@@ -18,7 +18,9 @@ jobs:
 
     steps:
       - checkout
-
+      - run: rm -rf $HOME/.node-gyp
+      - run: sudo apt-get update && sudo apt-get update --fix-missing
+      - run: sudo apt-get install libavahi-compat-libdnssd-dev -y
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -34,4 +36,4 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tests!
-      - run: node asherTest.js
+      - run: node server.js
