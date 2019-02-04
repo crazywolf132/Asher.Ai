@@ -13,4 +13,4 @@ class DiscordResponder {
     }
 }
 
-module.exports = DiscordResponder;
+export default DiscordResponder;
