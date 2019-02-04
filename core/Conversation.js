@@ -1,5 +1,5 @@
 "use strict";
-import Chat from `./Chat`;
+import Chat from './Chat';
 
 class Conversation extends Chat {
     constructor(core, userID) {
