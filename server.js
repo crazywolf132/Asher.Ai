@@ -1,12 +1,11 @@
-const express = require("express");
-const core = require("./core/Asher");
-const morgan = require("morgan");
-const bodyParser = require("body-parser");
-const stylus = require("stylus");
-const path = require("path");
-const nlp = require("compromise");
-const fs = require("fs");
-//const io = require('socket.io').listen(4416);
+import express, { static } from "express";
+import core from "./core/Asher";
+import morgan from "morgan";
+import { json, urlencoded } from "body-parser";
+import { middleware } from "stylus";
+import { join } from "path";
+import nlp from "compromise";
+import { readdirSync, statSync } from "fs";
 
 /**
 * THE CORE OF THE SYSTEM...
@@ -55,12 +54,12 @@ class Server {
 
 	start() {
 		this.app.use(morgan('dev'));
-		this.app.use(bodyParser.json());
-		this.app.use(bodyParser.urlencoded({ extended: true }));
-		this.app.set('views', path.join(__dirname, 'views'));
+		this.app.use(json());
+		this.app.use(urlencoded({ extended: true }));
+		this.app.set('views', join(__dirname, 'views'));
 		this.app.set('view engine', 'pug');
-		this.app.use(stylus.middleware(path.join(__dirname, 'public')));
-		this.app.use(express.static(path.join(__dirname, 'public')));
+		this.app.use(middleware(join(__dirname, 'public')));
+		this.app.use(static(join(__dirname, 'public')));
 		this.app.use((req, res, next) => {
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header(
@@ -103,13 +102,13 @@ class Server {
 		checkForDir,
 		checkForFile
 	) {
-		fs.readdirSync(_path).forEach(file => {
+		readdirSync(_path).forEach(file => {
 			if (checkForDir && !checkForFile) {
-				if (fs.statSync(_path + file).isDirectory()) {
+				if (statSync(_path + file).isDirectory()) {
 					returnNamesOnly ? _list.push(file) : _list.push(_path + file);
 				}
 			} else if (!checkedForDir && checkForFile) {
-				if (fs.statSync(_path + file).isFile()) {
+				if (statSync(_path + file).isFile()) {
 					_list.push(_path + file);
 				}
 			} else {
