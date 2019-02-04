@@ -1,4 +1,4 @@
-import express, { static } from "express";
+import express from "express";
 import core from "./core/Asher";
 import morgan from "morgan";
 import { json, urlencoded } from "body-parser";
@@ -59,7 +59,7 @@ class Server {
 		this.app.set('views', join(__dirname, 'views'));
 		this.app.set('view engine', 'pug');
 		this.app.use(middleware(join(__dirname, 'public')));
-		this.app.use(static(join(__dirname, 'public')));
+		this.app.use(express.static(join(__dirname, 'public')));
 		this.app.use((req, res, next) => {
 			res.header('Access-Control-Allow-Origin', '*');
 			res.header(
