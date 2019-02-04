@@ -43,16 +43,6 @@ class Helper {
 
 }
 
-class Monitor {
-    constructor(helper) {
-        this.counter = 0;
-        this.helper = helper;
-        this.notifications = {};
-    }
-
-    timeWatcher() {
-    }
-}
 
 class Server {
 	constructor(helper) {
@@ -82,14 +72,10 @@ class Server {
 			next();
 		});
 		this.app.use('/', this.homeRouter);
-		//this.router = express.router();
 		//this.Asher.loadHandlers("discord", "discord");
 		this.Asher.loadOverloadModule('brain');
 		this.Asher.start();
 		this.loadAllMods();
-		//let wow = require(process.cwd() + "/mods/funny/mod.js");
-		//wow.core(this);
-		//this.monitor.startServer();
 		this.startServer();
 	}
 
@@ -136,7 +122,6 @@ class Server {
 };
 
 helper = new Helper();
-//mon = new Monitor(helper);
 Asher = new Server(helper);
 Asher.start();
 

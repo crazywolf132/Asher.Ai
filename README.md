@@ -17,6 +17,12 @@
 <br />
 <br />
 
+# Come and join our slack group!
+<h3> We can answer all questions here. </h3>
+<a href="https://join.slack.com/t/republicofwolf/shared_invite/enQtNTM4MDM1MzY3OTQwLWJlOWNlZmNlYzZkN2YzMjI3NjU2MTA5ODg3NzhjZWMwZjY3N2M2Y2Y1MzhlNThhY2JkNzk4Yzg1NjJiOGI4Mjc" align="center">
+  <img src="https://img.shields.io/badge/SLACK-ONLINE-blue.svg?style=for-the-badge">
+</a>
+
 ## What the heck is this?
 This is the Node.js API for the Asher personal assistant. Asher is a personal assistant with the aim of matching all the commands that products such as the Google Home can offer, and much more.
 
@@ -33,6 +39,15 @@ There are 4 ways to connect to Asher.
 4. Connect to one of the apps that you have made, or downloaded a listener and responder for.
 
 Asher allows for any language that can either use sockets or send get requests to interact with him. We just need the raw text input, and we will do the rest.
+
+## Installing.
+To install Asher on your local system, it is generally as simple as `npm i`.
+Some systems may need to install some dependencies to install `node-gyp`.
+
+For linux `sudo apt install libavahi-compat-libdnssd-dev` seemed to work.
+For other systems, a quick google search should have the required libraries.
+
+Sorry, We only have so many systems we can test on.
 
 ## Lets build a mod!
 Mods are constructed of a single file.
@@ -65,7 +80,7 @@ is part of a conversation, and will respond to it in whatever way he feels suits
 Listeners are similar to modules, but their only purpose is to connect to a service i.e. Discord, and wait for an incomming message before passing it on to the rest of the system to then process. There are 2 Listeners added to Asher by default. FB and Discord. You can easily setup both of these by following the Wiki Tutorial.
 To enable a Listener (none are enabled by default), add the following just above the `this.Asher.loadOverloadModule('brain');` line in server.js
 
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/handlers.png" />
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/handlers.png" />
 
 By default, the socket listener will always start and be on... This is so the Chat App can work, but also any other 3rd party apps.
 
@@ -90,11 +105,11 @@ One handy feature Asher has, to help you on this journy is this. `this.core.hand
 Although we cant really teach you how to make a responder here is a basic Responder template though.
 > This is the template you must use... otherwise you wont recieve any information from Asher to the Responder.
 
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/responder_template.png" />
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/responder_template.png" />
 
 Here is one for a listener too.
 
-<img src="https://raw.githubusercontent.com/crazywolf132/AsherApi/master/img/listener_template.png" />
+<img src="https://raw.githubusercontent.com/crazywolf132/AsherAPI/master/img/listener_template.png" />
 
 
 ## Explenation of Asher's current brain.
