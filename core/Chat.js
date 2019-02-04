@@ -1,6 +1,6 @@
 "use strict";
 
-const EventEmitter = require("eventEmitter3");
+import EventEmitter from "eventEmitter3";
 
 class Chat extends EventEmitter {
   constructor(core, userID) {
@@ -21,4 +21,4 @@ class Chat extends EventEmitter {
   }
 }
 
-module.exports = Chat;
+export default Chat;
