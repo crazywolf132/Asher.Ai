@@ -6,8 +6,6 @@ const stylus = require("stylus");
 const path = require("path");
 const nlp = require("compromise");
 const fs = require("fs");
-
-const ashLang = require("./core/ashLang/main")
 //const io = require('socket.io').listen(4416);
 
 /**
@@ -125,5 +123,3 @@ helper = new Helper();
 Asher = new Server(helper);
 Asher.start();
 
-let ash = new ashLang()
-ash.file('./test.ash')
