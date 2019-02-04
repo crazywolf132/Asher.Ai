@@ -1,9 +1,9 @@
 "use strict";
 
-const EventEmitter = require("eventEmitter3");
-const Chat = require("./Chat");
-const Conversation = require("./Conversation");
-const fs = require("fs");
+import EventEmitter from "eventEmitter3";
+import Chat from "./Chat";
+import Conversation from "./Conversation";
+import { existsSync } from "fs";
 
 class Asher extends EventEmitter {
   constructor(options, nlp) {
@@ -49,8 +49,8 @@ class Asher extends EventEmitter {
     if (this.handlers.loaded)
       return "Sorry, but you can only have 1 handlers running at a time...";
     if (
-      fs.existsSync(process.cwd() + `/listeners/${listener}.js`) &&
-      fs.existsSync(process.cwd() + `/responders/${responder}.js`)
+      existsSync(process.cwd() + `/listeners/${listener}.js`) &&
+      existsSync(process.cwd() + `/responders/${responder}.js`)
     ) {
       this.handlers.listener = require(process.cwd() +
         `/listeners/${listener}`);
@@ -61,13 +61,13 @@ class Asher extends EventEmitter {
   }
 
   loadMod(mod) {
-    if (fs.existsSync(process.cwd() + `/mods/${mod}.js`)) {
+    if (existsSync(process.cwd() + `/mods/${mod}.js`)) {
       this.mods[mod] = require(process.cwd() + `/mods/${mod}.js`);
     }
   }
 
   loadOverloadModule(mod) {
-    if (fs.existsSync(process.cwd() + `/overLoader/${mod}.js`)) {
+    if (existsSync(process.cwd() + `/overLoader/${mod}.js`)) {
       this.handlers['overLoader'] = require(process.cwd() + `/overLoader/${mod}.js`);
       this.handlers.overLoader.preRun();
     }
@@ -77,7 +77,7 @@ class Asher extends EventEmitter {
     if (this.middleWear.loaded) {
       return "Sorry, you can only load 1 middlewear at a time.";
     } else {
-      if (fs.existsSync(process.cwd() + `/middlewear/${middle}.js`)) {
+      if (existsSync(process.cwd() + `/middlewear/${middle}.js`)) {
         this.middleWear["import"] = require(process.cwd() +
           `/middlewear/${middle}.js`);
         this.middleWear.loaded = true;
@@ -177,4 +177,4 @@ class Asher extends EventEmitter {
   }
 }
 
-module.exports = Asher;
+export default Asher;
