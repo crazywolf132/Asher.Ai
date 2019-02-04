@@ -1,15 +1,15 @@
 var exports = (module.exports = {});
-const path = require("path");
-const fs = require("fs");
-const findFilesAndFolders = require("./helper").findFilesAndFolders;
-const fileToArray = require("./helper").fileToArray;
-const getFileLine = require("./helper").getFileLine;
-const updateMod = require("./helper").changeModEnabled;
+import path from "path";
+import fs from "fs";
+import { findFilesAndFolders } from "./helper";
+import { fileToArray } from "./helper";
+import { getFileLine } from "./helper";
+import { changeModEnabled as updateMod } from "./helper";
 const logger = require(process.cwd() + "/server").logger;
 
-exports.mods = mods = [];
+export const mods = mods = [];
 
-exports.newLoadMods = (modsDB) => {
+export function newLoadMods(modsDB) {
 
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
 	mods.forEach((item) => {
@@ -58,7 +58,7 @@ exports.newLoadMods = (modsDB) => {
 
 }
 
-exports.trainAllMods = () => {
+export function trainAllMods() {
 	findFilesAndFolders(process.cwd() + "/mods/", mods, true, true, false);
 	mods.forEach((item) => {
 		let holder = [];
@@ -76,9 +76,9 @@ exports.trainAllMods = () => {
 		});
 	});
 	logger("Normal", "Only found" + mods.length + "mods");
-};
+}
 
-exports.getMod = (DB, message) => {
+export function getMod(DB, message) {
 	var theMod = "";
 	Object.keys(DB).forEach((mod) => {
 		if (DB[mod].enabled) {
@@ -100,7 +100,7 @@ exports.getMod = (DB, message) => {
 	return theMod;
 }
 
-exports.latestGetMod = (DB, message) => {
+export function latestGetMod(DB, message) {
 	var theMod = "";
 	Object.keys(DB).forEach((mod) => {
 		if (DB[mod].enabled){
