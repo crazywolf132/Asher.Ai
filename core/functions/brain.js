@@ -32,15 +32,15 @@ import { readFileSync } from "fs";
 
 var exports = (module.exports = {});
 
-export const __wordsDB = __wordsDB = [];
-export const __responsesDB = __responsesDB = [];
-export const __unknown_phrases = __unknown_phrases = [];
-export const __thankyou_phrases = __thankyou_phrases = [ 'Thankyou for your help! I now know how to respond to that.',
+export const __wordsDB = [];
+export const __responsesDB = [];
+export const __unknown_phrases = [];
+export const __thankyou_phrases = [ 'Thankyou for your help! I now know how to respond to that.',
                                                     'Thankyou for that. I can now respond like that in the future.',
                                                     'Thankyou for teaching me.',
                                                     'I commend you for helping expand my ever expanding brain.'];
-export const __associationsDB = __associationsDB = {};
-export const __reverse_associationsDB = __reverse_associationsDB = {};
+export const __associationsDB  = {};
+export const __reverse_associationsDB  = {};
 
 export function loadBrain() {
     var counter = 0;
@@ -289,12 +289,12 @@ export function synapseLinks(__input) {
  */
 
 export function wipe() {
-    exports.__wordsDB = __wordsDB = null;
-    exports.__responsesDB = __responsesDB = null;
-    exports.__unknown_phrases = __unknown_phrases = null;
-    exports.__thankyou_phrases = __thankyou_phrases = null;
-    exports.__associationsDB = __associationsDB = null;
-    exports.__reverse_associationsDB = __reverse_associationsDB = null;
+    exports.__wordsDB = null;
+    exports.__responsesDB = null;
+    exports.__unknown_phrases = null;
+    exports.__thankyou_phrases = null;
+    exports.__associationsDB = null;
+    exports.__reverse_associationsDB = null;
 }
 
  //TODO: NEED TO REDO THIS PART AS WE CANT USE THE MEMORY MODULE ANYMORE...
