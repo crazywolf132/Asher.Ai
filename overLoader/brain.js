@@ -4,7 +4,7 @@ const thinking = brain.worker;
 const B = require(`${process.cwd()}/core/functions/latestBrain`);
 const newBrain = new B();
 
-module.exports.core = (payload, chat) => {
+export function core(payload, chat) {
     let response = "";
     response = newBrain.getResponse(
         payload.found.includes("?") ?
@@ -19,6 +19,6 @@ module.exports.core = (payload, chat) => {
     chat.say(response);
 }
 
-module.exports.preRun = () => {
+export function preRun() {
     newBrain.start();
 }
