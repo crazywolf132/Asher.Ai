@@ -118,7 +118,7 @@ class Server {
 	}
 };
 
-helper = new Helper();
-Asher = new Server(helper);
+const helper = new Helper();
+const Asher = new Server(helper);
 Asher.start();
 
