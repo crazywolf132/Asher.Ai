@@ -1,5 +1,5 @@
-var express = require("express");
-var router = express.Router();
+import { Router } from "express";
+var router = Router();
 var logger = require(process.cwd() + "/server").logger;
 
 router.route("/talk").post(function(req, res) {
@@ -27,4 +27,4 @@ router.route("/talk").post(function(req, res) {
 	});
 });
 
-module.exports = router;
+export default router;
