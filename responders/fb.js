@@ -1,5 +1,5 @@
 const data = require(process.cwd() + `/config/config`);
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
 class FbResponder {
     constructor(core, recipient, mess) {
@@ -58,4 +58,4 @@ class FbResponder {
     }
 }
 
-module.exports = FbResponder;
+export default FbResponder;
