@@ -29,5 +29,8 @@
     "timer.js": "^1.0.4",
     "vue-scrollto": "^2.13.0",
     "vue-socket.io": "^3.0.4"
+  },
+  "devDependencies": {
+    "jest": "^24.0.0"
   }
 }

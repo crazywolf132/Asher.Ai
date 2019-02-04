@@ -17,6 +17,11 @@ class Brain {
         this.saveBrain();
         this.getBrainStats();
         //this.testBrain();
+        return 1;
+    }
+
+    testStart() {
+        return start();
     }
 
     loadNeurons() {
