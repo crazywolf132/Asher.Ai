@@ -68,7 +68,7 @@ class Server {
 			);
 			next();
 		});
-		this.app.use('/', this.homeRouter);
+		this.app.use('/', this.homeRouter.default);
 		//this.Asher.loadHandlers("discord", "discord");
 		this.Asher.loadOverloadModule('brain');
 		this.Asher.start();
