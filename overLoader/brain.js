@@ -1,6 +1,3 @@
-const brain = require(process.cwd() + `/core/functions/brain`);
-const voice = brain.getResponse;
-const thinking = brain.worker;
 const B = require(`${process.cwd()}/core/functions/latestBrain`);
 const newBrain = new B();
 
