@@ -1,10 +1,10 @@
-import express from "express";
-import core from "./core/Asher";
-import morgan from "morgan";
+import { express } from "express";
+import { core } from "./core/Asher";
+import { morgan } from "morgan";
 import { json, urlencoded } from "body-parser";
 import { middleware } from "stylus";
 import { join } from "path";
-import nlp from "compromise";
+import { nlp } from "compromise";
 import { readdirSync, statSync } from "fs";
 
 /**
