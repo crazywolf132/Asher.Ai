@@ -18,6 +18,7 @@
     "express": "^4.16.2",
     "fs": "0.0.1-security",
     "google-home-push": "^1.1.2",
+    "mocha": "^5.2.0",
     "morgan": "^1.9.0",
     "node-fetch": "^2.1.2",
     "nodemon": "^1.18.4",
