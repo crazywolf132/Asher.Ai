@@ -1,10 +1,10 @@
-var Discord = require('discord.js');
+import { Client } from 'discord.js';
 var auth = require(process.cwd() + `/config/auth.js`);
 
 class DiscordListener {
     constructor(core) {
         this.core = core;
-        this.bot = new Discord.Client();
+        this.bot = new Client();
         this.bot.login(auth.token);
 
         this.core.shareAtts('bot', this.bot);
@@ -26,4 +26,4 @@ class DiscordListener {
     }
 }
 
-module.exports = DiscordListener;
+export default DiscordListener;

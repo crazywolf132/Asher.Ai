@@ -1,14 +1,14 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+import express from "express";
+import { json } from "body-parser";
 const data = require(process.cwd() + `/config/config`);
-const crypto = require("crypto");
+import { createHmac } from "crypto";
 
 class FbListener {
     constructor(core) {
         this.core = core;
         this.app = express();
         this.webhook = `/webhook`;
-        this.app.use(bodyParser.json({ very: this._verifySignature.bind(this) }));
+        this.app.use(json({ very: this._verifySignature.bind(this) }));
         this.started = false;
         this.verifyToken = data.verifyToken;
         this.appSecret = data.appSecret;
@@ -80,7 +80,7 @@ class FbListener {
             var elements = signature.split("=");
             var method = elements[0];
             var signatureHash = elements[1];
-            var expectedHash = crypto.createHmac("sha1", this.appSecret).update(buf).digest("hex");
+            var expectedHash = createHmac("sha1", this.appSecret).update(buf).digest("hex");
             
             if (signatureHash != expectedHash) {
                 throw new Error("Couldn't validate the request signature.");
@@ -90,4 +90,4 @@ class FbListener {
 
 }
 
-module.exports = FbListener;
+export default FbListener;

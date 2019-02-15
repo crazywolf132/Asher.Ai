@@ -1,6 +1,6 @@
-const GoogleHome = require("google-home-push");
+import GoogleHome from "google-home-push";
 
-module.exports.core = (core) => {
+export function core(core) {
     core.Asher.hear("introduce yourself", (payload, chat) => {
         chat.say("Hi, I am asher.").then(() => {
             chat.say("I am here to help you in whatever way you need!")
@@ -29,9 +29,11 @@ module.exports.core = (core) => {
         })
     })
 
-    core.Asher.hear('(enable|disable) dark mode .?', (payload, chat, found) => {
+    core.Asher.hear('(enable|disable|toggle) dark mode .?', (payload, chat, found) => {
         if (found.found.includes('disable')) {
             chat.say('{darkmode: false}')
+        } else if (found.found.includes('toggle')) {
+            chat.say('{darkmode: ~~}')
         } else {
             chat.say('{darkmode: true}')
         }

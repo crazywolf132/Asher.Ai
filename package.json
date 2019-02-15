@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon --exec babel-node server.js",
+    "test": "mocha tests --compilers js:@babel/register"
   },
   "author": "Brayden Moon",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "latest",
     "body-parser": "^1.18.2",
     "compromise": "^11.1.0",
     "discord.js": "^11.4.2",
@@ -16,6 +18,7 @@
     "express": "^4.16.2",
     "fs": "0.0.1-security",
     "google-home-push": "^1.1.2",
+    "mocha": "^5.2.0",
     "morgan": "^1.9.0",
     "node-fetch": "^2.1.2",
     "nodemon": "^1.18.4",
@@ -27,5 +30,16 @@
     "timer.js": "^1.0.4",
     "vue-scrollto": "^2.13.0",
     "vue-socket.io": "^3.0.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "babel-core": "7.0.0-bridge.0",
+    "chai": "^4.2.0",
+    "jest": "^24.0.0",
+    "mocha": "^5.2.0"
   }
 }

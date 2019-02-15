@@ -21,28 +21,28 @@
     FOR IT.
 */
 
-const findFilesAndFolders = require("./helper").findFilesAndFolders;
-const arrayToFile = require("./helper").arrayToFile;
-const fileExists = require("./helper").fileExists;
-const dictToFile = require("./helper").dictToFile;
+import { findFilesAndFolders } from "./helper";
+import { arrayToFile } from "./helper";
+import { fileExists } from "./helper";
+import { dictToFile } from "./helper";
 //const core = require(process.cwd() + "/server");
 
-const speak = require("speakeasy-nlp");
-const fs = require("fs");
+import { closest } from "speakeasy-nlp";
+import { readFileSync } from "fs";
 
 var exports = (module.exports = {});
 
-exports.__wordsDB = __wordsDB = [];
-exports.__responsesDB = __responsesDB = [];
-exports.__unknown_phrases = __unknown_phrases = [];
-exports.__thankyou_phrases = __thankyou_phrases = [ 'Thankyou for your help! I now know how to respond to that.',
+export const __wordsDB = [];
+export const __responsesDB = [];
+export const __unknown_phrases = [];
+export const __thankyou_phrases = [ 'Thankyou for your help! I now know how to respond to that.',
                                                     'Thankyou for that. I can now respond like that in the future.',
                                                     'Thankyou for teaching me.',
                                                     'I commend you for helping expand my ever expanding brain.'];
-exports.__associationsDB = __associationsDB = {};
-exports.__reverse_associationsDB = __reverse_associationsDB = {};
+export const __associationsDB  = {};
+export const __reverse_associationsDB  = {};
 
-exports.loadBrain = () => {
+export function loadBrain() {
     var counter = 0;
     var allFileNames = [];
     findFilesAndFolders(process.cwd() + "/training_data/", allFileNames, false, false, true);
@@ -66,8 +66,7 @@ exports.loadBrain = () => {
         currentFile = file.replace(".yml", "");
         var lastHeader = "";
 
-        var array = fs
-            .readFileSync(file)
+        var array = readFileSync(file)
             .toString()
             .split("\n");
         for (let i = 0; i < array.length; i++) {
@@ -120,14 +119,14 @@ exports.loadBrain = () => {
     })
     
     console.log(`All ${counter} iterations finished...`)
-    exports.saveBrain();
+    saveBrain();
 }
 
-exports.loadBrainFromSave = (_path) => {
+export function loadBrainFromSave(_path) {
     let FE = fileExists;
     FE(process.cwd() + "/brain/raw-brain.brain")
         ? (__associationsDB = JSON.parse(
-            fs.readFileSync(process.cwd() + "/brain/raw-brain.brain")
+            readFileSync(process.cwd() + "/brain/raw-brain.brain")
         ))
         : (__associationsDB = {});
     Object.keys(__associationsDB).forEach((key) => {
@@ -136,7 +135,7 @@ exports.loadBrainFromSave = (_path) => {
     })
 }
 
-exports.generateBackLinkBrain = () => {
+export function generateBackLinkBrain() {
     var counter = 0
     console.log("Creating backlinks...")
     Object.keys(__associationsDB).forEach((header) => {
@@ -164,7 +163,7 @@ exports.generateBackLinkBrain = () => {
     console.log(`All ${counter} backlinks created...`)
 }
 
-exports.saveRawBrain = () => {
+export function saveRawBrain() {
     dictToFile(process.cwd() + "/brain/raw-brain.brain", __associationsDB);
     dictToFile(process.cwd() + "/brain/raw-backlink.brain", __reverse_associationsDB);
 }
@@ -175,7 +174,7 @@ exports.saveRawBrain = () => {
     core are both intact and uptodate with eachother. If one is out, it
     will need to be brought up to date.
 */
-exports.stabaliseBrain = () => {
+export function stabaliseBrain() {
     // We are going to compare the core to the backLink.
     // As the core gets updated by default whereas the backlink doesnt.
     Object.keys(__associationsDB).forEach((header) => {
@@ -184,7 +183,7 @@ exports.stabaliseBrain = () => {
 }
 
 
-exports.saveBrain = () => {
+export function saveBrain() {
     var __ashersBrain = [];
     Object.keys(__associationsDB).forEach( (item) => {
         __ashersBrain.push("- - " + item);
@@ -197,7 +196,7 @@ exports.saveBrain = () => {
     //exports.saveRawBrain();
 }
 
-exports.duplicateCheck = () => {
+export function duplicateCheck() {
     var __seen = [];
     var __dupes = [];
 
@@ -214,11 +213,11 @@ exports.duplicateCheck = () => {
 }
 
 
-exports.getInfo = () => {
+export function getInfo() {
     console.log("There are " + __wordsDB.length + " inputs");
     console.log("There are " + __responsesDB.length + " responses");
     console.log("There are " + Object.keys(__associationsDB).length + " associations")
-    var res = exports.duplicateCheck();
+    var res = duplicateCheck();
     console.log(res);
     //console.log("Is 'How are you doing' in array? " + "How are you doing" in __associationsDB)
 
@@ -234,7 +233,7 @@ exports.getInfo = () => {
     The purpose of this function is to receive the response to the input from
     the user. 
 */
-exports.getResponse = (_input) => {
+export function getResponse(_input) {
     try {
         var outputNum = __associationsDB[_input][Math.floor(Math.random() * __associationsDB[_input].length)];
         // We now have the number of the index... now, lets just display it.
@@ -269,15 +268,15 @@ exports.getResponse = (_input) => {
     that they both share the same responses and that they are the
     same question.
 */
-exports.synapseLinks = (__input) => {
+export function synapseLinks(__input) {
     // We are going to use Levenshtein distance to see if the
     // inputec question is in anyway similar to something we
     // already know, so then we might be able to use that response.
     console.log("\n\n\n")
     console.log("Closest is: ")
-    console.log(speak.closest(__input, __wordsDB));
+    console.log(closest(__input, __wordsDB));
     console.log("position is: ")
-    console.log(__wordsDB.indexOf(speak.closest(__input, __wordsDB)))
+    console.log(__wordsDB.indexOf(closest(__input, __wordsDB)))
     console.log(__wordsDB[148])
     console.log("\n\n\n")
 }
@@ -289,17 +288,17 @@ exports.synapseLinks = (__input) => {
  * @param {String} message 
  */
 
-exports.wipe = () => {
-    exports.__wordsDB = __wordsDB = null;
-    exports.__responsesDB = __responsesDB = null;
-    exports.__unknown_phrases = __unknown_phrases = null;
-    exports.__thankyou_phrases = __thankyou_phrases = null;
-    exports.__associationsDB = __associationsDB = null;
-    exports.__reverse_associationsDB = __reverse_associationsDB = null;
+export function wipe() {
+    exports.__wordsDB = null;
+    exports.__responsesDB = null;
+    exports.__unknown_phrases = null;
+    exports.__thankyou_phrases = null;
+    exports.__associationsDB = null;
+    exports.__reverse_associationsDB = null;
 }
 
  //TODO: NEED TO REDO THIS PART AS WE CANT USE THE MEMORY MODULE ANYMORE...
-exports.worker = (UID, message) => {
+export function worker(UID, message) {
     var activeMemory = object;
     //var activememory = core.activeMemory;
     // We are going to take advantage of the activeMemory system in this function.
@@ -339,14 +338,14 @@ exports.worker = (UID, message) => {
         console.log("LEARNING MODE!")
         activememory[UID]['brain'].mem_mode = 0;
         // We arent going to ask another question, we are just going to save the response...
-        exports.updateAssociations(last_message, message);     
+        updateAssociations(last_message, message);     
         // Thank the client now, as we have now learned something... and we are going to  save the brain.
-        exports.saveBrain();
+        saveBrain();
         return __thankyou_phrases[Math.floor(Math.random() * __thankyou_phrases.length)]
     }
 }
 
-exports.updateAssociations = (__question, __answer) => {
+export function updateAssociations(__question, __answer) {
     var __pos_ans, __pos_word;
     if (!(__answer in __responsesDB)) {
         __responsesDB.push(__answer);

@@ -1,9 +1,10 @@
 var exports = (module.exports = {});
-const fs = require("fs");
-const path = require("path");
-exports.fileToArray = (file, list) => {
-	const array = fs
-		.readFileSync(file)
+
+import { readFileSync, existsSync, writeFileSync, readdirSync, statSync } from "fs";
+import path from "path";
+
+export function fileToArray(file, list) {
+	const array = readFileSync(file)
 		.toString()
 		.split("\n");
 	for (let i = 0; i < array.length; i++) {
@@ -11,39 +12,38 @@ exports.fileToArray = (file, list) => {
 			list.push(array[i]);
 		}
 	}
-};
+}
 
-exports.fileExists = (file) => {
+export function fileExists(file) {
 
-	return (fs.existsSync(file) ? true : false);
+	return (existsSync(file) ? true : false);
 
 }
 
-exports.getFileLine = (file, line) => {
-	const array = fs
-		.readFileSync(file)
+export function getFileLine(file, line) {
+	const array = readFileSync(file)
 		.toString()
 		.split("\n");
 	return array[(line-1)];
 }
 
-exports.arrayToFile = (file, array) => {
+export function arrayToFile(file, array) {
 	var holder = "";
 	array.forEach((item) => {
 		holder += item + "\n";
 	})
-	fs.writeFileSync(file, holder);
+	writeFileSync(file, holder);
 }
 
-exports.changeModEnabled = (mod) => {
+export function changeModEnabled(mod) {
 	console.log("Changing mod")
 	var holder = [];
-	exports.fileToArray(mod, holder);
+	fileToArray(mod, holder);
 	holder[holder.length - 1] = 'false';
-	exports.arrayToFile(mod, holder);
+	arrayToFile(mod, holder);
 }
 
-exports.arraytoDict = (file, dictionary) => {
+export function arraytoDict(file, dictionary) {
 	console.log("Running the file maker...")
 	var holder = "";
 	Object.keys(dictionary).forEach((key) => {
@@ -54,15 +54,15 @@ exports.arraytoDict = (file, dictionary) => {
 		})
 		holder += "END\n"
 	})
-	fs.writeFileSync(file, holder);
+	writeFileSync(file, holder);
 }
 
-exports.dictToFile = (file, dictionary) => {
-	fs.writeFileSync(file, JSON.stringify(dictionary, null, 2));
+export function dictToFile(file, dictionary) {
+	writeFileSync(file, JSON.stringify(dictionary, null, 2));
 }
 
-exports.fileToDict = (file, dictionary) => {
-	const array = fs.readFileSync(file).toString().split("\n")
+export function fileToDict(file, dictionary) {
+	const array = readFileSync(file).toString().split("\n")
 	var beginStatus = false;
 	var endStatus = false;
 	lastID = "";
@@ -95,16 +95,16 @@ exports.fileToDict = (file, dictionary) => {
 	}
 }
 
-exports.findFilesAndFolders = (
+export function findFilesAndFolders(
 	_path,
 	_list,
 	returnNamesOnly,
 	checkForDir,
 	checkForFile
-) => {
-	fs.readdirSync(_path).forEach((file) => {
+) {
+	readdirSync(_path).forEach((file) => {
 		if (checkForDir && !checkForFile) {
-			if (fs.statSync(_path + file).isDirectory()) {
+			if (statSync(_path + file).isDirectory()) {
 				if (returnNamesOnly) {
 					_list.push(file);
 				} else {
@@ -112,7 +112,7 @@ exports.findFilesAndFolders = (
 				}
 			}
 		} else if (!checkForDir && checkForFile) {
-			if (fs.statSync(_path + file).isFile()) {
+			if (statSync(_path + file).isFile()) {
 				_list.push(_path + file);
 			}
 		} else {
@@ -123,4 +123,4 @@ exports.findFilesAndFolders = (
 			}
 		}
 	});
-};
+}

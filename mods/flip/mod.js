@@ -1,4 +1,4 @@
-module.exports.core = (core) => {
+export function core(core) {
 	let choices = ['heads', 'tales'];
 	let words = ['.? a coin .?', 'flip a .?', 'toss a .?', 'flip .?', 'toss .?', 'flip a coin'];
 	core.Asher.hear(words, (payload, chat) => {

@@ -1,4 +1,4 @@
-module.exports.core = (core) => {
+export function core(core) {
     let words = [
         `.? set timer for #Value (second|minute|hour|seconds|minutes|hours) .?`,
         `.? set .? timer for #Value (second|minute|hour|seconds|minutes|hours) .?`,

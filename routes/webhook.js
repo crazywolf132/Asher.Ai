@@ -1,5 +1,5 @@
-var express = require("express");
-var router = express.Router();
+import { Router } from "express";
+var router = Router();
 const core = require(process.cwd() + "/server");
 const messenger = require(process.cwd() + "/core/functions/messenger_handler");
 const seenMessage = messenger.seenMessage;
@@ -36,4 +36,4 @@ function getRequest(message, sender) {
     }
 }
 
-module.exports = router;
+export default router;

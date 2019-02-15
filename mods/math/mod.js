@@ -1,4 +1,4 @@
-module.exports.core = (core) => {
+export function core(core) {
     let words = [
         "whats #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?",
         "what's #Value (plus|minus|take|remove|negative|+|-|*|/|x|divide|times) .? #Value .?",

@@ -1,5 +1,5 @@
-const fs = require("fs");
-const speak = require("speakeasy-nlp");
+import { readFileSync, writeFile, existsSync } from "fs";
+import { closest } from "speakeasy-nlp";
 
 class Brain {
     constructor() {
@@ -8,15 +8,22 @@ class Brain {
         this.__unknown_phrases = [];
         this.__associationsDB = {};
         this.__reverse_associationsDB = {};
+        this.loggerOnOff = true
     }
 
-    start() {
+    start(logStatus = true) {
+        this.loggerOnOff = logStatus;
         this.logger("Brain is starting...");
         this.loadNeurons();
         this.loadAxons();
         this.saveBrain();
         this.getBrainStats();
         //this.testBrain();
+        return 1;
+    }
+
+    testStart() {
+        return this.start(false);
     }
 
     loadNeurons() {
@@ -25,8 +32,7 @@ class Brain {
             // Going to run the code to load the brain, otherwise we need to generate a brain....
             var fileContents = [];
             var counter = 0;
-            var array = fs
-              .readFileSync(process.cwd() + `/brain/` + this.brainFile)
+            var array = readFileSync(process.cwd() + `/brain/` + this.brainFile)
               .toString()
               .split("\n");
             for (let i = 0; i < array.length; i++) {
@@ -61,7 +67,7 @@ class Brain {
             var lastHeader = "";
             var counter = 0;
             if (this.checkFileExists(process.cwd() + "/train.yml")) {
-                var array = fs.readFileSync(process.cwd() + "/train.yml").toString().split("\n");
+                var array = readFileSync(process.cwd() + "/train.yml").toString().split("\n");
                 for (let i = 0; i < array.length; i++) {
                     if (array[i] !== "") {
                         let holder = array[i].replace("  ", "");
@@ -123,10 +129,10 @@ class Brain {
         this.logger("\n\n");
         this.logger(`Looking for "How are you"`);
         this.logger(`\nClosest is: `);
-        this.logger(speak.closest(`How are you`, Object.keys(this.__associationsDB)));
+        this.logger(closest(`How are you`, Object.keys(this.__associationsDB)));
         this.logger(`Now checking the Synapses...`, 'warning');
         this.logger(`Looking for "good thankyou"`);
-        let res = speak.closest(`good thankyou`, Object.keys(this.__reverse_associationsDB));
+        let res = closest(`good thankyou`, Object.keys(this.__reverse_associationsDB));
         this.logger(`Question could have been... ${this.__reverse_associationsDB[res][Math.floor(Math.random() * this.__reverse_associationsDB[res].length)]}`);
 
     }
@@ -168,7 +174,7 @@ class Brain {
     }
 
     memories() {
-        
+        // TODO: Need to re-implement memories
     }
 
     wipe() {
@@ -182,39 +188,42 @@ class Brain {
         array.forEach((item) => {
             holder += item + "\n";
         })
-        fs.writeFile(file, holder, { flag: "w" }, () => {});
+        writeFile(file, holder, { flag: "w" }, () => {});
     }
 
     checkFileExists(filename) {
-        return fs.existsSync(filename) ? true : false;
+        return existsSync(filename) ? true : false;
     }
 
     logger(message, error = "info") {
+        if (!this.loggerOnOff) {
+            return;
+        }
         if (this.previous_log_status == error) {
             console.log(`           | ${message}`);
             return;
         }
         this.previous_log_status = error;
         switch (error) {
-        case "error":
-            console.log(`   ERROR   | ${message}`);
-            break;
-        case "debug":
-            console.log(`   DEBUG   | ${message}`);
-            break;
-        case "":
-        case "normal":
-        case "none":
-            console.log(`   INFO    | ${message}`);
-            break;
-        case "warning":
-            console.log(`   WARNING | ${message}`);
-            break;
-        default:
-            console.log(`   INFO    | ${message}`);
-            break;
+            case "error":
+                console.log(`   ERROR   | ${message}`);
+                break;
+            case "debug":
+                console.log(`   DEBUG   | ${message}`);
+                break;
+            case "":
+            case "normal":
+            case "none":
+                console.log(`   INFO    | ${message}`);
+                break;
+            case "warning":
+                console.log(`   WARNING | ${message}`);
+                break;
+            default:
+                console.log(`   INFO    | ${message}`);
+                break;
         }
     }
 }
 
-module.exports = Brain;
+export default Brain;
