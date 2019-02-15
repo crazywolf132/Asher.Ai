@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js",
     "test": "mocha tests --compilers js:@babel/register",
-    "test_coverage": "jest --coverage"
+    "start": "nodemon --exec babel-node server.js",
   },
   "author": "Brayden Moon",
   "license": "ISC",

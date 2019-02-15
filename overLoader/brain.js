@@ -1,4 +1,5 @@
-const B = require(`${process.cwd()}/core/functions/latestBrain`);
+import B from "../core/functions/latestBrain";
+// const B = require(`${process.cwd()}/core/functions/latestBrain`);
 const newBrain = new B();
 
 export function core(payload, chat) {

@@ -108,6 +108,9 @@ html(lang='en')
                         } else if (data == '{darkmode: false}') {
                             data = this.darkMode ? 'Sure' : 'Already disabled...'
                             this.darkMode = false
+                        } else if (data == '{darkmode: ~~}') {
+                            data = 'Sure thing.'
+                            this.darkMode = !this.darkMode
                         }
                         this.addAsherMsg(data)
                     });

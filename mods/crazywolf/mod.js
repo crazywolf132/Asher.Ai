@@ -29,9 +29,11 @@ export function core(core) {
         })
     })
 
-    core.Asher.hear('(enable|disable) dark mode .?', (payload, chat, found) => {
+    core.Asher.hear('(enable|disable|toggle) dark mode .?', (payload, chat, found) => {
         if (found.found.includes('disable')) {
             chat.say('{darkmode: false}')
+        } else if (found.found.includes('toggle')) {
+            chat.say('{darkmode: ~~}')
         } else {
             chat.say('{darkmode: true}')
         }
