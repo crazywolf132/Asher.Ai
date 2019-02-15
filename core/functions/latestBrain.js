@@ -8,9 +8,11 @@ class Brain {
         this.__unknown_phrases = [];
         this.__associationsDB = {};
         this.__reverse_associationsDB = {};
+        this.loggerOnOff = true
     }
 
-    start() {
+    start(logStatus = true) {
+        this.loggerOnOff = logStatus;
         this.logger("Brain is starting...");
         this.loadNeurons();
         this.loadAxons();
@@ -21,7 +23,7 @@ class Brain {
     }
 
     testStart() {
-        return start();
+        return this.start(false);
     }
 
     loadNeurons() {
@@ -194,29 +196,32 @@ class Brain {
     }
 
     logger(message, error = "info") {
+        if (!this.loggerOnOff) {
+            return;
+        }
         if (this.previous_log_status == error) {
             console.log(`           | ${message}`);
             return;
         }
         this.previous_log_status = error;
         switch (error) {
-        case "error":
-            console.log(`   ERROR   | ${message}`);
-            break;
-        case "debug":
-            console.log(`   DEBUG   | ${message}`);
-            break;
-        case "":
-        case "normal":
-        case "none":
-            console.log(`   INFO    | ${message}`);
-            break;
-        case "warning":
-            console.log(`   WARNING | ${message}`);
-            break;
-        default:
-            console.log(`   INFO    | ${message}`);
-            break;
+            case "error":
+                console.log(`   ERROR   | ${message}`);
+                break;
+            case "debug":
+                console.log(`   DEBUG   | ${message}`);
+                break;
+            case "":
+            case "normal":
+            case "none":
+                console.log(`   INFO    | ${message}`);
+                break;
+            case "warning":
+                console.log(`   WARNING | ${message}`);
+                break;
+            default:
+                console.log(`   INFO    | ${message}`);
+                break;
         }
     }
 }

@@ -1,8 +1,8 @@
 "use strict";
 
-import EventEmitter from "eventEmitter3";
-import Chat from "./Chat";
-import Conversation from "./Conversation";
+import { EventEmitter } from "eventEmitter3";
+import { Chat } from "./Chat";
+import { Conversation } from "./Conversation";
 import { existsSync } from "fs";
 
 class Asher extends EventEmitter {
@@ -15,13 +15,26 @@ class Asher extends EventEmitter {
         ? options.listener
         : null;
     this.name = !options ? "Asher" : options.name ? options.name : "Asher";
-    this.devMode = !options ? true : options.devMode ? options.devMode : true;
+    this.devMode = !options
+      ? true
+      : options.devMode
+        ? options.devMode
+        : true;
     this.actions = [];
-    this._conversations = [];
+    this._conList = [];
     this.port = 4416;
     this.handlers = { loaded: false };
     this.middleWear = { loaded: false };
     this.serverRunning = false;
+  }
+
+  test(mode, info) {
+    switch(mode) {
+      case 1:
+        return this.serverRunning;
+      case 2:
+        return this.mods[info];
+    }
   }
 
   start() {
@@ -106,10 +119,10 @@ class Asher extends EventEmitter {
       );
     }
     const convo = new Conversation(this, ID);
-    this._conversations.push(convo);
+    this._conList.push(convo);
     convo.on("end", endedConvo => {
-      const removeIndex = this._conversations.indexOf(endedConvo);
-      this._conversations.splice(removeIndex, 1);
+      const removeIndex = this._conList.indexOf(endedConvo);
+      this._conList.splice(removeIndex, 1);
     });
     factory.apply(this, [convo]);
     return convo;
@@ -122,7 +135,7 @@ class Asher extends EventEmitter {
     if (this.handlers.atts.message) ID = this.handlers.atts.message.author;
     const userID = ID;
     let captured = false;
-    this._conversations.forEach(convo => {
+    this._conList.forEach(convo => {
       if (userID && userID == convo.userID && convo.isActive()) {
         captured = true;
         return convo.respond(ID, data);
