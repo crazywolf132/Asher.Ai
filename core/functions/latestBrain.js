@@ -172,7 +172,7 @@ class Brain {
     }
 
     memories() {
-        
+        // TODO: Need to re-implement memories
     }
 
     wipe() {
