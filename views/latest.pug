@@ -54,14 +54,18 @@ html(lang='en')
                         ]
                 },
                 methods: {
+                    updateLocal () {
+                        localStorage.setItem('messages', JSON.stringify(this.messages))
+                    },
                     addMsg () {
                         if (this.messages[this.messages.length - 1].mode != 'sender') {
                             this.messages.push({id: this.messages.length - 1, mode: 'sender', msgs: []})
                         }
                         this.messages[this.messages.length - 1].msgs.push(this.msg)
 
-                        this.socket.emit('command', this.msg);
+                        this.socket.emit('command', this.msg)
                         this.msg = ''
+                        this.updateLocal()
                     },
                     addAsherMsg (message) {
                         this.pushNotif(message)
@@ -69,6 +73,7 @@ html(lang='en')
                             this.messages.push({id: this.messages.length - 1, mode: 'receiver', msgs: []})
                         }
                         this.messages[this.messages.length - 1].msgs.push(message)
+                        this.updateLocal()
                     },
                     pushNotif (message) {
                         if (Notification.permission === 'granted') {
@@ -79,7 +84,7 @@ html(lang='en')
                         } else if (Notification.permission !== 'denied') {
                             Notification.requestPermission(permission => {
                                 if (!('permission' in Notification)) {
-                                    Notification.permission = permission;
+                                    Notification.permission = permission
                                 }
 
                                 if (permission === 'granted') {
@@ -93,6 +98,13 @@ html(lang='en')
                     }
                 },
                 mounted() {
+
+                    if (localStorage.messages) {
+                        this.messages = JSON.parse(localStorage.getItem('messages'))
+                    }
+                    if (localStorage.darkMode) {
+                        this.darkMode = localStorage.getItem('darkMode')
+                    }
                     if (!("Notification" in window)) {
                         this.canUsePush = false
                         alert("This browser does not support desktop notification");
@@ -104,12 +116,15 @@ html(lang='en')
                     this.socket.on('response', (data) => {
                         if (data == '{darkmode: true}') {
                             data = this.darkMode ? 'Already enabled...' : 'Sure'
+                            localStorage.setItem('darkMode', true)
                             this.darkMode = true
                         } else if (data == '{darkmode: false}') {
                             data = this.darkMode ? 'Sure' : 'Already disabled...'
+                            localStorage.setItem('darkMode', false)
                             this.darkMode = false
                         } else if (data == '{darkmode: ~~}') {
                             data = 'Sure thing.'
+                            localStorage.setItem('darkMode', !this.darkMode)
                             this.darkMode = !this.darkMode
                         }
                         this.addAsherMsg(data)
