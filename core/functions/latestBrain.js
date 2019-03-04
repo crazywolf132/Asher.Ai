@@ -1,4 +1,4 @@
-import { readFileSync, writeFile, existsSync } from "fs";
+import { readFileSync, writeFile, existsSync, readdirSync, statSync } from "fs";
 import { closest } from "speakeasy-nlp";
 
 class Brain {
@@ -98,6 +98,46 @@ class Brain {
                     counter++;
                 });
                 this.logger(`FINISHED WITH ${counter} TOTAL NEURONS`);
+            } else {
+                var allFileNames = [];
+                this.findFilesAndFolders(process.cwd() + "/training_data/", allFileNames, false, false, true);
+                allFileNames.forEach(file => {
+                    var fileContents = [];
+                    var currentFile = file.replace(".yml", "");
+                    var array = readFileSync(file)
+                        .toString()
+                        .split("\n");
+                    for (let i = 0; i < array.length; i++) {
+                        if (array[i] !== "") {
+                            let holder = array[i].replace("  ", "");
+                            fileContents.push(holder);
+                        }
+                    }
+
+                    fileContents.forEach((item) => {
+                        if (item.includes("- - ")) {
+                            var holder = item.replace("- - ", "");
+                            holder = holder.replace("?", "");
+
+                            lastHeader = holder.toLowerCase().replace(".", "");
+                        } else if (item.includes("- ")) {
+                            var holder = item.replace("- ", "");
+                            if (lastHeader in this.__associationsDB) {
+                                if (!this.__associationsDB[lastHeader].indexOf(holder) > -1) {
+                                    this.__associationsDB[lastHeader].push(holder);
+                                }
+                            } else {
+                                this.__associationsDB[lastHeader] = [];
+                                this.__associationsDB[lastHeader].push(holder);
+                            }
+                        }
+                        if (counter % 10000 == 0) {
+                            this.logger(`Loaded ${counter} neurons...`);
+                        }
+                        counter++;
+                    });
+                });
+                this.logger(`FINISHED WITH ${counter} TOTAL NEURONS`);
             }
         }
     }
@@ -193,6 +233,36 @@ class Brain {
 
     checkFileExists(filename) {
         return existsSync(filename) ? true : false;
+    }
+
+    findFilesAndFolders(
+        _path,
+        _list,
+        returnNamesOnly,
+        checkForDir,
+        checkForFile
+    ) {
+        readdirSync(_path).forEach((file) => {
+            if (checkForDir && !checkForFile) {
+                if (statSync(_path + file).isDirectory()) {
+                    if (returnNamesOnly) {
+                        _list.push(file);
+                    } else {
+                        _list.push(_path + file);
+                    }
+                }
+            } else if (!checkForDir && checkForFile) {
+                if (statSync(_path + file).isFile()) {
+                    _list.push(_path + file);
+                }
+            } else {
+                if (returnNamesOnly) {
+                    _list.push(file);
+                } else {
+                    _list.push(_path + file);
+                }
+            }
+        });
     }
 
     logger(message, error = "info") {
