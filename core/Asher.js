@@ -1,6 +1,6 @@
 "use strict";
 
-import { EventEmitter } from "eventEmitter3";
+import EventEmitter from "eventEmitter3";
 import Chat from "./Chat";
 import Conversation from "./Conversation";
 import { existsSync } from "fs";
