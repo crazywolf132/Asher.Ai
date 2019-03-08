@@ -65,3 +65,5 @@ typings/
 brain/ashersBrain\.save
 brain/asher\.brain
 package-lock\.json
+
+build/
