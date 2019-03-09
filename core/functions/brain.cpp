@@ -57,11 +57,15 @@ NAN_METHOD(workOut) {
         return;
     }
 
-    v8::String::Utf8Value raw(info[0]);
-    string _input(*raw);
+    Nan::Utf8String raw(info[0]);
+    int len = raw.length();
+    if (len <= 0) {
+        return Nan::ThrowTypeError("argument must be a non-empty string");
+    }
+
+    string _input(*raw, len);
 
     string result = getResponse(_input);
-
 
     info.GetReturnValue().Set(Nan::New(result).ToLocalChecked());
 }
