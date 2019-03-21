@@ -44,7 +44,7 @@ string getResponse(string inputSentance) {
         stringvec l = (associationsDB.at(inputSentance));
         return l[random_int(0, l.size() - 1)];
     }
-    return "";
+    return "-1";
 }
 
 void read_directory(const string& name, stringvec& v, const string& searchFor = "")
@@ -101,7 +101,7 @@ void loadAxons() {
             }
 
             if (counter % 10000 == 0) {
-                cout << "Loaded " << counter << "iterations..." << endl;
+                cout << "Loaded " << counter << " iterations..." << endl;
             }
             counter++;
         }
@@ -164,7 +164,26 @@ void loadNeurons() {
 }
 
 void saveBrain() {
+    // We are going to change how the brain saves its state.
+    // It used to save as a JSON object in a file. But that simply wont do for us anymore.
+    // We are going to save it like this:
+    // phrase : response
 
+    // We are going to create a vector of lines to write out to the file. This will cause more
+    // memory to be used during this process, but it will be more accurate.
+    stringvec _out;
+    for (auto item : associationsDB) {
+        for (auto response : item.second) {
+            _out.push_back(item.first + " : " + response);
+        }
+    }
+
+    ofstream output_file("./brain/asher.brain");
+    ostream_iterator<string> output_iterator(output_file, "\n");
+    copy(_out.begin(), _out.end(), output_iterator);
+
+    // Clearing this from the memory.
+    _out = {};
 }
 
 void addToBrain(string header, string child) {
@@ -174,6 +193,7 @@ void addToBrain(string header, string child) {
 void start() {
     loadAxons();
     loadNeurons();
+    saveBrain();
 }
 
 /**
@@ -195,6 +215,24 @@ void start() {
 NAN_METHOD(startBrain)
 {
     start();
+}
+
+NAN_METHOD(arrayTester) {
+    Nan::Utf8String raw(info[0]);
+
+    vector<string> parts;
+
+    string _input(*raw, raw.length());
+
+    stringstream ss(_input);
+    string token;
+
+    while (getline(ss, token, ',')) {
+        token = trim(token);
+        parts.push_back(token);
+    }
+
+    cout << _input << endl;
 }
 
 NAN_METHOD(workOut) {
@@ -220,6 +258,7 @@ NAN_MODULE_INIT(Initialize)
 {
     NAN_EXPORT(target, startBrain);
     NAN_EXPORT(target, workOut);
+    NAN_EXPORT(target, arrayTester);
 }
 
 NODE_MODULE(brain, Initialize);
