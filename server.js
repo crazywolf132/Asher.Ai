@@ -6,7 +6,6 @@ import { middleware } from "stylus";
 import { join } from "path";
 import nlp from "compromise";
 import { readdirSync, statSync } from "fs";
-
 /**
 * THE CORE OF THE SYSTEM...
 */
@@ -69,7 +68,8 @@ class Server {
 			next();
 		});
 		this.app.use('/', this.homeRouter.default);
-		//this.Asher.loadHandlers("discord", "discord");
+		var allFileNames = [];
+
 		this.Asher.loadOverloadModule('brain');
 		this.Asher.start();
 		this.loadAllMods();

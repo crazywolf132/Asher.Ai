@@ -1,6 +1,6 @@
 //import B from "../core/functions/latestBrain";
 // const B = require(`${process.cwd()}/core/functions/latestBrain`);
-import { workOut, startBrain, arrayTester } from "../build/Release/brain";
+import { workOut, startBrain } from "../build/Release/brain";
 //const newBrain = new B();
 
 export function core(payload, chat) {
