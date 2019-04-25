@@ -17,11 +17,8 @@
 <br />
 <br />
 
-# Come and join our slack group!
-<h3> We can answer all questions here. </h3>
-<a href="https://join.slack.com/t/republicofwolf/shared_invite/enQtNTM4MDM1MzY3OTQwLWJlOWNlZmNlYzZkN2YzMjI3NjU2MTA5ODg3NzhjZWMwZjY3N2M2Y2Y1MzhlNThhY2JkNzk4Yzg1NjJiOGI4Mjc" align="center">
-  <img src="https://img.shields.io/badge/SLACK-ONLINE-blue.svg?style=for-the-badge">
-</a>
+# IMPORTANT
+Just because this project is opensource, does not mean you steal code. You must either follow the License, or contact me personally regarding uses.
 
 ## What the heck is this?
 This is the Node.js API for the Asher personal assistant. Asher is a personal assistant with the aim of matching all the commands that products such as the Google Home can offer, and much more.
