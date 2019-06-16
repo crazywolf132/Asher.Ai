@@ -35,10 +35,7 @@ class Helper {
             return this.timeOfDay.MidNight;
         }
     }
-
-
 }
-
 
 class Server {
 	constructor(helper) {
@@ -49,6 +46,8 @@ class Server {
 		this.nlp = nlp;
 		this.helper = helper;
 		this.homeRouter = require(process.cwd() + '/routes/home');
+		this.apiRouter = require(process.cwd() + '/routes/api');
+
 	}
 
 	start() {
@@ -68,6 +67,7 @@ class Server {
 			next();
 		});
 		this.app.use('/', this.homeRouter.default);
+		this.app.use('/api', this.apiRouter.default);
 		var allFileNames = [];
 
 		this.Asher.loadOverloadModule('brain');
