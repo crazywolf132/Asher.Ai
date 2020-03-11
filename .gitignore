@@ -67,3 +67,4 @@ brain/asher\.brain
 package-lock\.json
 
 build/
+.vscode/
