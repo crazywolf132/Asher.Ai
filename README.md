@@ -18,7 +18,7 @@
 <br />
 
 # IMPORTANT
-Just because this project is opensource, does not mean you steal code. You must either follow the License, or contact me personally regarding uses.
+Just because this project is opensource, does not mean you can steal code. You must either follow the License, or contact me personally regarding uses.
 
 ## What the heck is this?
 This is the Node.js API for the Asher personal assistant. Asher is a personal assistant with the aim of matching all the commands that products such as the Google Home can offer, and much more.
